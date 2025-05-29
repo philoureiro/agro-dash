@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 
-import { FullSizeCentered } from '@/components/styled';
+import { FullSizeCentered } from '@components';
 
 function Page3() {
   return (

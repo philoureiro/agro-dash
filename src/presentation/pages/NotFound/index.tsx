@@ -1,4 +1,4 @@
-import { FullSizeCentered } from '@/presentation/components/styled';
+import { FullSizeCentered } from '@components';
 
 import notFoundGif from './404.gif';
 import { Image } from './styled';

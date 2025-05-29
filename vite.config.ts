@@ -24,6 +24,7 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, './src/application/hooks'),
       '@utils': path.resolve(__dirname, './src/application/utils'),
       '@components': path.resolve(__dirname, './src/presentation/components'),
+      '@pages': path.resolve(__dirname, './src/presentation/pages'),
     },
   },
   server: {

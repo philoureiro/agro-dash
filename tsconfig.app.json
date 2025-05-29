@@ -28,9 +28,9 @@
       // "@repositories": ["./src/infrastructure/repositories/index.ts"],
 
       // // ==== PRESENTATION ====
-      "@components": ["./src/presentation/components"]
+      "@components": ["./src/presentation/components"],
       // "@layouts": ["./src/presentation/layouts/index.ts"],
-      // "@pages": ["./src/presentation/pages/index.ts"],
+      "@pages": ["./src/presentation/pages"]
       // "@routes": ["./src/presentation/routes/index.ts"],
       // "@sections": ["./src/presentation/sections/index.ts"],
       // "@theme": ["./src/presentation/theme/index.ts"],
