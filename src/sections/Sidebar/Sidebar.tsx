@@ -10,7 +10,7 @@ import {
   SwipeableDrawer,
 } from '@mui/material';
 
-import routes from '@/routes';
+import routes from '@/presentation/routes';
 
 import { useSidebar } from './hooks';
 
