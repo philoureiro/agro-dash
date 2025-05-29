@@ -4,7 +4,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import HomeIcon from '@mui/icons-material/Home';
 import TerrainIcon from '@mui/icons-material/Terrain';
 
-import asyncComponentLoader from '@/utils/loader';
+import asyncComponentLoader from '@/application/utils/loader';
 
 import { Routes } from './types';
 

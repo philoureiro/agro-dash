@@ -2,7 +2,7 @@ import { Route } from 'react-router';
 
 import type { Theme } from '@mui/material';
 
-import { objectInsertIf } from '@/utils/insertIf';
+import { objectInsertIf } from '@/application/utils/insertIf';
 
 import { Routes } from '../types';
 
