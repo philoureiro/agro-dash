@@ -1,17 +1,25 @@
 {
   "name": "Agro Dash",
   "short_name": "AgroDash",
-  "description": "Dashboard inteligente para gestão de propriedades rurais, acompanhamento de produtores e visualização de dados agrícolas em tempo real.",
-  "theme_color": "#157a22",
-  "background_color": "#ffffff",
+  "description": "Dashboard inteligente para gestão agrícola",
+  "theme_color": "transparent",
+  "background_color": "transparent",
   "display": "standalone",
-  "start_url": ".",
+  "orientation": "portrait",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

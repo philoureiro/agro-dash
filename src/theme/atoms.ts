@@ -1,7 +1,17 @@
-import { atomWithStorage } from 'jotai/utils';
+// src/theme/atoms.ts
+import { atom } from 'jotai';
 
 import { ThemeMode } from './types';
 
-const themeModeState = atomWithStorage('theme-mode', ThemeMode.DARK);
+// Detecta o tema preferido do sistema
+const getSystemTheme = (): ThemeMode => {
+  if (typeof window !== 'undefined') {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? ThemeMode.DARK
+      : ThemeMode.LIGHT;
+  }
+  return ThemeMode.LIGHT;
+};
 
-export { themeModeState };
+// Atom com valor inicial baseado no sistema
+export const themeModeState = atom<ThemeMode>(getSystemTheme());
