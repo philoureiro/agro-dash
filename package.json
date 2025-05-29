@@ -15,7 +15,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "start": "npx serve dist",
+    "start": "vite preview",
     "build": "vite build",
     "heroku-postbuild": "npm run build",
     "preview": "vite preview",
