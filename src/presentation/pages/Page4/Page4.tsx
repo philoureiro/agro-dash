@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 
 import { Button, Typography } from '@mui/material';
 
-import { FullSizeCentered } from '@/presentation/components/styled';
+import { FullSizeCentered } from '@components';
 
 function Page4() {
   return (

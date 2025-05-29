@@ -21,4 +21,4 @@ function withErrorHandler<P extends object>(Component: FC<P>, Fallback: FC<Fallb
   return ComponentWithErrorHandling;
 }
 
-export { withErrorHandler };
+export default withErrorHandler;

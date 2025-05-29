@@ -1,6 +1,6 @@
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { FullSizeCentered } from '../styled';
+import { FullSizeCentered } from '..';
 
 function Loading() {
   return (

@@ -13,7 +13,7 @@
       "@hooks": ["src/application/hooks"],
       // "@services": ["./src/application/services/index.ts"],
       // "@usecases": ["./src/application/usecases/index.ts"],
-      "@utils": ["./src/application/utils"]
+      "@utils": ["./src/application/utils"],
       // "@docs": ["./src/application/docs/index.ts"],
 
       // // ==== DOMAIN ====
@@ -28,7 +28,7 @@
       // "@repositories": ["./src/infrastructure/repositories/index.ts"],
 
       // // ==== PRESENTATION ====
-      // "@components": ["./src/presentation/components/index.ts"],
+      "@components": ["./src/presentation/components"]
       // "@layouts": ["./src/presentation/layouts/index.ts"],
       // "@pages": ["./src/presentation/pages/index.ts"],
       // "@routes": ["./src/presentation/routes/index.ts"],
