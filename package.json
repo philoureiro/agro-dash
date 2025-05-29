@@ -15,10 +15,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "start": "serve -s dist -l $PORT",
     "build": "vite build",
     "heroku-postbuild": "npm run build",
-    "preview": "vite preview",
+    "start": "vite preview --port $PORT --host 0.0.0.0",
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:check": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\"",
     "ts:check": "tsc --noEmit",
