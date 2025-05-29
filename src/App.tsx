@@ -3,8 +3,8 @@ import { BrowserRouter } from 'react-router';
 
 import { CssBaseline } from '@mui/material';
 
-import { withErrorHandler } from '@/error-handling';
-import AppErrorBoundaryFallback from '@/error-handling/fallbacks/App';
+import { withErrorHandler } from '@/presentation/components/error-handling';
+import AppErrorBoundaryFallback from '@/presentation/components/error-handling/fallbacks/App';
 
 import Pages from './presentation/routes/Pages';
 import Header from './presentation/sections/Header';

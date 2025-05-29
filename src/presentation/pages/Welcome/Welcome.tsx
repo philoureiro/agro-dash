@@ -1,4 +1,4 @@
-import useOrientation from '@/hooks/useOrientation';
+import useOrientation from '@/application/hooks/useOrientation';
 import { FullSizeCentered } from '@/presentation/components/styled';
 
 import muiLogo from './logos/mui.svg';
