@@ -6,10 +6,10 @@ import { AppBar, Button, Divider, IconButton, Stack, Toolbar, Tooltip } from '@m
 import { useNotifications } from '@toolpad/core/useNotifications';
 
 import { repository, title } from '@/config';
-import { useHotKeysDialog } from '@/sections/HotKeys/hooks';
-import { useSidebar } from '@/sections/Sidebar/hooks';
-import { useThemeMode } from '@/theme';
+import { useThemeMode } from '@/presentation/theme';
 
+import { useHotKeysDialog } from '../HotKeys/hooks';
+import { useSidebar } from '../Sidebar/hooks';
 import { HotKeysButton } from './styled';
 import { getRandomJoke } from './utils';
 

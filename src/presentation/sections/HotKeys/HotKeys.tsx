@@ -3,9 +3,9 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { Button, Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 
-import { useSidebar } from '@/sections/Sidebar/hooks';
-import { useThemeMode } from '@/theme';
+import { useThemeMode } from '@/presentation/theme';
 
+import { useSidebar } from '../Sidebar/hooks';
 import { useHotKeysDialog } from './hooks';
 
 function HotKeys() {

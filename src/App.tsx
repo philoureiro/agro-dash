@@ -7,9 +7,9 @@ import { withErrorHandler } from '@/error-handling';
 import AppErrorBoundaryFallback from '@/error-handling/fallbacks/App';
 
 import Pages from './presentation/routes/Pages';
-import Header from './sections/Header';
-import HotKeys from './sections/HotKeys';
-import Sidebar from './sections/Sidebar';
+import Header from './presentation/sections/Header';
+import HotKeys from './presentation/sections/HotKeys';
+import Sidebar from './presentation/sections/Sidebar';
 
 function App() {
   return (
