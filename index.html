@@ -1,38 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <title>Agro Dash</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <title>React PWA</title>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- https://web.dev/uses-rel-preconnect -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preconnect otimizado para fontes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <meta name="description" content="Starter kit for modern web applications">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="alternate icon" href="/favicon.ico" type="image/png" sizes="16x16">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
-  <link rel="mask-icon" href="/favicon.svg" color="#FFFFFF">
-  <meta name="theme-color" content="#ffffff">
+    <!-- Descrição e Palavras-chave -->
+    <meta
+      name="description"
+      content="Dashboard inteligente para gestão de propriedades rurais, acompanhamento de produtores e visualização de dados agrícolas em tempo real."
+    />
+    <meta
+      name="keywords"
+      content="agro, dashboard, rural, produtores, fazenda, gestão, agricultura, pwa, react"
+    />
 
-  <meta name="keywords" content="react, pwa, boilerplate, template" />
+    <!-- Ícones e PWA -->
+    <link rel="icon" href="/icon-512.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/icon-512.png" sizes="512x512" />
+    <link rel="manifest" href="/manifest.json" />
 
-  <meta name="description" content="Starter kit for modern web applications" data-react-helmet="true" />
-  <meta property="og:title" content="React-PWA" data-react-helmet="true">
-  <meta property="og:description" content="Starter kit for modern web applications" data-react-helmet="true">
-  <meta property="og:url" content="https://react-pwa.surenatoyan.com/" data-react-helmet="true">
-  <meta property="og:image" content="https://react-pwa.surenatoyan.com/cover.png" data-react-helmet="true" />
-  <meta name="twitter:card" content="summary" data-react-helmet="true" />
+    <!-- Tema -->
+    <meta name="theme-color" content="#157a22" />
+    <meta name="background-color" content="#ffffff" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-  <!-- https://web.dev/defer-non-critical-css/ -->
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" as="style"
-    onload="this.onload=null;this.rel='stylesheet'">
-</head>
+    <!-- Open Graph para compartilhar bonito -->
+    <meta property="og:title" content="Agro Dash" />
+    <meta
+      property="og:description"
+      content="Dashboard inteligente para gestão de propriedades rurais, acompanhamento de produtores e visualização de dados agrícolas em tempo real."
+    />
+    <meta property="og:url" content="https://agro-dash-e411d523d8a5.herokuapp.com/" />
+    <meta property="og:image" content="https://agro-dash-e411d523d8a5.herokuapp.com/icon-512.png" />
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Agro Dash" />
+    <meta
+      name="twitter:description"
+      content="Dashboard inteligente para gestão de propriedades rurais, acompanhamento de produtores e visualização de dados agrícolas em tempo real."
+    />
+    <meta
+      name="twitter:image"
+      content="https://agro-dash-e411d523d8a5.herokuapp.com/icon-512.png"
+    />
 
+    <!-- Roboto otimizado -->
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

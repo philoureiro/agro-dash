@@ -2,7 +2,7 @@
   "name": "agro-dash",
   "version": "1.0.0",
   "type": "module",
-  "description": "Starter kit for modern web applications",
+  "description": "Dashboard inteligente para gestão de propriedades rurais, acompanhamento de produtores e visualização de dados agrícolas em tempo real.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
