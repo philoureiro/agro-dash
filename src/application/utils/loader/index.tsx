@@ -1,10 +1,10 @@
 import { loader as loaderDefaultOptions } from '@/config';
 import Loading from '@/presentation/components/Loading';
 
-import asyncComponentLoader from './loader';
+import { asyncComponentLoader } from './loader';
 import type { AnyProps, LoadComponent, LoaderDefaultOptions } from './types';
 
-const configuredAsyncComponentLoader = (
+export const configuredAsyncComponentLoader = (
   loadComponent: LoadComponent,
   additionalProps: AnyProps = {},
   loaderOptions: LoaderDefaultOptions = loaderDefaultOptions,

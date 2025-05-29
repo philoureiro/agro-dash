@@ -100,7 +100,7 @@ const getLazyComponent = (loadComponent: LoadComponent, loaderOptions: LoaderDef
 // INFO: the usage of `asyncComponentLoader` looks like this:
 // asyncComponentLoader(() => import('pages/Welcome'))
 
-function asyncComponentLoader(
+export function asyncComponentLoader(
   loadComponent: LoadComponent,
   additionalProps: AnyProps,
   loaderOptions: LoaderDefaultOptions,
@@ -122,5 +122,3 @@ function asyncComponentLoader(
 }
 
 export { getDelayedFallback };
-
-export default asyncComponentLoader;
