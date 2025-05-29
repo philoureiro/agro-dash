@@ -5,15 +5,14 @@ import { AppBar, Button, Divider, IconButton, Stack, Toolbar, Tooltip } from '@m
 
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { repository, title } from '@/config';
-import { useThemeMode } from '@/presentation/theme';
-
+import { repository, title } from '../../../config';
+import { useThemeMode } from '../../theme/hooks';
 import { useHotKeysDialog } from '../HotKeys/hooks';
-import { useSidebar } from '../Sidebar/hooks';
+import useSidebar from '../Sidebar/hooks';
 import { HotKeysButton } from './styled';
 import { getRandomJoke } from './utils';
 
-function Header() {
+export default function Header() {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
   const { open: openSidebar } = useSidebar();
   const { open: openHotKeysDialog } = useHotKeysDialog();
@@ -84,5 +83,3 @@ function Header() {
     </AppBar>
   );
 }
-
-export default Header;

@@ -1,6 +1,6 @@
-import { loader as loaderDefaultOptions } from '@/config';
-import Loading from '@/presentation/components/Loading';
+import { Loading } from '@components';
 
+import { loader as loaderDefaultOptions } from '../../../config';
 import { asyncComponentLoader } from './loader';
 import type { AnyProps, LoadComponent, LoaderDefaultOptions } from './types';
 

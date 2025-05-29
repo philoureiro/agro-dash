@@ -4,7 +4,7 @@ import { useAtom } from 'jotai';
 
 import { isSidebarOpenState } from './atoms';
 
-function useSidebar() {
+export default function useSidebar() {
   const [isOpen, setIsOpen] = useAtom(isSidebarOpenState);
 
   const toggle = useCallback(() => setIsOpen((isOpen) => !isOpen), [setIsOpen]);
@@ -18,5 +18,3 @@ function useSidebar() {
     open,
   };
 }
-
-export { useSidebar };

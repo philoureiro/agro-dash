@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { NotificationsProvider } from '@toolpad/core/useNotifications';
 import { Provider as JotaiProvider } from 'jotai';
 
-import ThemeProvider from '@/presentation/theme/Provider';
+import ThemeProvider from './presentation/theme/Provider';
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);

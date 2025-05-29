@@ -10,11 +10,10 @@ import {
   SwipeableDrawer,
 } from '@mui/material';
 
-import routes from '@/presentation/routes';
+import routes from '../../routes';
+import useSidebar from './hooks';
 
-import { useSidebar } from './hooks';
-
-function Sidebar() {
+export default function Sidebar() {
   const { isOpen, open, close } = useSidebar();
 
   return (
@@ -42,5 +41,3 @@ function Sidebar() {
     </SwipeableDrawer>
   );
 }
-
-export default Sidebar;

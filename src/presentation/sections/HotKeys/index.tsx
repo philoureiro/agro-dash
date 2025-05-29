@@ -3,12 +3,11 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { Button, Dialog, DialogContent, DialogTitle, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 
-import { useThemeMode } from '@/presentation/theme';
-
-import { useSidebar } from '../Sidebar/hooks';
+import { useThemeMode } from '../../theme';
+import useSidebar from '../Sidebar/hooks';
 import { useHotKeysDialog } from './hooks';
 
-function HotKeys() {
+export default function HotKeys() {
   const { toggle: toggleTheme } = useThemeMode();
   const { toggle: toggleSidebar } = useSidebar();
   const { isOpen, close, toggle: toggleHotKeysDialog } = useHotKeysDialog();
@@ -47,5 +46,3 @@ function HotKeys() {
     </Dialog>
   );
 }
-
-export default HotKeys;
