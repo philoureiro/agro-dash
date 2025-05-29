@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
-import resetApp from '@/application/utils/reset-app';
+import { resetApp } from '@/application/utils/reset-app';
 import { email } from '@/config';
 import { FullSizeCentered } from '@/presentation/components/styled';
 
