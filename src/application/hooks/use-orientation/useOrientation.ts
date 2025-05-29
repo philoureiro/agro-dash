@@ -4,7 +4,7 @@ function getOrientation() {
   return window.innerHeight > window.innerWidth;
 }
 
-function useOrientation() {
+export function useOrientation() {
   const [isPortrait, setIsPortrait] = useState(getOrientation());
 
   useEffect(() => {
@@ -19,5 +19,3 @@ function useOrientation() {
 
   return isPortrait;
 }
-
-export default useOrientation;

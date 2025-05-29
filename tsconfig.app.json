@@ -7,7 +7,40 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
+    "paths": {
+      "@/*": ["src/*"],
+
+      "@hooks": ["src/application/hooks"]
+      // "@services": ["./src/application/services/index.ts"],
+      // "@usecases": ["./src/application/usecases/index.ts"],
+      // "@utils": ["./src/application/utils/index.ts"],
+      // "@docs": ["./src/application/docs/index.ts"],
+
+      // // ==== DOMAIN ====
+      // "@entities": ["./src/domain/entities/index.ts"],
+      // "@domain-error-handling": ["./src/domain/error-handling/index.ts"],
+      // "@exceptions": ["./src/domain/exceptions/index.ts"],
+      // "@providers": ["./src/domain/providers/index.ts"],
+
+      // // ==== INFRASTRUCTURE ====
+      // "@firebase": ["./src/infrastructure/firebase/index.ts"],
+      // "@infra-mocks": ["./src/infrastructure/mocks/index.ts"],
+      // "@repositories": ["./src/infrastructure/repositories/index.ts"],
+
+      // // ==== PRESENTATION ====
+      // "@components": ["./src/presentation/components/index.ts"],
+      // "@layouts": ["./src/presentation/layouts/index.ts"],
+      // "@pages": ["./src/presentation/pages/index.ts"],
+      // "@routes": ["./src/presentation/routes/index.ts"],
+      // "@sections": ["./src/presentation/sections/index.ts"],
+      // "@theme": ["./src/presentation/theme/index.ts"],
+
+      // // ==== TESTS ====
+      // "@tests": ["./src/tests/index.ts"],
+
+      // // ==== THIRD-PARTY ====
+      // "@config": ["./src/config/index.ts"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -28,33 +61,3 @@
 }
 
 // // ==== APPLICATION ====
-// "@hooks": ["./src/application/hooks/index.ts"],
-// "@services": ["./src/application/services/index.ts"],
-// "@usecases": ["./src/application/usecases/index.ts"],
-// "@utils": ["./src/application/utils/index.ts"],
-// "@docs": ["./src/application/docs/index.ts"],
-
-// // ==== DOMAIN ====
-// "@entities": ["./src/domain/entities/index.ts"],
-// "@domain-error-handling": ["./src/domain/error-handling/index.ts"],
-// "@exceptions": ["./src/domain/exceptions/index.ts"],
-// "@providers": ["./src/domain/providers/index.ts"],
-
-// // ==== INFRASTRUCTURE ====
-// "@firebase": ["./src/infrastructure/firebase/index.ts"],
-// "@infra-mocks": ["./src/infrastructure/mocks/index.ts"],
-// "@repositories": ["./src/infrastructure/repositories/index.ts"],
-
-// // ==== PRESENTATION ====
-// "@components": ["./src/presentation/components/index.ts"],
-// "@layouts": ["./src/presentation/layouts/index.ts"],
-// "@pages": ["./src/presentation/pages/index.ts"],
-// "@routes": ["./src/presentation/routes/index.ts"],
-// "@sections": ["./src/presentation/sections/index.ts"],
-// "@theme": ["./src/presentation/theme/index.ts"],
-
-// // ==== TESTS ====
-// "@tests": ["./src/tests/index.ts"],
-
-// // ==== THIRD-PARTY ====
-// "@config": ["./src/config/index.ts"]

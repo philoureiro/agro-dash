@@ -18,7 +18,12 @@ export default defineConfig({
       workbox: { globPatterns: ['**/*.{js,css,html}', '**/*.{svg,png,jpg,gif}'] },
     }),
   ],
-  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+      '@hooks': path.resolve(__dirname, './src/application/hooks'),
+    },
+  },
   server: {
     host: '0.0.0.0',
     port: process.env.PORT ? Number(process.env.PORT) : 4173,
