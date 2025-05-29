@@ -21,10 +21,11 @@ export default defineConfig({
   resolve: { alias: { '@': path.resolve(__dirname, './src') } },
   server: {
     host: '0.0.0.0',
-    port: process.env.PORT ? Number(process.env.PORT) : 3000,
+    port: process.env.PORT ? Number(process.env.PORT) : 4173,
   },
   preview: {
     host: '0.0.0.0',
     port: process.env.PORT ? Number(process.env.PORT) : 4173,
+    allowedHosts: ['agro-dash-e411d523d8a5.herokuapp.com', 'localhost'],
   },
 });
