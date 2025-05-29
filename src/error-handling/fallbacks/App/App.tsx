@@ -6,8 +6,8 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 import resetApp from '@/application/utils/reset-app';
-import { FullSizeCentered } from '@/components/styled';
 import { email } from '@/config';
+import { FullSizeCentered } from '@/presentation/components/styled';
 
 function AppErrorBoundaryFallback() {
   return (

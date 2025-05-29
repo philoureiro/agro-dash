@@ -1,5 +1,5 @@
-import { FullSizeCentered } from '@/components/styled';
 import useOrientation from '@/hooks/useOrientation';
+import { FullSizeCentered } from '@/presentation/components/styled';
 
 import muiLogo from './logos/mui.svg';
 import pwaLogo from './logos/pwa.svg';
