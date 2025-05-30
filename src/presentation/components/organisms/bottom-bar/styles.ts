@@ -1,8 +1,12 @@
+// src/presentation/components/styles.ts
 import styled from 'styled-components';
 
 import { colors } from '../../../theme/colors';
 
+// Ajuste o caminho para o seu arquivo de cores
+
 export const GlassBar = styled.nav<{ themeMode?: string }>`
+  /* 1. Definir altura fixa e gerenciar o espaço extra APENAS com padding */
   height: 70px;
   position: fixed;
   bottom: 0;
@@ -12,10 +16,10 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0.7rem 0;
 
-  /* Ajusta altura total considerando safe area */
-  height: calc(70px + env(safe-area-inset-bottom));
+  /* 2. Definir o padding inicial, incluindo a safe area no padding-bottom */
+  padding: 0.7rem 0 calc(0.7rem + env(safe-area-inset-bottom));
+  box-sizing: border-box; /* Garante que padding não aumente a altura total */
 
   background: ${({ themeMode }) =>
     themeMode === 'dark'
@@ -61,9 +65,9 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
     pointer-events: none;
   }
 
+  /* 3. Ajustar o padding para telas menores, mantendo a lógica da safe area */
   @media (max-width: 540px) {
-    padding: 0.35rem 0;
-    /* Mantém safe area no mobile */
+    padding-top: 0.35rem;
     padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
   }
 `;
@@ -91,7 +95,6 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Efeito de seleção */
   ${({ active, themeMode }) =>
     active &&
     `
