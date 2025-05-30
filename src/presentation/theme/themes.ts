@@ -1,7 +1,10 @@
 import { ThemeOptions } from '@mui/material/styles';
 import { deepmerge } from '@mui/utils';
 
+import { colors } from './colors';
 import { ThemeMode } from './types';
+
+// <-- Importa o arquivo de cores
 
 const sharedTheme = {
   components: {
@@ -21,14 +24,24 @@ const sharedTheme = {
   },
 };
 
-// to explore all the options, check out https://mui.com/material-ui/customization/default-theme/
 const themes: Record<ThemeMode, ThemeOptions> = {
   light: deepmerge(sharedTheme, {
     palette: {
       mode: 'light',
+      primary: {
+        main: colors.activeGreen,
+        contrastText: colors.white,
+      },
+      secondary: {
+        main: colors.secondary,
+      },
       background: {
-        default: '#fafafa',
-        paper: '#fff',
+        default: colors.gray100,
+        paper: colors.white,
+      },
+      text: {
+        primary: colors.textPrimaryLight,
+        secondary: colors.textSecondaryLight,
       },
     },
   }),
@@ -36,9 +49,20 @@ const themes: Record<ThemeMode, ThemeOptions> = {
   dark: deepmerge(sharedTheme, {
     palette: {
       mode: 'dark',
+      primary: {
+        main: colors.activeGreen,
+        contrastText: colors.black,
+      },
+      secondary: {
+        main: colors.secondaryDark,
+      },
       background: {
-        default: '#111',
-        paper: '#171717',
+        default: colors.black,
+        paper: colors.darkPaper,
+      },
+      text: {
+        primary: colors.textPrimaryDark,
+        secondary: colors.textSecondaryDark,
       },
     },
   }),

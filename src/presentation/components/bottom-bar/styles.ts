@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-const activeGreen = '#34d972';
+import { colors } from '../../theme/colors';
+
+// ajuste o caminho conforme sua estrutura
 
 export const GlassBar = styled.nav<{ themeMode?: string }>`
   height: 70px;
@@ -75,20 +77,19 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
   gap: 0.14rem;
   cursor: pointer;
   z-index: 1;
-  /* Tamanho fixo para manter consistência */
   min-width: 64px;
   min-height: 64px;
   justify-content: center;
 
   color: ${({ active, themeMode }) => {
-    if (active) return activeGreen;
-    return themeMode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(120, 120, 120, 0.92)'; // Cinza para tema claro
+    if (active) return colors.activeGreen;
+    return themeMode === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(120, 120, 120, 0.92)';
   }};
 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    color: ${activeGreen};
+    color: ${colors.activeGreen};
     transform: translateY(-1px);
 
     &::after {
@@ -103,7 +104,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(52, 217, 114, 0.06);
+      background: rgba(52, 217, 114, 0.06); /* usa activeGreen translúcido */
       border-radius: 12px;
       z-index: -1;
       opacity: 0.6;

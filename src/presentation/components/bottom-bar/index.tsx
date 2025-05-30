@@ -1,15 +1,18 @@
 // src/presentation/components/BottomBar.tsx
 import React from 'react';
-import { FiEdit, FiHome, FiPlusCircle, FiUser } from 'react-icons/fi';
+import { FiPlusCircle } from 'react-icons/fi';
+import { MdOutlineEditLocation } from 'react-icons/md';
+import { TbLayoutDashboardFilled } from 'react-icons/tb';
+import { TbMapSearch } from 'react-icons/tb';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { BarItem, GlassBar, Label } from './styles';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', icon: <FiHome />, path: '/dashboard' },
+  { label: 'Dashboard', icon: <TbLayoutDashboardFilled />, path: '/dashboard' },
+  { label: 'Pesquisar', icon: <TbMapSearch />, path: '/pesquisar' },
   { label: 'Cadastrar', icon: <FiPlusCircle />, path: '/cadastrar' },
-  { label: 'Editar', icon: <FiEdit />, path: '/editar' },
-  { label: 'Perfil', icon: <FiUser />, path: '/perfil' },
+  { label: 'Editar', icon: <MdOutlineEditLocation />, path: '/editar' },
 ];
 
 interface BottomBarProps {
