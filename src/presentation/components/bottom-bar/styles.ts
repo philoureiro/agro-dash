@@ -2,8 +2,6 @@ import styled from 'styled-components';
 
 import { colors } from '../../theme/colors';
 
-// ajuste o caminho conforme sua estrutura
-
 export const GlassBar = styled.nav<{ themeMode?: string }>`
   height: 70px;
   position: fixed;
@@ -15,6 +13,9 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   justify-content: space-around;
   align-items: center;
   padding: 0.7rem 0;
+
+  /* Ajusta altura total considerando safe area */
+  height: calc(70px + env(safe-area-inset-bottom));
 
   background: ${({ themeMode }) =>
     themeMode === 'dark'
@@ -62,6 +63,8 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
 
   @media (max-width: 540px) {
     padding: 0.35rem 0;
+    /* Mantém safe area no mobile */
+    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom));
   }
 `;
 
@@ -88,6 +91,27 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+  /* Efeito de seleção */
+  ${({ active, themeMode }) =>
+    active &&
+    `
+    &::before {
+      content: '';
+      position: absolute;
+      width: 85px;
+      height: 60px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: ${themeMode === 'dark' ? 'rgba(52, 217, 114, 0.12)' : 'rgba(52, 217, 114, 0.18)'};
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+      z-index: -1;
+      opacity: 0.8;
+      border: ${themeMode === 'dark' ? 'none' : '1px solid rgba(52, 217, 114, 0.25)'};
+    }
+  `}
+
   &:hover {
     color: ${colors.activeGreen};
     transform: translateY(-1px);
@@ -95,16 +119,12 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
     &::after {
       content: '';
       position: absolute;
-      top: -8px;
-      left: -14px;
-      right: -14px;
-      bottom: -8px;
-      width: 90px;
-      height: 60px;
+      width: 85px;
+      height: 52px;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(52, 217, 114, 0.06); /* usa activeGreen translúcido */
+      background: rgba(52, 217, 114, 0.06);
       border-radius: 12px;
       z-index: -1;
       opacity: 0.6;

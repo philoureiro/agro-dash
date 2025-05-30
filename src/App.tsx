@@ -15,7 +15,7 @@ function App() {
     <Fragment>
       <CssBaseline />
 
-      <Header />
+      <Header themeMode={themeModeString} />
 
       <BrowserRouter>
         <BottomBar themeMode={themeModeString} />
