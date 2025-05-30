@@ -1,5 +1,4 @@
-// src/theme/atoms.ts
-import { atom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 
 import { ThemeMode } from './types';
 
@@ -13,5 +12,8 @@ const getSystemTheme = (): ThemeMode => {
   return ThemeMode.LIGHT;
 };
 
-// Atom com valor inicial baseado no sistema
-export const themeModeState = atom<ThemeMode>(getSystemTheme());
+// Usa atomWithStorage para persistir no localStorage
+export const themeModeState = atomWithStorage<ThemeMode>(
+  'theme-mode', // chave no localStorage
+  getSystemTheme(), // valor inicial baseado no sistema
+);

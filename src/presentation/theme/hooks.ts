@@ -24,11 +24,20 @@ function useThemeMode() {
 
   // Escuta mudanças no tema do sistema
   useEffect(() => {
+    // Verificação se está no browser
+    if (typeof window === 'undefined') return;
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
     const handleChange = (e: MediaQueryListEvent) => {
       setThemeMode(e.matches ? ThemeMode.DARK : ThemeMode.LIGHT);
     };
+
+    // Aplica o tema inicial baseado no sistema (caso não tenha preferência salva)
+    const initialSystemTheme = mediaQuery.matches ? ThemeMode.DARK : ThemeMode.LIGHT;
+
+    // Só aplica se for a primeira vez (você pode adicionar lógica de localStorage aqui)
+    setThemeMode(initialSystemTheme);
 
     mediaQuery.addEventListener('change', handleChange);
 
@@ -40,6 +49,9 @@ function useThemeMode() {
     toggle,
     setThemeMode,
     isDarkMode: themeMode === ThemeMode.DARK,
+    // Adicionei algumas propriedades úteis
+    isLightMode: themeMode === ThemeMode.LIGHT,
+    themeModeString: themeMode.toString(), // Para usar no styled-components
   };
 }
 

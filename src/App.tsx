@@ -1,25 +1,24 @@
 import { Fragment } from 'react';
-import { BrowserRouter } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 
 import { CssBaseline } from '@mui/material';
 
-import { withErrorHandler } from '@components';
+import { BottomBar, withErrorHandler } from '@components';
 
 import { AppErrorBoundaryFallback } from './presentation/components/error-handling/fallbacks';
-import Pages from './presentation/routes/Pages';
 import Header from './presentation/sections/Header';
-import HotKeys from './presentation/sections/HotKeys';
-import Sidebar from './presentation/sections/Sidebar';
+import { useThemeMode } from './presentation/theme';
 
 function App() {
+  const { themeModeString } = useThemeMode();
   return (
     <Fragment>
       <CssBaseline />
-      <HotKeys />
+
+      <Header />
+
       <BrowserRouter>
-        <Header />
-        <Sidebar />
-        <Pages />
+        <BottomBar themeMode={themeModeString} />
       </BrowserRouter>
     </Fragment>
   );
