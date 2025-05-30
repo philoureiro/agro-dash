@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { colors } from '../../theme/colors';
+import { colors } from '../../../theme/colors';
 
 export const GlassBar = styled.nav<{ themeMode?: string }>`
   height: 70px;

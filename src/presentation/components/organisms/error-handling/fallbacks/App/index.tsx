@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { FullSizeCentered } from '@components';
 import { resetApp } from '@utils';
 
-import { email } from '../../../../../config/';
+import { email } from '../../../../../../config';
 
 export default function AppErrorBoundaryFallback() {
   return (

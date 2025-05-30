@@ -3,11 +3,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { CssBaseline } from '@mui/material';
 
-import { BottomBar, withErrorHandler } from '@components';
+import { AppErrorBoundaryFallback, BottomBar, WithErrorHandler } from '@components';
 
-import { AppErrorBoundaryFallback } from './presentation/components/error-handling/fallbacks';
 import Header from './presentation/sections/Header';
-import { useThemeMode } from './presentation/theme';
+import { useThemeMode } from './presentation/theme/hooks';
 
 function App() {
   const { themeModeString } = useThemeMode();
@@ -24,5 +23,5 @@ function App() {
   );
 }
 
-const AppWithErrorHandler = withErrorHandler(App, AppErrorBoundaryFallback);
+const AppWithErrorHandler = WithErrorHandler(App, AppErrorBoundaryFallback);
 export default AppWithErrorHandler;
