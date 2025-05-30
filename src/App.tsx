@@ -4,8 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
 
 import { AppErrorBoundaryFallback, BottomBar, WithErrorHandler } from '@components';
+import { Header } from '@sections';
 
-import Header from './presentation/sections/Header';
 import { useThemeMode } from './presentation/theme/hooks';
 
 function App() {

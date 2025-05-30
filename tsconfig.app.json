@@ -28,9 +28,9 @@
       // // ==== PRESENTATION ====
       "@components": ["./src/presentation/components"],
       // "@layouts": ["./src/presentation/layouts/index.ts"],
-      "@pages": ["./src/presentation/pages"]
+      "@pages": ["./src/presentation/pages"],
       // "@routes": ["./src/presentation/routes/index.ts"],
-      // "@sections": ["./src/presentation/sections/index.ts"],
+      "@sections": ["./src/presentation/sections"]
       // "@theme": ["./src/presentation/theme/index.ts"],
 
       // // ==== TESTS ====
