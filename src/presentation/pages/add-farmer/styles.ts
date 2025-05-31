@@ -278,7 +278,6 @@ export const FormCard = styled.div<{ isDark: boolean }>`
   background: ${({ isDark }) => (isDark ? 'rgba(35, 39, 47, 0.9)' : 'rgba(255, 255, 255, 0.9)')};
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  padding: 2rem;
   border: ${({ isDark }) =>
     isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)'};
   box-shadow: ${({ isDark }) =>
@@ -375,6 +374,12 @@ export const FloatingLabel = styled.label<{ isDark: boolean; active: boolean }>`
   padding: 0 4px;
   font-weight: 500;
   z-index: 2;
+
+  @media (max-width: 768px) {
+    font-size: 12px;
+    left: 0px;
+    width: 100%;
+  }
 `;
 
 export const StyledInput = styled.input<{ isDark: boolean }>`
@@ -540,7 +545,7 @@ export const PreviewInfo = styled.div`
 export const CulturaCard = styled.div<{ isDark: boolean }>`
   background: ${({ isDark }) => (isDark ? 'rgba(35, 39, 47, 0.6)' : 'rgba(255, 255, 255, 0.6)')};
   border-radius: 12px;
-  padding: 1.5rem;
+
   border: ${({ isDark }) =>
     isDark ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(0, 0, 0, 0.03)'};
   margin-bottom: 1rem;
