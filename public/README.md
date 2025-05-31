@@ -1,4 +1,4 @@
-# 🚜 AgroDash - Plano de Desenvolvimento Frontend (Brain Agriculture)
+# 🚜 AgroDash - Dashboard Rural Inteligente
 
 ![Status](https://img.shields.io/badge/Status-Pronto-brightgreen)
 ![React](https://img.shields.io/badge/React-18+-blue)
