@@ -508,7 +508,7 @@ export const SearchButton = styled.button<{ isDark: boolean }>`
 export const SearchContainer = styled.div<{ isDark: boolean }>`
   min-height: 100vh;
   margin-top: 50px;
-  margin-bottom: 50px;
+  margin-bottom: 100px;
   padding: 16px; /* Padding único de 16px */
   display: flex;
   flex-direction: column;

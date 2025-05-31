@@ -10,7 +10,6 @@ import {
   ChartCard,
   ChartTitle,
   ChartsGrid,
-  ExportContainer,
   Grid,
   KpiTitle,
   KpiValue,
@@ -131,29 +130,29 @@ export const Dashboard = () => {
         <div
           style={{
             display: 'flex',
-            marginTop: 50,
-            justifyContent: 'space-between',
+            justifyContent: 'center',
+            flexDirection: 'column',
             alignItems: 'center',
             width: '100%',
-            marginBottom: 20,
+            marginBottom: 30,
+
+            gap: 30,
           }}
         >
-          <Text weight="bold" variant="h3" style={{ margin: 0 }}>
+          {/* 🚫 BOTÃO COM DATA-EXPORT-BUTTON */}
+          <Button
+            data-export-button="true"
+            onClick={handleExportPDF}
+            disabled={isExporting}
+            isDark={isDark}
+          >
+            {isExporting ? '📄 Gerando...' : '📊 Exportar PDF'}
+          </Button>
+
+          <Text weight="bold" variant="h3">
             Dashboard
           </Text>
-
           {/* 🚫 CONTAINER COM DATA-EXPORT-CONTAINER */}
-          <ExportContainer data-export-container="true">
-            {/* 🚫 BOTÃO COM DATA-EXPORT-BUTTON */}
-            <Button
-              data-export-button="true"
-              onClick={handleExportPDF}
-              disabled={isExporting}
-              isDark={isDark}
-            >
-              {isExporting ? '📄 Gerando...' : '📊 Exportar PDF'}
-            </Button>
-          </ExportContainer>
         </div>
 
         <Grid>

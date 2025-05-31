@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Typography } from '@mui/material';
 
+import { Text } from '@components';
 import { useThemeMode } from '@theme';
 
 import {
@@ -159,6 +160,55 @@ const useScreenSize = () => {
   return isDesktop;
 };
 
+// 🚀 FUNÇÃO PARA SCROLL SUAVE ATÉ O TOPO
+const scrollToTop = () => {
+  // Múltiplas estratégias para garantir que funciona em todos os browsers
+  const scrollTargets = [document.documentElement, document.body, window];
+
+  // Scroll suave usando comportamento nativo
+  try {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    // Fallback para browsers mais antigos
+    window.scrollTo(0, 0);
+  }
+
+  // Garante que elementos específicos também scrollem para o topo
+  scrollTargets.forEach((target) => {
+    if (target && typeof target.scrollTo === 'function') {
+      try {
+        target.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        });
+      } catch {
+        // Se for um HTMLElement, tenta acessar scrollTop
+        if (target instanceof HTMLElement) {
+          target.scrollTop = 0;
+        }
+      }
+    }
+  });
+
+  // Força scroll para containers específicos que podem ter overflow
+  const containers = document.querySelectorAll('[data-scroll-container]');
+  containers.forEach((container) => {
+    if (container && typeof container.scrollTo === 'function') {
+      container.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
+  });
+};
+
 export const Search = () => {
   const { themeMode: theme } = useThemeMode();
   const isDark = theme === 'dark';
@@ -191,6 +241,11 @@ export const Search = () => {
       setSelectedFarm(randomFarm);
       setSearchTerm('');
       setIsLoading(false);
+
+      // 🚀 SCROLL PARA O TOPO APÓS SELECIONAR FAZENDA ALEATÓRIA
+      setTimeout(() => {
+        scrollToTop();
+      }, 100);
     }, 800);
   }, []);
 
@@ -198,6 +253,11 @@ export const Search = () => {
   const handleSearch = useCallback(() => {
     if (filteredFarms.length > 0) {
       setSelectedFarm(filteredFarms[0]);
+
+      // 🚀 SCROLL PARA O TOPO APÓS BUSCA
+      setTimeout(() => {
+        scrollToTop();
+      }, 100);
     }
   }, [filteredFarms]);
 
@@ -211,11 +271,16 @@ export const Search = () => {
     [handleSearch],
   );
 
-  // 🖱️ SELECIONAR FAZENDA
+  // 🖱️ SELECIONAR FAZENDA - COM SCROLL TO TOP
   const handleSelectFarm = useCallback(
     (farm: (typeof fazendas)[0]) => {
       setSelectedFarm(farm);
       if (searchTerm) setSearchTerm('');
+
+      // 🚀 SCROLL SUAVE PARA O TOPO DA PÁGINA
+      setTimeout(() => {
+        scrollToTop();
+      }, 100);
     },
     [searchTerm],
   );
@@ -470,7 +535,22 @@ export const Search = () => {
   return (
     <>
       <meta name="title" content="Explorador de Fazendas" />
-      <SearchContainer isDark={isDark}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          marginBottom: 30,
+          marginTop: 100,
+        }}
+      >
+        <Text variant="h3" style={{ fontWeight: 'bold', textAlign: 'center' }}>
+          Pesquisar
+        </Text>
+      </div>
+
+      <SearchContainer isDark={isDark} data-scroll-container>
         {isDesktop ? renderDesktopLayout() : renderMobileLayout()}
       </SearchContainer>
     </>
