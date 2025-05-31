@@ -7,16 +7,14 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1100; /* BottomBar */
+  z-index: 1100;
   display: flex;
   justify-content: space-around;
   align-items: center;
 
   /* Altura base */
-  height: 75px;
-  padding: 0.7rem 0;
 
-  /* Remover completamente safe area */
+  padding: 0.7rem 0;
   padding-bottom: 0.7rem;
 
   background: ${({ themeMode }) =>
@@ -66,21 +64,21 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   /* Mobile responsivo (site normal) */
   @media (max-width: 540px) {
     padding: 0.35rem 0;
-    padding-bottom: 0.35rem; /* SEM safe area */
+    padding-bottom: 0.35rem;
   }
 
   /* PWA standalone mode */
   @media (display-mode: standalone) {
     /* PWA Desktop/Windows */
-    height: 60px;
+    height: 70px;
     padding: 0.4rem 0;
-    padding-bottom: 0.4rem; /* SEM safe area */
+    padding-bottom: 0.4rem;
 
     /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
         padding: 1.2rem 0;
-        padding-bottom: 1.2rem; /* SEM safe area extra */
+        padding-bottom: 1.2rem;
         height: 95px;
       }
     }
@@ -103,7 +101,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
   min-height: 64px;
   justify-content: center;
 
-  /* Margins padrão */
+  /* Margins padrão para desktop e site normal */
   margin-top: 4px;
   margin-bottom: 4px;
 
@@ -119,30 +117,32 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* PWA standalone mode */
+  /* PWA standalone mode - tem prioridade máxima */
   @media (display-mode: standalone) {
     /* PWA Desktop/Windows - padrão para qualquer tamanho */
     margin-top: 6px;
     margin-bottom: 6px;
-    min-height: 48px;
+    min-height: 60px;
     font-size: 1.5rem;
 
     /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
-        margin-top: 25px;
-        margin-bottom: 20px;
+        margin-top: 5px !important; /* !important para sobrescrever outras regras */
+        margin-bottom: 20px !important;
         font-size: 1.4rem;
         min-height: 50px;
       }
     }
   }
 
-  /* Ajustes para iOS browser (não PWA) */
-  @supports (-webkit-touch-callout: none) {
-    margin-top: 10px;
-    margin-bottom: 8px;
-    font-size: 1.6rem;
+  /* iOS Safari browser - só aplica se NÃO for PWA */
+  @media not all and (display-mode: standalone) {
+    @supports (-webkit-touch-callout: none) {
+      margin-top: 10px; /* Valor que funciona no Safari iOS */
+      margin-bottom: 8px;
+      font-size: 1.6rem;
+    }
   }
 
   /* Efeito de seleção */
@@ -174,7 +174,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
       `
       &::before {
         width: 75px !important;
-        height: 45px !important;
+        height: 55px !important;
         border-radius: 8px !important;
       }
     `}
@@ -186,8 +186,8 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
           active &&
           `
           &::before {
-            width: 85px !important;
-            height: 60px !important;
+            width: 75px !important;
+            height: 55px !important;
             border-radius: 8px !important;
           }
         `}
@@ -204,8 +204,8 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
       &::after {
         content: '';
         position: absolute;
-        width: 70px;
-        height: 42px;
+        width: 75px;
+        height: 55px;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
@@ -248,9 +248,11 @@ export const Label = styled.span`
     }
   }
 
-  /* Ajustes para iOS browser */
-  @supports (-webkit-touch-callout: none) {
-    font-size: 0.8rem;
-    margin-top: 1px;
+  /* iOS Safari browser - só se NÃO for PWA */
+  @media not all and (display-mode: standalone) {
+    @supports (-webkit-touch-callout: none) {
+      font-size: 0.8rem;
+      margin-top: 1px;
+    }
   }
 `;
