@@ -362,7 +362,7 @@ export const InputGroup = styled.div`
   transition: transform 0.2s ease;
 `;
 
-export const FloatingLabel = styled.label<{ isDark: boolean; active: boolean }>`
+export const FloatingLabel = styled.label<{ isDark: boolean; active: boolean; valid: boolean }>`
   position: absolute;
   left: 16px;
   top: ${({ active }) => (active ? '8px' : '50%')};
@@ -386,7 +386,7 @@ export const FloatingLabel = styled.label<{ isDark: boolean; active: boolean }>`
   }
 `;
 
-export const StyledInput = styled.input<{ isDark: boolean }>`
+export const StyledInput = styled.input<{ isDark: boolean; valid: boolean }>`
   width: 100%;
   padding: 16px;
   border: 2px solid ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
@@ -415,7 +415,7 @@ export const StyledInput = styled.input<{ isDark: boolean }>`
   }
 `;
 
-export const StyledSelect = styled.select<{ isDark: boolean }>`
+export const StyledSelect = styled.select<{ isDark: boolean; valid: boolean }>`
   width: 100%;
   padding: 16px;
   border: 2px solid ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
@@ -442,33 +442,6 @@ export const StyledSelect = styled.select<{ isDark: boolean }>`
   option {
     background: ${({ isDark }) => (isDark ? '#2d3748' : '#fff')};
     color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
-  }
-`;
-
-// 🏭 CARD DA FAZENDA
-export const FarmCard = styled.div<{ isDark: boolean }>`
-  /* background: ${({ isDark }) =>
-    isDark ? 'rgba(26, 35, 50, 0.8)' : 'rgba(248, 250, 252, 0.8)'}; */
-  border-radius: 16px;
-  padding: 2rem;
-  border: ${({ isDark }) =>
-    isDark ? '1px solid rgba(55, 203, 131, 0.2)' : '1px solid rgba(55, 203, 131, 0.1)'};
-  margin-bottom: 2rem;
-  backdrop-filter: blur(15px);
-  animation: ${slideInRight} 0.6s ease-out;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #37cb83, #27ae60);
-    border-radius: 16px 16px 0 0;
   }
 `;
 
@@ -536,25 +509,6 @@ export const PreviewInfo = styled.div`
     margin: 0.2rem 0;
     font-size: 0.9rem;
     opacity: 0.8;
-  }
-`;
-
-// 🌱 CARD DE CULTURA
-export const CulturaCard = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(35, 39, 47, 0.6)' : 'rgba(255, 255, 255, 0.6)')};
-  border-radius: 12px;
-
-  border: ${({ isDark }) =>
-    isDark ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(0, 0, 0, 0.03)'};
-  margin-bottom: 1rem;
-  backdrop-filter: blur(10px);
-  animation: ${fadeInUp} 0.4s ease-out;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${({ isDark }) =>
-      isDark ? '0 8px 25px rgba(0, 0, 0, 0.2)' : '0 8px 25px rgba(0, 0, 0, 0.05)'};
   }
 `;
 
@@ -1040,4 +994,196 @@ export const GlassEffect = styled.div<{ isDark: boolean }>`
     ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.3)')};
   box-shadow: ${({ isDark }) =>
     isDark ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 32px rgba(0, 0, 0, 0.1)'};
+`;
+
+// 🏭 CARD DA FAZENDA CORRIGIDO
+export const FarmCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isValid',
+})<{ isDark: boolean; isValid?: boolean }>`
+  border-radius: 16px;
+  padding: 2rem;
+  border: ${({ isDark, isValid }) => {
+    if (isValid) return isDark ? '2px solid #37cb83' : '2px solid #27ae60';
+    return isDark ? '1px solid rgba(55, 203, 131, 0.2)' : '1px solid rgba(55, 203, 131, 0.1)';
+  }};
+  margin-bottom: 2rem;
+  backdrop-filter: blur(15px);
+  animation: ${slideInRight} 0.6s ease-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  background: ${({ isDark, isValid }) => {
+    if (isValid) {
+      return isDark
+        ? 'linear-gradient(135deg, rgba(55, 203, 131, 0.1), rgba(26, 35, 50, 0.8))'
+        : 'linear-gradient(135deg, rgba(55, 203, 131, 0.05), rgba(248, 250, 252, 0.8))';
+    }
+    return isDark ? 'rgba(26, 35, 50, 0.8)' : 'rgba(248, 250, 252, 0.8)';
+  }};
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: ${({ isValid }) =>
+      isValid
+        ? 'linear-gradient(90deg, #37cb83, #27ae60)'
+        : 'linear-gradient(90deg, rgba(55, 203, 131, 0.5), rgba(39, 174, 96, 0.5))'};
+    border-radius: 16px 16px 0 0;
+  }
+
+  ${({ isValid }) =>
+    isValid &&
+    `
+    &:after {
+      content: '✅';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+  `}
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: ${({ isDark, isValid }) => {
+      if (isValid) {
+        return isDark
+          ? '0 20px 40px rgba(55, 203, 131, 0.3)'
+          : '0 20px 40px rgba(55, 203, 131, 0.2)';
+      }
+      return isDark ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 15px 30px rgba(0, 0, 0, 0.1)';
+    }};
+  }
+`;
+
+// 🌱 CARD DE CULTURA CORRIGIDO
+export const CulturaCard = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isValid',
+})<{ isDark: boolean; isValid?: boolean }>`
+  background: ${({ isDark, isValid }) => {
+    if (isValid) {
+      return isDark
+        ? 'linear-gradient(135deg, rgba(55, 203, 131, 0.1), rgba(35, 39, 47, 0.6))'
+        : 'linear-gradient(135deg, rgba(55, 203, 131, 0.05), rgba(255, 255, 255, 0.6))';
+    }
+    return isDark ? 'rgba(35, 39, 47, 0.6)' : 'rgba(255, 255, 255, 0.6)';
+  }};
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: ${({ isDark, isValid }) => {
+    if (isValid) return isDark ? '2px solid #37cb83' : '2px solid #27ae60';
+    return isDark ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(0, 0, 0, 0.03)';
+  }};
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+  animation: ${fadeInUp} 0.4s ease-out;
+  transition: all 0.3s ease;
+  position: relative;
+
+  ${({ isValid }) =>
+    isValid &&
+    `
+    &:before {
+      content: '🌱✅';
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1rem;
+    }
+  `}
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ isDark, isValid }) => {
+      if (isValid) {
+        return isDark
+          ? '0 12px 25px rgba(55, 203, 131, 0.2)'
+          : '0 12px 25px rgba(55, 203, 131, 0.15)';
+      }
+      return isDark ? '0 8px 25px rgba(0, 0, 0, 0.2)' : '0 8px 25px rgba(0, 0, 0, 0.05)';
+    }};
+  }
+`;
+
+// 📄 DOCUMENT VALIDATION CORRIGIDO
+export const DocumentValidation = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isValid',
+})<{ isDark: boolean; isValid?: boolean }>`
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+
+  ${({ isValid, isDark }) => {
+    if (isValid === false) {
+      return `
+        background: ${isDark ? 'rgba(255, 107, 107, 0.15)' : 'rgba(255, 107, 107, 0.1)'};
+        border: 1px solid rgba(255, 107, 107, 0.4);
+        color: ${isDark ? '#ff6b6b' : '#e63946'};
+        
+        &:before {
+          content: '❌';
+          font-size: 1rem;
+        }
+      `;
+    } else if (isValid === true) {
+      return `
+        background: ${isDark ? 'rgba(55, 203, 131, 0.15)' : 'rgba(55, 203, 131, 0.1)'};
+        border: 1px solid rgba(55, 203, 131, 0.4);
+        color: ${isDark ? '#37cb83' : '#27ae60'};
+        
+        &:before {
+          content: '✅';
+          font-size: 1rem;
+        }
+      `;
+    } else {
+      return `
+        background: ${isDark ? 'rgba(90, 208, 255, 0.1)' : 'rgba(90, 208, 255, 0.05)'};
+        border: 1px solid rgba(90, 208, 255, 0.3);
+        color: ${isDark ? '#5ad0ff' : '#3b82f6'};
+        
+        &:before {
+          content: 'ℹ️';
+          font-size: 1rem;
+        }
+      `;
+    }
+  }}
+
+  &:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: ${({ isDark, isValid }) => {
+      if (isValid === true) return '0 4px 15px rgba(55, 203, 131, 0.3)';
+      if (isValid === false) return '0 4px 15px rgba(255, 107, 107, 0.3)';
+      return isDark ? '0 4px 15px rgba(90, 208, 255, 0.2)' : '0 4px 15px rgba(59, 130, 246, 0.15)';
+    }};
+  }
+
+  .message {
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+
+    &:before {
+      font-size: 0.9rem;
+    }
+  }
 `;

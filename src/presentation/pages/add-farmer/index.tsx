@@ -7,6 +7,7 @@ import {
   AnimatedCounter,
   AreaValidation,
   CulturaCard,
+  DocumentValidation,
   ErrorAlert,
   FarmCard,
   FarmHeader,
@@ -58,6 +59,38 @@ interface Produtor {
   nome: string;
   documento: string;
   fazendas: Fazenda[];
+}
+
+// 🎯 ESTADO DE VALIDAÇÃO DOS CAMPOS
+interface FieldStates {
+  // Produtor
+  nomeValid: boolean;
+  documentoValid: boolean;
+
+  // Fazendas
+  fazendasValid: {
+    [key: string]: {
+      nomeValid: boolean;
+      cidadeValid: boolean;
+      estadoValid: boolean;
+      areaTotalValid: boolean;
+      areaAgricultavelValid: boolean;
+      areaVegetacaoValid: boolean;
+      areasBalanceadas: boolean;
+      culturasValid: {
+        [key: string]: {
+          tipoValid: boolean;
+          areaValid: boolean;
+          safraValid: boolean;
+        };
+      };
+    };
+  };
+}
+
+// 🎯 ESTADO DE FOCUS DOS INPUTS
+interface FocusStates {
+  [key: string]: boolean;
 }
 
 // 🎨 IMAGENS DE FAZENDAS PARA PREVIEW
@@ -116,19 +149,90 @@ const tiposCulturas = [
   'Mandioca',
 ];
 
-// 🔍 VALIDAÇÃO DE CPF/CNPJ
-const validateDocument = (doc: string): boolean => {
-  const numbers = doc.replace(/\D/g, '');
-  return numbers.length === 11 || numbers.length === 14;
+// 🔍 VALIDAÇÃO DE CPF/CNPJ COM REGEX
+const validateCPF = (cpf: string): boolean => {
+  const numbers = cpf.replace(/\D/g, '');
+  if (numbers.length !== 11) return false;
+
+  // Verifica se todos os dígitos são iguais
+  if (/^(\d)\1{10}$/.test(numbers)) return false;
+
+  // Validação do algoritmo do CPF
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(numbers.charAt(i)) * (10 - i);
+  }
+  let checkDigit = 11 - (sum % 11);
+  if (checkDigit >= 10) checkDigit = 0;
+  if (parseInt(numbers.charAt(9)) !== checkDigit) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(numbers.charAt(i)) * (11 - i);
+  }
+  checkDigit = 11 - (sum % 11);
+  if (checkDigit >= 10) checkDigit = 0;
+
+  return parseInt(numbers.charAt(10)) === checkDigit;
 };
 
-// 📏 FORMATAÇÃO DE DOCUMENTO
+const validateCNPJ = (cnpj: string): boolean => {
+  const numbers = cnpj.replace(/\D/g, '');
+  if (numbers.length !== 14) return false;
+
+  // Verifica se todos os dígitos são iguais
+  if (/^(\d)\1{13}$/.test(numbers)) return false;
+
+  // Validação do algoritmo do CNPJ
+  const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(numbers.charAt(i)) * weights1[i];
+  }
+  let checkDigit = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+  if (parseInt(numbers.charAt(12)) !== checkDigit) return false;
+
+  sum = 0;
+  for (let i = 0; i < 13; i++) {
+    sum += parseInt(numbers.charAt(i)) * weights2[i];
+  }
+  checkDigit = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+
+  return parseInt(numbers.charAt(13)) === checkDigit;
+};
+
+const validateDocument = (doc: string): boolean => {
+  const numbers = doc.replace(/\D/g, '');
+  if (numbers.length === 11) return validateCPF(doc);
+  if (numbers.length === 14) return validateCNPJ(doc);
+  return false;
+};
+
+// 📏 FORMATAÇÃO DE DOCUMENTO CORRIGIDA
 const formatDocument = (value: string): string => {
   const numbers = value.replace(/\D/g, '');
+
+  // Se não tem números, retorna vazio
+  if (!numbers) return '';
+
+  // CPF: 11 dígitos ou menos
   if (numbers.length <= 11) {
-    return numbers.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    // CPF progressivo: 123.456.789-01
+    return numbers
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   }
-  return numbers.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
+
+  // CNPJ: mais de 11 dígitos
+  // CNPJ progressivo: 12.345.678/0001-23
+  return numbers
+    .replace(/(\d{2})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1/$2')
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
 };
 
 // 🎲 GERAR ID ÚNICO
@@ -140,16 +244,53 @@ export const AddFarmer = () => {
   const formRef = useRef<HTMLDivElement>(null);
 
   // 📝 ESTADOS DO FORMULÁRIO
-  const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+
+  // 🎯 ESTADOS DE FOCUS DOS INPUTS
+  const [focusStates, setFocusStates] = useState<FocusStates>({});
 
   const [produtor, setProdutor] = useState<Produtor>({
     nome: '',
     documento: '',
     fazendas: [],
   });
+
+  // 📊 ESTADOS DE VALIDAÇÃO COMPLETOS
+  const fieldStates = useMemo((): FieldStates => {
+    const states: FieldStates = {
+      nomeValid: produtor.nome.trim().length >= 3,
+      documentoValid: validateDocument(produtor.documento),
+      fazendasValid: {},
+    };
+
+    produtor.fazendas.forEach((fazenda) => {
+      const areaSum = fazenda.areaAgricultavel + fazenda.areaVegetacao;
+      const areasBalanceadas = fazenda.areaTotal > 0 ? areaSum <= fazenda.areaTotal : true;
+
+      states.fazendasValid[fazenda.id] = {
+        nomeValid: fazenda.nome.trim().length >= 3,
+        cidadeValid: fazenda.cidade.trim().length >= 2,
+        estadoValid: !!fazenda.estado,
+        areaTotalValid: fazenda.areaTotal > 0,
+        areaAgricultavelValid: fazenda.areaAgricultavel >= 0,
+        areaVegetacaoValid: fazenda.areaVegetacao >= 0,
+        areasBalanceadas,
+        culturasValid: {},
+      };
+
+      fazenda.culturas.forEach((cultura) => {
+        states.fazendasValid[fazenda.id].culturasValid[cultura.id] = {
+          tipoValid: !!cultura.tipo,
+          areaValid: cultura.area > 0,
+          safraValid: cultura.safra.trim().length >= 4,
+        };
+      });
+    });
+
+    return states;
+  }, [produtor]);
 
   // 🎯 IMAGEM HERO DINÂMICA
   const heroImage = useMemo(() => {
@@ -159,15 +300,59 @@ export const AddFarmer = () => {
     return farmImages[0];
   }, [produtor.fazendas.length]);
 
-  // 📊 ESTATÍSTICAS CALCULADAS
+  // 📊 ESTATÍSTICAS E PROGRESSO CALCULADOS
   const stats = useMemo(() => {
     const totalFazendas = produtor.fazendas.length;
     const totalArea = produtor.fazendas.reduce((sum, f) => sum + f.areaTotal, 0);
     const totalCulturas = produtor.fazendas.reduce((sum, f) => sum + f.culturas.length, 0);
-    const progresso = Math.min(totalFazendas * 25 + totalCulturas * 10, 100);
 
-    return { totalFazendas, totalArea, totalCulturas, progresso };
-  }, [produtor.fazendas]);
+    // 📈 CÁLCULO DE PROGRESSO BASEADO NA VALIDAÇÃO
+    let totalFields = 0;
+    let validFields = 0;
+
+    // Campos do produtor (2 campos)
+    totalFields += 2;
+    if (fieldStates.nomeValid) validFields++;
+    if (fieldStates.documentoValid) validFields++;
+
+    // Campos das fazendas
+    produtor.fazendas.forEach((fazenda) => {
+      totalFields += 6; // 6 campos por fazenda
+      const fazendaState = fieldStates.fazendasValid[fazenda.id];
+      if (fazendaState) {
+        if (fazendaState.nomeValid) validFields++;
+        if (fazendaState.cidadeValid) validFields++;
+        if (fazendaState.estadoValid) validFields++;
+        if (fazendaState.areaTotalValid) validFields++;
+        if (fazendaState.areaAgricultavelValid) validFields++;
+        if (fazendaState.areaVegetacaoValid) validFields++;
+      }
+
+      // Campos das culturas
+      fazenda.culturas.forEach((cultura) => {
+        totalFields += 3; // 3 campos por cultura
+        const culturaState = fazendaState?.culturasValid[cultura.id];
+        if (culturaState) {
+          if (culturaState.tipoValid) validFields++;
+          if (culturaState.areaValid) validFields++;
+          if (culturaState.safraValid) validFields++;
+        }
+      });
+    });
+
+    const progresso = totalFields > 0 ? Math.round((validFields / totalFields) * 100) : 0;
+
+    return { totalFazendas, totalArea, totalCulturas, progresso, validFields, totalFields };
+  }, [produtor, fieldStates]);
+
+  // 🎯 HANDLES DE FOCUS
+  const handleFocus = useCallback((fieldKey: string) => {
+    setFocusStates((prev) => ({ ...prev, [fieldKey]: true }));
+  }, []);
+
+  const handleBlur = useCallback((fieldKey: string) => {
+    setFocusStates((prev) => ({ ...prev, [fieldKey]: false }));
+  }, []);
 
   // 🏭 ADICIONAR NOVA FAZENDA
   const addFazenda = useCallback(() => {
@@ -276,17 +461,21 @@ export const AddFarmer = () => {
     // Validações
     const newErrors: string[] = [];
 
-    if (!produtor.nome.trim()) newErrors.push('Nome do produtor é obrigatório');
-    if (!validateDocument(produtor.documento)) newErrors.push('CPF/CNPJ inválido');
+    if (!fieldStates.nomeValid) newErrors.push('Nome do produtor deve ter pelo menos 3 caracteres');
+    if (!fieldStates.documentoValid) newErrors.push('CPF/CNPJ inválido');
     if (produtor.fazendas.length === 0) newErrors.push('Adicione pelo menos uma fazenda');
 
     produtor.fazendas.forEach((fazenda, index) => {
-      if (!fazenda.nome.trim()) newErrors.push(`Nome da fazenda ${index + 1} é obrigatório`);
-      if (!fazenda.cidade.trim()) newErrors.push(`Cidade da fazenda ${index + 1} é obrigatória`);
-      if (!fazenda.estado) newErrors.push(`Estado da fazenda ${index + 1} é obrigatório`);
-      if (fazenda.areaTotal <= 0)
+      const fazendaState = fieldStates.fazendasValid[fazenda.id];
+      if (!fazendaState?.nomeValid)
+        newErrors.push(`Nome da fazenda ${index + 1} deve ter pelo menos 3 caracteres`);
+      if (!fazendaState?.cidadeValid)
+        newErrors.push(`Cidade da fazenda ${index + 1} deve ter pelo menos 2 caracteres`);
+      if (!fazendaState?.estadoValid)
+        newErrors.push(`Estado da fazenda ${index + 1} é obrigatório`);
+      if (!fazendaState?.areaTotalValid)
         newErrors.push(`Área total da fazenda ${index + 1} deve ser maior que 0`);
-      if (!validateAreas(fazenda)) {
+      if (!fazendaState?.areasBalanceadas) {
         newErrors.push(`Soma das áreas da fazenda ${index + 1} não pode exceder a área total`);
       }
     });
@@ -303,6 +492,10 @@ export const AddFarmer = () => {
 
       setShowSuccess(true);
       setProdutor({ nome: '', documento: '', fazendas: [] });
+      setFocusStates({});
+
+      // Limpar localStorage
+      localStorage.removeItem('addFarmer_draft');
 
       // Scroll para o topo
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -313,7 +506,7 @@ export const AddFarmer = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [produtor, validateAreas]);
+  }, [produtor, fieldStates]);
 
   // 💾 SALVAR RASCUNHO
   const saveDraft = useCallback(() => {
@@ -387,10 +580,12 @@ export const AddFarmer = () => {
               </AnimatedCounter>
             </div>
 
-            {/* 📈 BARRA DE PROGRESSO */}
+            {/* 📈 BARRA DE PROGRESSO DINÂMICA */}
             <ProgressBar>
               <ProgressFill progress={stats.progresso} />
-              <span>{stats.progresso}% Completo</span>
+              <span>
+                {stats.progresso}% Completo ({stats.validFields}/{stats.totalFields} campos)
+              </span>
             </ProgressBar>
           </HeroSection>
 
@@ -401,35 +596,72 @@ export const AddFarmer = () => {
 
               <FormGrid>
                 <InputGroup>
-                  <FloatingLabel isDark={isDark} active={!!produtor.nome}>
+                  <FloatingLabel
+                    isDark={isDark}
+                    active={!!produtor.nome || focusStates['produtor-nome']}
+                    valid={fieldStates.nomeValid}
+                  >
                     Nome Completo
                   </FloatingLabel>
                   <StyledInput
                     isDark={isDark}
                     type="text"
                     value={produtor.nome}
+                    valid={fieldStates.nomeValid}
                     onChange={(e) => setProdutor((prev) => ({ ...prev, nome: e.target.value }))}
+                    onFocus={() => handleFocus('produtor-nome')}
+                    onBlur={() => handleBlur('produtor-nome')}
                     placeholder=" "
                   />
                 </InputGroup>
 
                 <InputGroup>
-                  <FloatingLabel isDark={isDark} active={!!produtor.documento}>
+                  <FloatingLabel
+                    isDark={isDark}
+                    active={!!produtor.documento || focusStates['produtor-documento']}
+                    valid={!!produtor.documento && fieldStates.documentoValid}
+                  >
                     CPF/CNPJ
                   </FloatingLabel>
                   <StyledInput
                     isDark={isDark}
                     type="text"
                     value={formatDocument(produtor.documento)}
-                    onChange={(e) =>
+                    valid={!!produtor.documento && fieldStates.documentoValid}
+                    onChange={(e) => {
+                      // Remove tudo que não é número e limita a 14 dígitos
+                      const numbersOnly = e.target.value.replace(/\D/g, '').slice(0, 14);
                       setProdutor((prev) => ({
                         ...prev,
-                        documento: e.target.value.replace(/\D/g, ''),
-                      }))
-                    }
+                        documento: numbersOnly,
+                      }));
+                    }}
+                    onFocus={() => handleFocus('produtor-documento')}
+                    onBlur={() => handleBlur('produtor-documento')}
                     placeholder=" "
-                    maxLength={18}
                   />
+
+                  {/* 🎯 VALIDAÇÃO EM TEMPO REAL */}
+                  {produtor.documento && (
+                    <DocumentValidation isDark={isDark} isValid={fieldStates.documentoValid}>
+                      <span className="message">
+                        {fieldStates.documentoValid
+                          ? produtor.documento.replace(/\D/g, '').length === 11
+                            ? '✅ CPF válido!'
+                            : '✅ CNPJ válido!'
+                          : `❌ ${produtor.documento.replace(/\D/g, '').length <= 11 ? 'CPF' : 'CNPJ'} inválido. Verifique os dígitos.`}
+                      </span>
+                    </DocumentValidation>
+                  )}
+
+                  {/* 🎯 DICA QUANDO VAZIO */}
+                  {!produtor.documento && focusStates['produtor-documento'] && (
+                    <DocumentValidation isDark={isDark}>
+                      <span className="message">
+                        📝 Digite um CPF (11 dígitos) ou CNPJ (14 dígitos)
+                      </span>
+                    </DocumentValidation>
+                  )}
                 </InputGroup>
               </FormGrid>
             </FormCard>
@@ -452,254 +684,340 @@ export const AddFarmer = () => {
                 </Button>
               </div>
 
-              {produtor.fazendas.map((fazenda, fazendaIndex) => (
-                <FarmCard key={fazenda.id} isDark={isDark} data-farm-id={fazenda.id}>
-                  <FarmHeader>
-                    <FarmNumber isDark={isDark}>Fazenda #{fazendaIndex + 1}</FarmNumber>
-                    {produtor.fazendas.length > 1 && (
-                      <RemoveButton isDark={isDark} onClick={() => removeFazenda(fazenda.id)}>
-                        🗑️
-                      </RemoveButton>
+              {produtor.fazendas.map((fazenda, fazendaIndex) => {
+                const fazendaState = fieldStates.fazendasValid[fazenda.id];
+
+                return (
+                  <FarmCard key={fazenda.id} isDark={isDark} data-farm-id={fazenda.id}>
+                    <FarmHeader>
+                      <FarmNumber isDark={isDark}>Fazenda #{fazendaIndex + 1}</FarmNumber>
+                      {produtor.fazendas.length > 1 && (
+                        <RemoveButton isDark={isDark} onClick={() => removeFazenda(fazenda.id)}>
+                          🗑️
+                        </RemoveButton>
+                      )}
+                    </FarmHeader>
+
+                    {/* 🖼️ PREVIEW DA FAZENDA */}
+                    <FarmPreview isDark={isDark}>
+                      <PreviewImage
+                        src={farmImages[fazendaIndex % farmImages.length]}
+                        alt={`Fazenda ${fazendaIndex + 1}`}
+                      />
+                      <PreviewInfo>
+                        <h4>{fazenda.nome || `Fazenda ${fazendaIndex + 1}`}</h4>
+                        <p>
+                          📍 {fazenda.cidade || 'Cidade'}, {fazenda.estado || 'Estado'}
+                        </p>
+                        <p>📏 {fazenda.areaTotal.toLocaleString()} hectares</p>
+                      </PreviewInfo>
+                    </FarmPreview>
+
+                    <FormGrid>
+                      <InputGroup>
+                        <FloatingLabel
+                          isDark={isDark}
+                          active={!!fazenda.nome || focusStates[`fazenda-${fazenda.id}-nome`]}
+                          valid={fazendaState?.nomeValid}
+                        >
+                          Nome da Fazenda
+                        </FloatingLabel>
+                        <StyledInput
+                          isDark={isDark}
+                          type="text"
+                          value={fazenda.nome}
+                          valid={fazendaState?.nomeValid}
+                          onChange={(e) => updateFazenda(fazenda.id, 'nome', e.target.value)}
+                          onFocus={() => handleFocus(`fazenda-${fazenda.id}-nome`)}
+                          onBlur={() => handleBlur(`fazenda-${fazenda.id}-nome`)}
+                          placeholder=" "
+                        />
+                      </InputGroup>
+
+                      <InputGroup>
+                        <FloatingLabel
+                          isDark={isDark}
+                          active={!!fazenda.cidade || focusStates[`fazenda-${fazenda.id}-cidade`]}
+                          valid={fazendaState?.cidadeValid}
+                        >
+                          Cidade
+                        </FloatingLabel>
+                        <StyledInput
+                          isDark={isDark}
+                          type="text"
+                          value={fazenda.cidade}
+                          valid={fazendaState?.cidadeValid}
+                          onChange={(e) => updateFazenda(fazenda.id, 'cidade', e.target.value)}
+                          onFocus={() => handleFocus(`fazenda-${fazenda.id}-cidade`)}
+                          onBlur={() => handleBlur(`fazenda-${fazenda.id}-cidade`)}
+                          placeholder=" "
+                        />
+                      </InputGroup>
+
+                      <InputGroup>
+                        <FloatingLabel
+                          isDark={isDark}
+                          active={!!fazenda.estado || focusStates[`fazenda-${fazenda.id}-estado`]}
+                          valid={fazendaState?.estadoValid}
+                        >
+                          Estado
+                        </FloatingLabel>
+                        <StyledSelect
+                          isDark={isDark}
+                          value={fazenda.estado}
+                          valid={fazendaState?.estadoValid}
+                          onChange={(e) => updateFazenda(fazenda.id, 'estado', e.target.value)}
+                          onFocus={() => handleFocus(`fazenda-${fazenda.id}-estado`)}
+                          onBlur={() => handleBlur(`fazenda-${fazenda.id}-estado`)}
+                        >
+                          <option value="">Selecione</option>
+                          {estados.map((estado) => (
+                            <option key={estado} value={estado}>
+                              {estado}
+                            </option>
+                          ))}
+                        </StyledSelect>
+                      </InputGroup>
+
+                      <InputGroup>
+                        <FloatingLabel
+                          isDark={isDark}
+                          active={
+                            fazenda.areaTotal > 0 || focusStates[`fazenda-${fazenda.id}-areaTotal`]
+                          }
+                          valid={fazendaState?.areaTotalValid}
+                        >
+                          Área Total (hectares)
+                        </FloatingLabel>
+                        <StyledInput
+                          isDark={isDark}
+                          type="number"
+                          value={fazenda.areaTotal || ''}
+                          valid={fazendaState?.areaTotalValid}
+                          onChange={(e) =>
+                            updateFazenda(fazenda.id, 'areaTotal', Number(e.target.value))
+                          }
+                          onFocus={() => handleFocus(`fazenda-${fazenda.id}-areaTotal`)}
+                          onBlur={() => handleBlur(`fazenda-${fazenda.id}-areaTotal`)}
+                          placeholder=" "
+                          min="0"
+                          step="0.01"
+                        />
+                      </InputGroup>
+
+                      <InputGroup>
+                        <FloatingLabel
+                          isDark={isDark}
+                          active={
+                            fazenda.areaAgricultavel > 0 ||
+                            focusStates[`fazenda-${fazenda.id}-areaAgricultavel`]
+                          }
+                          valid={fazendaState?.areaAgricultavelValid}
+                        >
+                          Área Agricultável (hectares)
+                        </FloatingLabel>
+                        <StyledInput
+                          isDark={isDark}
+                          type="number"
+                          value={fazenda.areaAgricultavel || ''}
+                          valid={fazendaState?.areaAgricultavelValid}
+                          onChange={(e) =>
+                            updateFazenda(fazenda.id, 'areaAgricultavel', Number(e.target.value))
+                          }
+                          onFocus={() => handleFocus(`fazenda-${fazenda.id}-areaAgricultavel`)}
+                          onBlur={() => handleBlur(`fazenda-${fazenda.id}-areaAgricultavel`)}
+                          placeholder=" "
+                          min="0"
+                          step="0.01"
+                        />
+                      </InputGroup>
+
+                      <InputGroup>
+                        <FloatingLabel
+                          isDark={isDark}
+                          active={
+                            fazenda.areaVegetacao > 0 ||
+                            focusStates[`fazenda-${fazenda.id}-areaVegetacao`]
+                          }
+                          valid={fazendaState?.areaVegetacaoValid}
+                        >
+                          Área de Vegetação (hectares)
+                        </FloatingLabel>
+                        <StyledInput
+                          isDark={isDark}
+                          type="number"
+                          value={fazenda.areaVegetacao || ''}
+                          valid={fazendaState?.areaVegetacaoValid}
+                          onChange={(e) =>
+                            updateFazenda(fazenda.id, 'areaVegetacao', Number(e.target.value))
+                          }
+                          onFocus={() => handleFocus(`fazenda-${fazenda.id}-areaVegetacao`)}
+                          onBlur={() => handleBlur(`fazenda-${fazenda.id}-areaVegetacao`)}
+                          placeholder=" "
+                          min="0"
+                          step="0.01"
+                        />
+                      </InputGroup>
+                    </FormGrid>
+
+                    {/* ⚠️ VALIDAÇÃO DE ÁREAS */}
+                    {fazenda.areaTotal > 0 && !validateAreas(fazenda) && (
+                      <AreaValidation isDark={isDark}>
+                        ⚠️ A soma das áreas (
+                        {(fazenda.areaAgricultavel + fazenda.areaVegetacao).toLocaleString()} ha)
+                        não pode exceder a área total ({fazenda.areaTotal.toLocaleString()} ha)
+                      </AreaValidation>
                     )}
-                  </FarmHeader>
 
-                  {/* 🖼️ PREVIEW DA FAZENDA */}
-                  <FarmPreview isDark={isDark}>
-                    <PreviewImage
-                      src={farmImages[fazendaIndex % farmImages.length]}
-                      alt={`Fazenda ${fazendaIndex + 1}`}
-                    />
-                    <PreviewInfo>
-                      <h4>{fazenda.nome || `Fazenda ${fazendaIndex + 1}`}</h4>
-                      <p>
-                        📍 {fazenda.cidade || 'Cidade'}, {fazenda.estado || 'Estado'}
-                      </p>
-                      <p>📏 {fazenda.areaTotal.toLocaleString()} hectares</p>
-                    </PreviewInfo>
-                  </FarmPreview>
-
-                  <FormGrid>
-                    <InputGroup>
-                      <FloatingLabel isDark={isDark} active={!!fazenda.nome}>
-                        Nome da Fazenda
-                      </FloatingLabel>
-                      <StyledInput
-                        isDark={isDark}
-                        type="text"
-                        value={fazenda.nome}
-                        onChange={(e) => updateFazenda(fazenda.id, 'nome', e.target.value)}
-                        placeholder=" "
-                      />
-                    </InputGroup>
-
-                    <InputGroup>
-                      <FloatingLabel isDark={isDark} active={!!fazenda.cidade}>
-                        Cidade
-                      </FloatingLabel>
-                      <StyledInput
-                        isDark={isDark}
-                        type="text"
-                        value={fazenda.cidade}
-                        onChange={(e) => updateFazenda(fazenda.id, 'cidade', e.target.value)}
-                        placeholder=" "
-                      />
-                    </InputGroup>
-
-                    <InputGroup>
-                      <FloatingLabel isDark={isDark} active={!!fazenda.estado}>
-                        Estado
-                      </FloatingLabel>
-                      <StyledSelect
-                        isDark={isDark}
-                        value={fazenda.estado}
-                        onChange={(e) => updateFazenda(fazenda.id, 'estado', e.target.value)}
-                      >
-                        {estados.map((estado) => (
-                          <option key={estado} value={estado}>
-                            {estado}
-                          </option>
-                        ))}
-                      </StyledSelect>
-                    </InputGroup>
-
-                    <InputGroup>
-                      <FloatingLabel isDark={isDark} active={fazenda.areaTotal > 0}>
-                        Área Total (hectares)
-                      </FloatingLabel>
-                      <StyledInput
-                        isDark={isDark}
-                        type="number"
-                        value={fazenda.areaTotal || ''}
-                        onChange={(e) =>
-                          updateFazenda(fazenda.id, 'areaTotal', Number(e.target.value))
-                        }
-                        placeholder=" "
-                        min="0"
-                        step="0.01"
-                      />
-                    </InputGroup>
-
-                    <InputGroup>
-                      <FloatingLabel isDark={isDark} active={fazenda.areaAgricultavel > 0}>
-                        Área Agricultável (hectares)
-                      </FloatingLabel>
-                      <StyledInput
-                        isDark={isDark}
-                        type="number"
-                        value={fazenda.areaAgricultavel || ''}
-                        onChange={(e) =>
-                          updateFazenda(fazenda.id, 'areaAgricultavel', Number(e.target.value))
-                        }
-                        placeholder=" "
-                        min="0"
-                        step="0.01"
-                      />
-                    </InputGroup>
-
-                    <InputGroup>
-                      <FloatingLabel isDark={isDark} active={fazenda.areaVegetacao > 0}>
-                        Área de Vegetação (hectares)
-                      </FloatingLabel>
-                      <StyledInput
-                        isDark={isDark}
-                        type="number"
-                        value={fazenda.areaVegetacao || ''}
-                        onChange={(e) =>
-                          updateFazenda(fazenda.id, 'areaVegetacao', Number(e.target.value))
-                        }
-                        placeholder=" "
-                        min="0"
-                        step="0.01"
-                      />
-                    </InputGroup>
-                  </FormGrid>
-
-                  {/* ⚠️ VALIDAÇÃO DE ÁREAS */}
-                  {fazenda.areaTotal > 0 && !validateAreas(fazenda) && (
-                    <AreaValidation isDark={isDark}>
-                      ⚠️ A soma das áreas (
-                      {(fazenda.areaAgricultavel + fazenda.areaVegetacao).toLocaleString()} ha) não
-                      pode exceder a área total ({fazenda.areaTotal.toLocaleString()} ha)
-                    </AreaValidation>
-                  )}
-
-                  {/* 🌱 CULTURAS DA FAZENDA */}
-                  <div style={{ marginTop: '2rem' }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '1rem',
-                      }}
-                    >
-                      <h4
+                    {/* 🌱 CULTURAS DA FAZENDA */}
+                    <div style={{ marginTop: '2rem' }}>
+                      <div
                         style={{
-                          color: isDark ? '#fff' : '#2c3e50',
-                          margin: 0,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginBottom: '1rem',
                         }}
                       >
-                        🌱 Culturas ({fazenda.culturas.length})
-                      </h4>
-                      <Button
-                        isDark={isDark}
-                        onClick={() => addCultura(fazenda.id)}
-                        style={{ fontSize: '0.9rem', padding: '8px 16px' }}
-                      >
-                        ➕ Adicionar Cultura
-                      </Button>
-                    </div>
-
-                    {fazenda.culturas.map((cultura, culturaIndex) => (
-                      <CulturaCard key={cultura.id} isDark={isDark}>
-                        <div
+                        <h4
                           style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: '1rem',
+                            color: isDark ? '#fff' : '#2c3e50',
+                            margin: 0,
                           }}
                         >
-                          <span
-                            style={{
-                              color: isDark ? '#37cb83' : '#27ae60',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            Cultura #{culturaIndex + 1}
-                          </span>
-                          <RemoveButton
-                            isDark={isDark}
-                            onClick={() => removeCultura(fazenda.id, cultura.id)}
-                            style={{ fontSize: '0.8rem', padding: '4px 8px' }}
-                          >
-                            🗑️
-                          </RemoveButton>
-                        </div>
+                          🌱 Culturas ({fazenda.culturas.length})
+                        </h4>
+                        <Button
+                          isDark={isDark}
+                          onClick={() => addCultura(fazenda.id)}
+                          style={{ fontSize: '0.9rem', padding: '8px 16px' }}
+                        >
+                          ➕ Adicionar Cultura
+                        </Button>
+                      </div>
 
-                        <FormGrid style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
-                          <InputGroup>
-                            <FloatingLabel isDark={isDark} active={!!cultura.tipo}>
-                              Tipo de Cultura
-                            </FloatingLabel>
-                            <StyledSelect
-                              isDark={isDark}
-                              value={cultura.tipo}
-                              onChange={(e) =>
-                                updateCultura(fazenda.id, cultura.id, 'tipo', e.target.value)
-                              }
+                      {fazenda.culturas.map((cultura, culturaIndex) => {
+                        const culturaState = fazendaState?.culturasValid[cultura.id];
+
+                        return (
+                          <CulturaCard key={cultura.id} isDark={isDark}>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: '1rem',
+                              }}
                             >
-                              <option value="">Selecione</option>
-                              {tiposCulturas.map((tipo) => (
-                                <option key={tipo} value={tipo}>
-                                  {tipo}
-                                </option>
-                              ))}
-                            </StyledSelect>
-                          </InputGroup>
+                              <span
+                                style={{
+                                  color: isDark ? '#37cb83' : '#27ae60',
+                                  fontWeight: 'bold',
+                                }}
+                              >
+                                Cultura #{culturaIndex + 1}
+                              </span>
+                              <RemoveButton
+                                isDark={isDark}
+                                onClick={() => removeCultura(fazenda.id, cultura.id)}
+                                style={{ fontSize: '0.8rem', padding: '4px 8px' }}
+                              >
+                                🗑️
+                              </RemoveButton>
+                            </div>
 
-                          <InputGroup>
-                            <FloatingLabel isDark={isDark} active={cultura.area > 0}>
-                              Área (hectares)
-                            </FloatingLabel>
-                            <StyledInput
-                              isDark={isDark}
-                              type="number"
-                              value={cultura.area || ''}
-                              onChange={(e) =>
-                                updateCultura(
-                                  fazenda.id,
-                                  cultura.id,
-                                  'area',
-                                  Number(e.target.value),
-                                )
-                              }
-                              placeholder=" "
-                              min="0"
-                              step="0.01"
-                            />
-                          </InputGroup>
+                            <FormGrid style={{ gridTemplateColumns: '1fr 1fr 1fr' }}>
+                              <InputGroup>
+                                <FloatingLabel
+                                  isDark={isDark}
+                                  active={
+                                    !!cultura.tipo || focusStates[`cultura-${cultura.id}-tipo`]
+                                  }
+                                  valid={culturaState?.tipoValid}
+                                >
+                                  Tipo de Cultura
+                                </FloatingLabel>
+                                <StyledSelect
+                                  isDark={isDark}
+                                  value={cultura.tipo}
+                                  valid={culturaState?.tipoValid}
+                                  onChange={(e) =>
+                                    updateCultura(fazenda.id, cultura.id, 'tipo', e.target.value)
+                                  }
+                                  onFocus={() => handleFocus(`cultura-${cultura.id}-tipo`)}
+                                  onBlur={() => handleBlur(`cultura-${cultura.id}-tipo`)}
+                                >
+                                  <option value="">Selecione</option>
+                                  {tiposCulturas.map((tipo) => (
+                                    <option key={tipo} value={tipo}>
+                                      {tipo}
+                                    </option>
+                                  ))}
+                                </StyledSelect>
+                              </InputGroup>
 
-                          <InputGroup>
-                            <FloatingLabel isDark={isDark} active={!!cultura.safra}>
-                              Safra
-                            </FloatingLabel>
-                            <StyledInput
-                              isDark={isDark}
-                              type="text"
-                              value={cultura.safra}
-                              onChange={(e) =>
-                                updateCultura(fazenda.id, cultura.id, 'safra', e.target.value)
-                              }
-                              placeholder=" "
-                            />
-                          </InputGroup>
-                        </FormGrid>
-                      </CulturaCard>
-                    ))}
-                  </div>
-                </FarmCard>
-              ))}
+                              <InputGroup>
+                                <FloatingLabel
+                                  isDark={isDark}
+                                  active={
+                                    cultura.area > 0 || focusStates[`cultura-${cultura.id}-area`]
+                                  }
+                                  valid={culturaState?.areaValid}
+                                >
+                                  Área (hectares)
+                                </FloatingLabel>
+                                <StyledInput
+                                  isDark={isDark}
+                                  type="number"
+                                  value={cultura.area || ''}
+                                  valid={culturaState?.areaValid}
+                                  onChange={(e) =>
+                                    updateCultura(
+                                      fazenda.id,
+                                      cultura.id,
+                                      'area',
+                                      Number(e.target.value),
+                                    )
+                                  }
+                                  onFocus={() => handleFocus(`cultura-${cultura.id}-area`)}
+                                  onBlur={() => handleBlur(`cultura-${cultura.id}-area`)}
+                                  placeholder=" "
+                                  min="0"
+                                  step="0.01"
+                                />
+                              </InputGroup>
+
+                              <InputGroup>
+                                <FloatingLabel
+                                  isDark={isDark}
+                                  active={
+                                    !!cultura.safra || focusStates[`cultura-${cultura.id}-safra`]
+                                  }
+                                  valid={culturaState?.safraValid}
+                                >
+                                  Safra
+                                </FloatingLabel>
+                                <StyledInput
+                                  isDark={isDark}
+                                  type="text"
+                                  value={cultura.safra}
+                                  valid={culturaState?.safraValid}
+                                  onChange={(e) =>
+                                    updateCultura(fazenda.id, cultura.id, 'safra', e.target.value)
+                                  }
+                                  onFocus={() => handleFocus(`cultura-${cultura.id}-safra`)}
+                                  onBlur={() => handleBlur(`cultura-${cultura.id}-safra`)}
+                                  placeholder=" "
+                                />
+                              </InputGroup>
+                            </FormGrid>
+                          </CulturaCard>
+                        );
+                      })}
+                    </div>
+                  </FarmCard>
+                );
+              })}
             </FormCard>
 
             {/* 🎯 AÇÕES DO FORMULÁRIO */}
@@ -717,22 +1035,23 @@ export const AddFarmer = () => {
                 }}
                 isDark={isDark}
                 onClick={handleSubmit}
-                disabled={isLoading}
+                disabled={isLoading || stats.progresso < 100}
               >
                 {isLoading ? (
                   <>
                     <LoadingSpinner />
                     Salvando...
                   </>
-                ) : (
+                ) : stats.progresso === 100 ? (
                   '✅ Cadastrar Produtor'
+                ) : (
+                  `📋 Complete o formulário (${stats.progresso}%)`
                 )}
               </Button>
             </FormActions>
           </FormSection>
         </FormContainer>
       </div>
-      {/* 🎉 ALERT DE SUCESSO */}
     </>
   );
 };
