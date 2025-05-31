@@ -6,6 +6,32 @@
   font-display: swap;
 }
 
+/* Scrollbar para todos os elementos */
+* {
+  scrollbar-width: auto; /* Firefox: grossa */
+  scrollbar-color: #37cb83 rgba(255, 255, 255, 0.1);
+}
+
+/* Webkit browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+  width: 18px; /* Mais grossa */
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #37cb83, #27ae60);
+  border-radius: 7px;
+  transition: background 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #27ae60, #37cb83);
+}
+
 :root,
 html,
 body,
