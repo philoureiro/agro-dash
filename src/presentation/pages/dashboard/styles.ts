@@ -216,61 +216,6 @@ export const ExportContainer = styled.div`
   }
 `;
 
-export const ExportButton = styled.button<{ isDark?: boolean; disabled?: boolean }>`
-  background: ${({ isDark, disabled }) =>
-    disabled
-      ? isDark
-        ? '#2a3d32'
-        : '#e0e0e0'
-      : isDark
-        ? 'linear-gradient(135deg, #37cb83 0%, #2f9469 100%)'
-        : 'linear-gradient(135deg, #37cb83 0%, #5ad0ff 100%)'};
-  color: ${({ isDark, disabled }) => (disabled ? (isDark ? '#6b7280' : '#9ca3af') : '#fff')};
-  border: none;
-  border-radius: 12px;
-  padding: 12px 20px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: ${({ disabled }) => (disabled ? 'none' : '0 4px 15px rgba(55, 203, 131, 0.3)')};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  &:hover:not(:disabled) {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(55, 203, 131, 0.4);
-
-    &:before {
-      left: 100%;
-    }
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0) scale(0.98);
-  }
-
-  @media (max-width: 600px) {
-    padding: 10px 16px;
-    font-size: 12px;
-    border-radius: 10px;
-  }
-`;
-
 export const LoadingOverlay = styled.div`
   position: fixed;
   top: 0;

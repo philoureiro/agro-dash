@@ -1,39 +1,38 @@
-import React from "react"
-import { ZapidinhoButton, LoaderWrapper, ZapidinhoSpinner } from "./styles"
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  text: string
-  onClick?: () => void
-  isLoading?: boolean
-  style?: React.CSSProperties
+import { ButtonStyleProps, StyledButton } from './styles';
+
+export interface ExportButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    ButtonStyleProps {
+  children: ReactNode;
+  startIcon?: ReactNode;
+  endIcon?: ReactNode;
 }
 
-export const Button = ({
-  text,
-  onClick,
-  isLoading,
+export const Button: React.FC<ExportButtonProps> = ({
+  children,
+  isDark,
   disabled,
-  style,
+  gradient,
+  color,
+  size = 'normal',
+  startIcon,
+  endIcon,
   ...rest
-}: ButtonProps) => {
+}) => {
   return (
-    <ZapidinhoButton
-      type="button"
-      loading={isLoading}
-      className={isLoading ? "loading" : ""}
-      onClick={onClick}
-      disabled={disabled || isLoading}
-      style={style}
+    <StyledButton
+      isDark={isDark}
+      disabled={disabled}
+      gradient={gradient}
+      color={color}
+      size={size}
       {...rest}
     >
-      {isLoading ? (
-        <LoaderWrapper>
-          <ZapidinhoSpinner />
-          <span style={{ marginLeft: 12 }}>Enviando...</span>
-        </LoaderWrapper>
-      ) : (
-        text
-      )}
-    </ZapidinhoButton>
-  )
-}
+      {startIcon && <span style={{ display: 'flex', alignItems: 'center' }}>{startIcon}</span>}
+      {children}
+      {endIcon && <span style={{ display: 'flex', alignItems: 'center' }}>{endIcon}</span>}
+    </StyledButton>
+  );
+};

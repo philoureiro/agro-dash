@@ -354,7 +354,7 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
 
 export const ScrollToTop = styled.button<{ theme?: any }>`
   position: fixed;
-  bottom: 2rem;
+  bottom: 7rem;
   right: 2rem;
   width: 3rem;
   height: 3rem;

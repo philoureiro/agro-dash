@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { FullSizeCentered, Text } from '@components';
+import { Button, FullSizeCentered, Text } from '@components';
 import { useThemeMode } from '@theme';
 import { VictoryLegend, VictoryPie } from 'victory';
 
@@ -10,7 +10,6 @@ import {
   ChartCard,
   ChartTitle,
   ChartsGrid,
-  ExportButton,
   ExportContainer,
   Grid,
   KpiTitle,
@@ -146,14 +145,14 @@ export const Dashboard = () => {
           {/* 🚫 CONTAINER COM DATA-EXPORT-CONTAINER */}
           <ExportContainer data-export-container="true">
             {/* 🚫 BOTÃO COM DATA-EXPORT-BUTTON */}
-            <ExportButton
+            <Button
               data-export-button="true"
               onClick={handleExportPDF}
               disabled={isExporting}
               isDark={isDark}
             >
               {isExporting ? '📄 Gerando...' : '📊 Exportar PDF'}
-            </ExportButton>
+            </Button>
           </ExportContainer>
         </div>
 
