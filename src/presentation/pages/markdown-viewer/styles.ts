@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const DocsContainer = styled.div<{ theme?: any }>`
   margin-top: 30px;
+  margin-bottom: 100px;
 
   min-height: 100vh;
   background: ${({ theme }) => theme.palette.background.default};
@@ -198,21 +199,26 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
 
   /* Code blocks */
   pre {
-    background: ${({ theme }) => (theme.palette.mode === 'dark' ? '#1e1e1e' : '#f6f8fa')};
-    border: 1px solid ${({ theme }) => theme.palette.divider};
+    background: ${({ theme }) => (theme.palette.mode === 'dark' ? '#1e1e1e' : '#e0e5eb')};
+    /*     cor no dark            cor mais escura no light  ↑    */
+    border: 1px solid ${({ theme }) => (theme.palette.mode === 'dark' ? '#333' : '#d3d9de')};
     border-radius: 8px;
     padding: 1.5rem;
     overflow-x: auto;
     margin: 1.5rem 0;
     font-family: 'Fira Code', Consolas, 'Courier New', monospace;
-    font-size: 0.9rem;
+    font-size: 0.96rem;
     line-height: 1.5;
 
+    color: ${({ theme }) =>
+      theme.palette.mode === 'dark' ? '#cdd9e5' : '#24324d'}; /* texto dark/light */
+    /* Tweak: no tema claro, texto mais escuro para contraste */
     code {
       background: none;
       padding: 0;
       border: none;
       border-radius: 0;
+      color: inherit;
     }
 
     @media (max-width: 768px) {
@@ -224,12 +230,12 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
 
   /* Inline code */
   code {
-    background: ${({ theme }) => (theme.palette.mode === 'dark' ? '#2d2d2d' : '#f1f3f4')};
-    color: ${({ theme }) => theme.palette.primary.main};
+    background: ${({ theme }) => (theme.palette.mode === 'dark' ? '#2d2d2d' : '#f3f5f7')};
+    color: ${({ theme }) => (theme.palette.mode === 'dark' ? '#98fb98' : '#18781c')};
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
     font-family: 'Fira Code', Consolas, 'Courier New', monospace;
-    font-size: 0.9em;
+    font-size: 0.98em;
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
