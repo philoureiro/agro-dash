@@ -170,4 +170,6 @@ export const ChartTitle = styled.span<{ theme: DefaultTheme }>`
   margin-bottom: 1.2rem;
   letter-spacing: 0.02em;
   align-self: flex-start;
+  margin-left: 15px;
+  margin-top: 15px;
 `;

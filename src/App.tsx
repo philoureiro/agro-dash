@@ -8,6 +8,7 @@ import { AppErrorBoundaryFallback, BottomBar, InstallBanner, WithErrorHandler } 
 import { Header } from '@sections';
 import { useThemeMode } from '@theme';
 
+import './global.css';
 import { AppRoutes } from './presentation/routes';
 
 function App() {

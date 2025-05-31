@@ -1,0 +1,14 @@
+:root,
+html,
+body,
+#root,
+.MuiTypography-root,
+.MuiButton-root,
+.MuiInputBase-input,
+.MuiTableCell-root,
+.MuiTab-root,
+.MuiListItemText-root,
+.MuiMenuItem-root,
+[class^='Mui'] {
+  font-family: 'Nunito', Arial, Helvetica, sans-serif !important;
+}
