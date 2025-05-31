@@ -112,7 +112,7 @@ export const Dashboard = () => {
               colorScale={COLORS}
               innerRadius={chartHeight / 2.7}
               animate={{
-                duration: 1000,
+                duration: 2000,
                 easing: 'bounce',
               }}
               style={pieStyle}
@@ -143,7 +143,7 @@ export const Dashboard = () => {
               colorScale={COLORS}
               innerRadius={chartHeight / 2.7}
               animate={{
-                duration: 1000,
+                duration: 2000,
                 easing: 'bounce',
               }}
               style={pieStyle}
@@ -174,7 +174,7 @@ export const Dashboard = () => {
               colorScale={COLORS}
               innerRadius={chartHeight / 2.7}
               animate={{
-                duration: 1000,
+                duration: 2000,
                 easing: 'bounce',
               }}
               style={pieStyle}
