@@ -275,17 +275,19 @@ export const FormSection = styled.div`
 `;
 
 export const FormCard = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(35, 39, 47, 0.9)' : 'rgba(255, 255, 255, 0.9)')};
+  /* background: ${({ isDark }) =>
+    isDark ? 'rgba(35, 39, 47, 0.9)' : 'rgba(255, 255, 255, 0.9)'}; */
   backdrop-filter: blur(20px);
   border-radius: 20px;
-  border: ${({ isDark }) =>
-    isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)'};
-  box-shadow: ${({ isDark }) =>
-    isDark ? '0 20px 40px rgba(0, 0, 0, 0.4)' : '0 20px 40px rgba(0, 0, 0, 0.08)'};
+  /* border: ${({ isDark }) =>
+    isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0, 0, 0, 0.05)'}; */
+  /* box-shadow: ${({ isDark }) =>
+    isDark ? '0 20px 40px rgba(0, 0, 0, 0.4)' : '0 20px 40px rgba(0, 0, 0, 0.08)'}; */
   animation: ${fadeInUp} 0.8s ease-out;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  padding: 5px;
 
   &:before {
     content: '';
@@ -304,10 +306,10 @@ export const FormCard = styled.div<{ isDark: boolean }>`
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: ${({ isDark }) =>
+    /* box-shadow: ${({ isDark }) =>
       isDark
         ? '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(55, 203, 131, 0.2)'
-        : '0 25px 50px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(55, 203, 131, 0.1)'};
+        : '0 25px 50px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(55, 203, 131, 0.1)'}; */
   }
 `;
 
@@ -344,6 +346,8 @@ export const FormGrid = styled.div`
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+
+  padding: 5px;
 `;
 
 // 🎯 GRUPO DE INPUT
@@ -443,7 +447,8 @@ export const StyledSelect = styled.select<{ isDark: boolean }>`
 
 // 🏭 CARD DA FAZENDA
 export const FarmCard = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(26, 35, 50, 0.8)' : 'rgba(248, 250, 252, 0.8)')};
+  /* background: ${({ isDark }) =>
+    isDark ? 'rgba(26, 35, 50, 0.8)' : 'rgba(248, 250, 252, 0.8)'}; */
   border-radius: 16px;
   padding: 2rem;
   border: ${({ isDark }) =>
@@ -464,13 +469,6 @@ export const FarmCard = styled.div<{ isDark: boolean }>`
     height: 4px;
     background: linear-gradient(90deg, #37cb83, #27ae60);
     border-radius: 16px 16px 0 0;
-  }
-
-  &:hover {
-    transform: translateX(5px);
-    border-color: ${({ isDark }) => (isDark ? '#37cb83' : '#27ae60')};
-    box-shadow: ${({ isDark }) =>
-      isDark ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 15px 30px rgba(0, 0, 0, 0.1)'};
   }
 `;
 
@@ -699,6 +697,9 @@ export const SaveDraftButton = styled.button<{ isDark: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+
+  font-size: 12px;
+  max-width: 350px;
 
   &:hover {
     background: ${({ isDark }) => (isDark ? '#5ad0ff' : '#3b82f6')};

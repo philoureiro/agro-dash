@@ -710,7 +710,10 @@ export const AddFarmer = () => {
 
               <Button
                 style={{
-                  fontSize: 30,
+                  fontSize: 20,
+                  width: '350px',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
                 isDark={isDark}
                 onClick={handleSubmit}
