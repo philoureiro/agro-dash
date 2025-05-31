@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 
 import { FullSizeCentered } from '@components';
 
-export default function Dashboard() {
+export const Dashboard = () => {
   return (
     <>
       <meta name="title" content="Dashboard" />
@@ -11,4 +11,4 @@ export default function Dashboard() {
       </FullSizeCentered>
     </>
   );
-}
+};

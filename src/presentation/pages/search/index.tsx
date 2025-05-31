@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 
 import { FullSizeCentered } from '@components';
 
-export default function Search() {
+export const Search = () => {
   return (
     <>
       <meta name="title" content="Search Farmer" />
@@ -11,4 +11,4 @@ export default function Search() {
       </FullSizeCentered>
     </>
   );
-}
+};

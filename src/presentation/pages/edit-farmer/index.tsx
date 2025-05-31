@@ -4,7 +4,7 @@ import { Button, Typography } from '@mui/material';
 
 import { FullSizeCentered } from '@components';
 
-export default function EditFarmer() {
+export const EditFarmer = () => {
   return (
     <>
       <meta
@@ -27,4 +27,4 @@ export default function EditFarmer() {
       </FullSizeCentered>
     </>
   );
-}
+};

@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 
 import { FullSizeCentered } from '@components';
 
-export default function AddFarmer() {
+export const AddFarmer = () => {
   return (
     <>
       <meta name="title" content="Add farmer" />
@@ -11,4 +11,4 @@ export default function AddFarmer() {
       </FullSizeCentered>
     </>
   );
-}
+};

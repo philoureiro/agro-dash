@@ -1,9 +1,7 @@
 // src/routes.tsx
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Dashboard, EditFarmer, Search } from '@pages';
-
-import AddFarmer from '../pages/add-farmer';
+import { AddFarmer, Dashboard, EditFarmer, Search } from '@pages';
 
 export const AppRoutes = () => (
   <Routes>
