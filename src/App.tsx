@@ -5,8 +5,7 @@ import { CssBaseline } from '@mui/material';
 
 import { AppErrorBoundaryFallback, BottomBar, WithErrorHandler } from '@components';
 import { Header } from '@sections';
-
-import { useThemeMode } from './presentation/theme/hooks';
+import { useThemeMode } from '@theme';
 
 function App() {
   const { themeModeString } = useThemeMode();

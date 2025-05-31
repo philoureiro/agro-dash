@@ -1,8 +1,7 @@
-import { welcome } from './application/utils/welcome';
-
 // `root` contains the main dependencies and providers of the base app
 //  - React, ReactDom, Jotai, ThemeProvider, etc.)
 // App contains the main structure of the base app
+import { welcome } from '@utils';
 
 // These are the two main chunks that are used to render the core structure of the app
 // Importing them with Promise.all (by using HTTP/2/3 multiplexing) we can load them in parallel
