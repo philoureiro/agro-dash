@@ -72,9 +72,9 @@ export const Dashboard = () => {
       fill: isDark ? '#fff' : '#333',
       fontWeight: 700,
       fontFamily: 'inherit',
-      fontSize: chartHeight < 180 ? 5 : 6,
+      fontSize: 5,
       filter: 'none',
-      padding: 7,
+      padding: 3,
     },
   };
 
@@ -88,6 +88,7 @@ export const Dashboard = () => {
         }}
       >
         <Text
+          weight="bold"
           variant="h3"
           style={{
             marginBottom: 20,

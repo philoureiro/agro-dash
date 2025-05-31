@@ -1,11 +1,24 @@
 import React from 'react';
 
-import { Typography, TypographyProps } from '@mui/material';
+import { TypographyProps } from '@mui/material';
+
+import { StyledText, WeightType } from './styles';
 
 type TextProps = TypographyProps & {
   children: React.ReactNode;
+  weight?: WeightType; // 'regular' | 'bold' | 'thin'
+  italic?: boolean;
 };
 
-export const Text: React.FC<TextProps> = ({ children, ...props }) => {
-  return <Typography {...props}>{children}</Typography>;
+export const Text: React.FC<TextProps> = ({
+  children,
+  weight = 'regular',
+  italic = false,
+  ...props
+}) => {
+  return (
+    <StyledText $weight={weight} $italic={italic} {...props}>
+      {children}
+    </StyledText>
+  );
 };
