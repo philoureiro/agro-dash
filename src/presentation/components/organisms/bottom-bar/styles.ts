@@ -16,8 +16,8 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   height: 70px;
   padding: 0.7rem 0;
 
-  /* Safe area para iPhone - só quando necessário */
-  padding-bottom: max(0.7rem, env(safe-area-inset-bottom));
+  /* Remover completamente safe area */
+  padding-bottom: 0.7rem;
 
   background: ${({ themeMode }) =>
     themeMode === 'dark'
@@ -66,22 +66,21 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   /* Mobile responsivo (site normal) */
   @media (max-width: 540px) {
     padding: 0.35rem 0;
-    padding-bottom: max(0.35rem, env(safe-area-inset-bottom));
+    padding-bottom: 0.35rem; /* SEM safe area */
   }
 
   /* PWA standalone mode */
   @media (display-mode: standalone) {
-    /* PWA Desktop/Windows - qualquer tamanho */
+    /* PWA Desktop/Windows */
     height: 60px;
     padding: 0.4rem 0;
-    padding-bottom: max(0.4rem, env(safe-area-inset-bottom));
+    padding-bottom: 0.4rem; /* SEM safe area */
 
-    /* PWA Mobile iOS específico - MENOS padding extra */
+    /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
         padding: 1.2rem 0;
-        /* Reduzir o padding bottom extra */
-        padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
+        padding-bottom: 1.2rem; /* SEM safe area extra */
         height: 95px;
       }
     }
@@ -141,7 +140,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
 
   /* Ajustes para iOS browser (não PWA) */
   @supports (-webkit-touch-callout: none) {
-    margin-top: 18px;
+    margin-top: -8px;
     margin-bottom: 8px;
     font-size: 1.6rem;
   }
