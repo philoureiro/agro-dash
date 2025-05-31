@@ -1,6 +1,8 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
+import DocsIcon from '@mui/icons-material/MenuBook';
 
+// Ícone de documentação
 import { repository, title } from '@config';
 import { useThemeMode } from '@theme';
 import { useNotifications } from '@toolpad/core/useNotifications';
@@ -35,6 +37,10 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
     });
   }
 
+  function handleDocsClick() {
+    window.location.href = '/docs';
+  }
+
   return (
     <GlassHeader themeMode={currentTheme} data-pw={`theme-${currentTheme}`}>
       <HeaderContent>
@@ -45,6 +51,14 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
         </LeftSection>
 
         <RightSection>
+          <Divider themeMode={currentTheme} />
+
+          <Tooltip data-tooltip="Docs">
+            <ActionButton onClick={handleDocsClick} themeMode={currentTheme} data-pw="docs-button">
+              <DocsIcon />
+            </ActionButton>
+          </Tooltip>
+
           <Divider themeMode={currentTheme} />
 
           <Tooltip data-tooltip="It's open source">

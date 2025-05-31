@@ -1,243 +1,500 @@
-# React-PWA v3 🚀🎉⚡️
+# 🚜 AgroDash - Plano de Desenvolvimento Frontend (Brain Agriculture)
 
-[![Analyses](https://github.com/suren-atoyan/react-pwa/actions/workflows/analyses.yml/badge.svg)](https://github.com/suren-atoyan/react-pwa/actions/workflows/analyses.yml)
-[![E2E Tests](https://github.com/suren-atoyan/react-pwa/actions/workflows/tests:e2e.yml/badge.svg)](https://github.com/suren-atoyan/react-pwa/actions/workflows/tests:e2e.yml)
+![Status](https://img.shields.io/badge/Status-Pronto-brightgreen)
+![React](https://img.shields.io/badge/React-18+-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
+![Redux](https://img.shields.io/badge/Redux%20Toolkit-Latest-purple)
 
-<a href="http://react-pwa.surenatoyan.com/" target="_blank" rel="noreferrer">
- <img src="./public/cover.png" title="React-PWA Starter Kit" alt="React-PWA cover image">
-</a>
+---
 
-## 🌟 Overview
+## 📋 Índice
 
-**React-PWA** is an opinionated starter kit for building Progressive Web Applications with React. Designed to streamline development, it combines essential libraries, components, utilities, and developer tools to accelerate your workflow.
+- [🎯 Visão Geral do Projeto](#-visão-geral-do-projeto)
+- [🛠️ Stack Tecnológica](#️-stack-tecnológica)
+- [🏛️ Arquitetura](#️-arquitetura)
+- [✨ Features por Tela](#-features-por-tela)
+- [📊 Requisitos de Negócio](#-requisitos-de-negócio)
+- [🧪 Estratégia de Testes](#-estratégia-de-testes)
+- [📁 Estrutura do Projeto](#-estrutura-do-projeto)
+- [🚀 Como Executar](#-como-executar)
+- [📈 Roadmap](#-roadmap)
 
-## 💡 Motivation
+---
 
-Building a modern web application requires a robust setup, including routing, UI components, theming, error handling, a structured file system, testing tools, and performance optimizations. **React-PWA** provides a production-ready, minimal, and efficient environment for developers to focus on creating great applications.
+## 🎯 Visão Geral do Projeto
 
-## ✨ Tech Stack & Features
+A **AgroDash** é uma aplicação web robusta para o gerenciamento completo de **produtores rurais**, desenvolvida como parte do teste técnico da **Brain Agriculture**. O sistema permite:
+
+- 🌾 **Gestão de Produtores**: Cadastro, edição e exclusão de produtores rurais
+- 🏡 **Gestão de Fazendas**: Controle de propriedades rurais e suas características
+- 🌱 **Gestão de Culturas**: Registro de culturas plantadas por safra
+- 📊 **Dashboard Analítico**: Visualização de dados consolidados e KPIs
+- ✅ **Validações Inteligentes**: CPF/CNPJ, áreas de plantio e regras de negócio
+
+> **Objetivo**: Criar uma solução escalável, mantível e testável que atenda 100% dos requisitos do teste técnico.
+
+---
+
+## 🛠️ Stack Tecnológica
 
 ### Core Technologies
-| Technology | Version | Description |
-|------------|---------|-------------|
-| [Vite](https://vitejs.dev/) | v6 | Fast build tool based on ES modules, Rollup, and esbuild |
-| [React](https://react.dev/) | v19 | Latest version with all modern features |
-| [TypeScript](https://www.typescriptlang.org/) | Latest | Type-safe JavaScript for better development |
-| [MUI](https://mui.com/) | v6 | Comprehensive UI framework with MUI |
 
-### Key Features
-- **Routing**: [React Router v7](https://reactrouter.com/) for flexible client-side routing
-- **State Management**: [Jotai](https://jotai.org/) for simple, efficient state handling
-- **Theming**: Customizable dark/light mode with MUI [theme system](https://mui.com/material-ui/customization/theming/)
-- **Notifications**: Alert system with MUI Toolpad integration
-- **PWA Support**: Works offline and installs on any device
-- **Hotkeys**: Built-in keyboard shortcuts for common actions
-- **Error Handling**: Graceful error boundaries with custom fallbacks
-- **Performance**: All green Lighthouse scores with optimized bundle size
+| Tecnologia            | Versão | Propósito                      |
+| --------------------- | ------ | ------------------------------ |
+| **TypeScript**        | 5.0+   | Linguagem principal            |
+| **React.js**          | 18+    | Framework frontend             |
+| **Redux Toolkit**     | Latest | Gerenciamento de estado global |
+| **Styled Components** | Latest | CSS-in-JS e temas              |
+| **React Hook Form**   | Latest | Gerenciamento de formulários   |
+| **Zod**               | Latest | Validação de schemas           |
 
-### Developer Tools
-- **Testing**: Vitest for unit tests, Playwright for e2e tests
-- **CI/CD**: GitHub Actions workflows for quality checks and testing
-- **Code Quality**: ESLint, Prettier, TypeScript integration
-- **Git Hooks**: Husky with lint-staged for pre-commit quality enforcement
-- **Local HTTPS**: Built-in support for local HTTPS development
+### Testing & Quality
 
-## 🚀 Getting Started
+| Ferramenta   | Propósito            |
+| ------------ | -------------------- |
+| **Jest**     | Framework de testes  |
+| **ESLint**   | Análise estática     |
+| **Prettier** | Formatação de código |
+| **Husky**    | Git hooks            |
 
-### Quick Start
+### DevOps & Deployment
+
+| Ferramenta         | Propósito               |
+| ------------------ | ----------------------- |
+| **Vite**           | Build tool e dev server |
+| **Docker**         | Containerização         |
+| **GitHub Actions** | CI/CD                   |
+| **Heroku**         | Deploy frontend         |
+
+---
+
+## 🏛️ Arquitetura
+
+### Atomic Design Pattern
+
+```
+src/
+├── components/
+│   ├── atoms/           # Blocos básicos (Button, Input, Icon)
+│   ├── molecules/       # Grupos funcionais (InputField, SearchBar)
+│   ├── organisms/       # Seções complexas (Header, Forms, Tables)
+│   ├── templates/       # Layouts de páginas
+│   └── pages/          # Páginas da aplicação
+```
+
+### Clean Architecture Layers
+
+```
+src/
+├── domain/             # Entidades e regras de negócio
+│   ├── entities/       # Modelos de dados
+│   ├── repositories/   # Interfaces de dados
+│   └── services/      # Casos de uso
+├── infrastructure/    # Implementações externas
+│   ├── api/           # Clientes HTTP
+│   ├── storage/       # LocalStorage, SessionStorage
+│   └── validators/    # Schemas de validação
+├── presentation/      # Interface do usuário
+│   ├── components/    # Componentes React
+│   ├── hooks/         # Custom hooks
+│   ├── pages/         # Páginas
+│   └── store/         # Redux store
+└── shared/           # Utilitários compartilhados
+    ├── utils/        # Funções auxiliares
+    ├── constants/    # Constantes
+    └── types/        # Tipos TypeScript
+```
+
+---
+
+## ✨ Features por Tela
+
+### 🏠 Tela 1: Dashboard Geral (`/`)
+
+**Objetivo**: Fornecer visão macro dos dados através de KPIs e gráficos interativos.
+
+| Status | Feature                 | Prioridade | Componentes-Chave           | Requisito Teste |
+| :----: | ----------------------- | :--------: | --------------------------- | :-------------: |
+|  `🚧`  | **Total de Fazendas**   |     P0     | `KPICard`, `CounterDisplay` |       ✅        |
+|  `🚧`  | **Total de Hectares**   |     P0     | `KPICard`, `AreaDisplay`    |       ✅        |
+|  `🚧`  | **Gráfico por Estado**  |     P0     | `ChartCard`, `PieChart`     |       ✅        |
+|  `🚧`  | **Gráfico por Cultura** |     P0     | `ChartCard`, `PieChart`     |       ✅        |
+|  `🚧`  | **Gráfico Uso do Solo** |     P0     | `ChartCard`, `PieChart`     |       ✅        |
+|  `📝`  | **Filtros Temporais**   |     P1     | `DateRangePicker`           |       ⚡        |
+|  `📝`  | **Export de Dados**     |     P1     | `ExportButton`              |       ⚡        |
+
+**Dados Mockados**:
+
+```typescript
+interface DashboardData {
+  totalFazendas: number;
+  totalHectares: number;
+  distribuicaoEstados: EstadoDistribuicao[];
+  distribuicaoCulturas: CulturaDistribuicao[];
+  usoSolo: {
+    agricultavel: number;
+    vegetacao: number;
+  };
+}
+```
+
+---
+
+### 📋 Tela 2: Listar Produtores (`/produtores`)
+
+**Objetivo**: Exibir todos os produtores com busca e ações CRUD.
+
+| Status | Feature                  | Prioridade | Componentes-Chave               | Requisito Teste |
+| :----: | ------------------------ | :--------: | ------------------------------- | :-------------: |
+|  `🚧`  | **Tabela de Produtores** |     P0     | `DataTable`, `ProducerRow`      |       ✅        |
+|  `🚧`  | **Busca por Nome/Doc**   |     P0     | `SearchInput`, `FilterBar`      |       ✅        |
+|  `🚧`  | **Ações CRUD**           |     P0     | `ActionButtons`, `ConfirmModal` |       ✅        |
+|  `🚧`  | **Paginação**            |     P0     | `Pagination`                    |       ✅        |
+|  `📝`  | **Filtros Avançados**    |     P1     | `FilterPanel`                   |       ⚡        |
+|  `📝`  | **Ordenação Colunas**    |     P1     | `SortableHeader`                |       ⚡        |
+|  `📝`  | **Seleção Múltipla**     |     P2     | `CheckboxGroup`                 |       ⚡        |
+
+**Validações**:
+
+- ✅ CPF/CNPJ válidos
+- ✅ Campos obrigatórios
+- ✅ Duplicação de documentos
+
+---
+
+### 📝 Tela 3: Cadastro de Produtor (`/produtores/cadastrar`)
+
+**Objetivo**: Formulário completo para novo produtor com validações inteligentes.
+
+| Status | Feature                  | Prioridade | Componentes-Chave                 | Requisito Teste |
+| :----: | ------------------------ | :--------: | --------------------------------- | :-------------: |
+|  `🚧`  | **Dados Básicos**        |     P0     | `ProducerForm`, `DocumentInput`   |       ✅        |
+|  `🚧`  | **Validação CPF/CNPJ**   |     P0     | `DocumentValidator`               |       ✅        |
+|  `🚧`  | **Fazendas Dinâmicas**   |     P0     | `FarmSection`, `AddRemoveButtons` |       ✅        |
+|  `🚧`  | **Validação de Áreas**   |     P0     | `AreaValidator`                   |       ✅        |
+|  `🚧`  | **Culturas por Safra**   |     P0     | `CultureManager`, `SafraSelector` |       ✅        |
+|  `🚧`  | **Auto-save/Draft**      |     P1     | `DraftManager`                    |       ⚡        |
+|  `📝`  | **Upload de Documentos** |     P2     | `FileUpload`                      |       ⚡        |
+
+**Regras de Negócio**:
+
+```typescript
+// Validação de áreas
+if (areaAgricultavel + areaVegetacao > areaTotal) {
+  throw new Error('Soma das áreas não pode exceder área total');
+}
+
+// Múltiplas fazendas por produtor
+interface Produtor {
+  id: string;
+  nome: string;
+  documento: string;
+  fazendas: Fazenda[]; // 0 a N fazendas
+}
+
+// Múltiplas culturas por safra
+interface Fazenda {
+  culturasPorSafra: {
+    [safra: string]: Cultura[]; // 0 a N culturas por safra
+  };
+}
+```
+
+---
+
+### ✏️ Tela 4: Edição de Produtor (`/produtores/editar/:id`)
+
+**Objetivo**: Edição completa reutilizando componentes do cadastro.
+
+| Status | Feature                     | Prioridade | Componentes-Chave            | Requisito Teste |
+| :----: | --------------------------- | :--------: | ---------------------------- | :-------------: |
+|  `🚧`  | **Carregamento de Dados**   |     P0     | `DataLoader`, `LoadingState` |       ✅        |
+|  `🚧`  | **Reutilização de Form**    |     P0     | `ProducerForm` (modo edit)   |       ✅        |
+|  `🚧`  | **Histórico de Alterações** |     P1     | `ChangeHistory`              |       ⚡        |
+|  `📝`  | **Comparação de Versões**   |     P2     | `DiffViewer`                 |       ⚡        |
+
+---
+
+## 📊 Requisitos de Negócio
+
+### ✅ Checklist de Conformidade com o Teste
+
+| Requisito                 | Status | Implementação                              |
+| ------------------------- | :----: | ------------------------------------------ |
+| **1. CRUD de Produtores** |   ✅   | Telas 2, 3, 4                              |
+| **2. Validação CPF/CNPJ** |   ✅   | `DocumentValidator` com algoritmo oficial  |
+| **3. Validação de Áreas** |   ✅   | `AreaValidator` em tempo real              |
+| **4. Múltiplas Culturas** |   ✅   | `CultureManager` com safras                |
+| **5. Múltiplas Fazendas** |   ✅   | Array dinâmico no formulário               |
+| **6. Culturas por Safra** |   ✅   | Relacionamento fazenda → safra → culturas  |
+| **7. Dashboard Completo** |   ✅   | 5 KPIs + 3 gráficos conforme especificação |
+
+### 📐 Modelos de Dados
+
+```typescript
+// Modelo principal que atende 100% dos requisitos
+interface Produtor {
+  id: string;
+  cpfCnpj: string; // ✅ CPF ou CNPJ
+  nome: string; // ✅ Nome do produtor
+  fazendas: Fazenda[]; // ✅ 0 a N fazendas
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Fazenda {
+  id: string;
+  nome: string; // ✅ Nome da fazenda
+  cidade: string; // ✅ Cidade
+  estado: string; // ✅ Estado
+  areaTotal: number; // ✅ Área total (hectares)
+  areaAgricultavel: number; // ✅ Área agricultável (hectares)
+  areaVegetacao: number; // ✅ Área de vegetação (hectares)
+  safras: {
+    // ✅ Safras (ex: 2021, 2022)
+    [ano: string]: {
+      culturas: Cultura[]; // ✅ Culturas plantadas por safra
+    };
+  };
+}
+
+interface Cultura {
+  id: string;
+  nome: 'Soja' | 'Milho' | 'Café' | 'Cana' | 'Algodão';
+  area: number; // Área plantada desta cultura
+}
+```
+
+---
+
+## 🧪 Estratégia de Testes
+
+### Pirâmide de Testes
+
+```
+    🔺 E2E Tests (5%)
+      Cypress/Playwright
+      Fluxos críticos completos
+
+  🔺🔺 Integration Tests (25%)
+    React Testing Library
+    Interação entre componentes
+
+🔺🔺🔺 Unit Tests (70%)
+  Jest + RTL
+  Componentes isolados
+  Funções utilitárias
+```
+
+### Cobertura de Testes por Camada
+
+| Camada             | Cobertura Alvo | Ferramentas      |
+| ------------------ | :------------: | ---------------- |
+| **Atoms**          |      95%+      | Jest + RTL       |
+| **Molecules**      |      90%+      | Jest + RTL + MSW |
+| **Organisms**      |      85%+      | Jest + RTL + MSW |
+| **Pages**          |      80%+      | Jest + RTL + E2E |
+| **Utils/Services** |      98%+      | Jest             |
+
+### Cenários de Teste Críticos
+
+```typescript
+// 1. Validação de CPF/CNPJ
+describe('DocumentValidator', () => {
+  it('should validate CPF correctly');
+  it('should validate CNPJ correctly');
+  it('should reject invalid documents');
+});
+
+// 2. Validação de áreas
+describe('AreaValidator', () => {
+  it('should reject when sum exceeds total area');
+  it('should accept valid area distribution');
+});
+
+// 3. Fluxo completo de cadastro
+describe('Producer Registration Flow', () => {
+  it('should create producer with multiple farms');
+  it('should add cultures per harvest season');
+  it('should update dashboard after creation');
+});
+```
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+agro-dash/
+├── 📁 public/
+│   ├── favicon.ico
+│   └── manifest.json
+├── 📁 src/
+│   ├── 📁 components/           # Atomic Design
+│   │   ├── 📁 atoms/
+│   │   │   ├── Button/
+│   │   │   ├── Input/
+│   │   │   └── Icon/
+│   │   ├── 📁 molecules/
+│   │   │   ├── InputField/
+│   │   │   ├── SearchBar/
+│   │   │   └── KPICard/
+│   │   ├── 📁 organisms/
+│   │   │   ├── ProducerForm/
+│   │   │   ├── DataTable/
+│   │   │   └── Dashboard/
+│   │   ├── 📁 templates/
+│   │   │   └── MainLayout/
+│   │   └── 📁 pages/
+│   │       ├── HomePage/
+│   │       ├── ProducersPage/
+│   │       └── ProducerFormPage/
+│   ├── 📁 domain/              # Business Logic
+│   │   ├── 📁 entities/
+│   │   ├── 📁 repositories/
+│   │   └── 📁 services/
+│   ├── 📁 infrastructure/      # External Concerns
+│   │   ├── 📁 api/
+│   │   ├── 📁 storage/
+│   │   └── 📁 validators/
+│   ├── 📁 presentation/        # UI Layer
+│   │   ├── 📁 hooks/
+│   │   ├── 📁 store/
+│   │   └── 📁 themes/
+│   ├── 📁 shared/             # Common Utils
+│   │   ├── 📁 utils/
+│   │   ├── 📁 constants/
+│   │   └── 📁 types/
+│   └── 📁 __tests__/          # Test Utilities
+│       ├── 📁 mocks/
+│       ├── 📁 fixtures/
+│       └── setup.ts
+├── 📄 package.json
+├── 📄 tsconfig.json
+├── 📄 vite.config.ts
+├── 📄 jest.config.js
+├── 📄 docker-compose.yml
+└── 📄 README.md
+```
+
+---
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+
+- Node.js 18+
+- npm ou yarn
+- Git
+
+### Instalação Local
 
 ```bash
-# Clone the repository
-git clone https://github.com/suren-atoyan/react-pwa.git
+# Clone o repositório
+git clone https://github.com/seu-usuario/agro-dash.git
+cd agro-dash
 
-# Install dependencies
+# Instale as dependências
 npm install
 
-# Start development server
+# Execute em modo desenvolvimento
 npm run dev
 
-# Build for production
+# Execute os testes
+npm run test
+
+# Build para produção
 npm run build
 ```
 
-### Available Scripts
+### Scripts Disponíveis
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run prettier:check` | Check formatting |
-| `npm run lint:check` | Check linting |
-| `npm run ts:check` | Check TypeScript |
-| `npm run test:unit` | Run unit tests |
-| `npm run test:e2e` | Run e2e tests |
-| `npm run test:e2e:ui` | Run e2e tests in UI mode |
-| `npm run preview` | Preview production build locally |
-| `npm run https-preview` | Preview with HTTPS |
-
-## 📁 Project Structure
-
-```
-react-pwa/
-├── ...
-├── src/
-│   ├── components/     # Reusable UI components
-│   ├── config/         # Application configuration
-│   ├── error-handling/ # Error management
-│   ├── hooks/          # Custom hooks
-│   ├── pages/          # Application pages/routes
-│   ├── routes/         # Routing configuration
-│   ├── sections/       # Self-contained application sections
-│   ├── theme/          # Theme configuration
-│   └── utils/          # Utility functions
-└── ...
-```
-
-### Component Organization
-
-Each component follows this structure:
-```
-ComponentName/
-├── index.ts          # Default exports the component
-├── ComponentName.tsx # Pure component implementation
-├── types.ts          # Component-related types (optional)
-├── styled.ts         # Styled components (optional)
-└── utils.ts          # Component-specific utilities (optional)
-```
-
-## 🔍 Key Features Explained
-
-### UI Framework
-MUI ensures consistency, accessibility, and performance while remaining highly customizable to match your brand's design language.
-
-```jsx
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
-
-// styled components
-const NewButton = styled(Button)(({ theme }) => ({
-  marginRight: theme.spacing(1),
-  color: theme.palette.text.disabled,
-}));
-
-// sx prop
-function MyComponent() {
-  return <Box sx={{ borderRadius: theme.shape.borderRadius }}>...</Box>;
+```json
+{
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "test": "jest",
+  "test:watch": "jest --watch",
+  "test:coverage": "jest --coverage",
+  "lint": "eslint src --ext ts,tsx",
+  "lint:fix": "eslint src --ext ts,tsx --fix",
+  "type-check": "tsc --noEmit"
 }
 ```
 
-### 🎨 Theming
-The theme system is based on MUI Theme, supporting dark/light modes and customization.
+---
 
-```jsx
-import { useThemeMode } from '@/theme';
+## 📈 Roadmap
 
-function MyComponent() {
-  const { themeMode, toggle } = useThemeMode();
-  
-  return <Button onClick={toggle}>Toggle Theme</Button>;
-}
-```
+### Sprint 1 (Semana 1) - MVP Core
 
-### State Management
-Jotai provides simple atoms-based state management for cross-application state, complementing React's useState and data fetching libraries.
+- [x] Setup do projeto e arquitetura
+- [x] Atoms e Molecules básicos
+- [ ] CRUD básico de produtores
+- [ ] Validações CPF/CNPJ
 
-### Notifications
-Utilizes MUI Toolpad’s `useNotification` for handling alerts in an elegant, customizable way:
+### Sprint 2 (Semana 2) - Features Completas
 
-```jsx
-function MyComponent() {
-  const notifications = useNotifications();
+- [ ] Dashboard com gráficos
+- [ ] Gestão de fazendas múltiplas
+- [ ] Culturas por safra
+- [ ] Testes unitários (80%+)
 
-  function showNotification() {
-    notifications.show('Operation successful!', {
-      autoHideDuration: 5000,
-    });
-  }
-}
-```
+### Sprint 3 (Semana 3) - Polish & Deploy
 
-### 🔑 Hotkeys
-- `Alt+s`: Toggle theme mode
-- `Alt+t`: Toggle sidebar
-- `Alt+/`: Open hotkeys dialog
+- [ ] Testes de integração
+- [ ] Responsividade completa
+- [ ] Deploy em produção
+- [ ] Documentação final
 
-### PWA Features
-- Works offline with service worker caching
-- Installable on mobile and desktop devices
-- Automatic updates (configurable in `vite.config.ts`)
+### Funcionalidades Futuras (Pós-MVP)
 
-### 📱 Performance
-- Bundle size: ~65KB for largest chunk
-- Initial load: ~0.6s
-- Cached loads: ~0.01s
+- [ ] Autenticação e autorização
+- [ ] API real integrada
+- [ ] Relatórios avançados
+- [ ] Notificações push
+- [ ] Modo offline (PWA)
 
-<img src="./public/bundle.png" title="bundle">
-<img src="./public/audit.png" alt="Performance audit" title="Performance audit">
+---
 
-### Error Handling
-The `withErrorHandler` HOC catches errors and displays friendly fallback UIs:
+## 🎯 Critérios de Sucesso
 
-```jsx
-// In your component:
-export default withErrorHandler(MyComponent);
+### Técnicos
 
-// Or for the entire app:
-export default withErrorHandler(App);
-```
+- ✅ **100% dos requisitos** do teste implementados
+- ✅ **80%+ cobertura** de testes
+- ✅ **TypeScript strict** mode
+- ✅ **Performance** otimizada (Lighthouse 90+)
+- ✅ **Responsivo** em todos os dispositivos
+- ✅ **Acessibilidade** (WCAG 2.1 AA)
 
-## 🧪 Testing
+### Funcionais
 
-### Unit Tests
-```bash
-npm run test:unit
-```
+- ✅ **CRUD completo** de produtores
+- ✅ **Validações** conforme regras de negócio
+- ✅ **Dashboard** interativo e informativo
+- ✅ **UX intuitiva** e amigável
+- ✅ **Dados consistentes** entre todas as telas
 
-### E2E Tests
-```bash
-npm run test:e2e
-# or with UI
-npm run test:e2e:ui
-```
+---
 
-## 🌐 Environment Variables
+## 👥 Contribuindo
 
-Place your environment variables in a `.env` file (prefixed with `VITE_`):
-- Templates available in the `env/` directory
-- Access via `import.meta.env.VITE_VARIABLE_NAME`
+Este projeto segue as melhores práticas de desenvolvimento:
 
-## ❓ FAQ
+- **Conventional Commits**: Para mensagens de commit padronizadas
+- **Semantic Versioning**: Para versionamento do projeto
+- **Code Review**: Todos os PRs passam por revisão
+- **CI/CD**: Deploy automatizado via GitHub Actions
 
-### Why use a UI library?
-A UI library ensures consistency, accessibility, and development efficiency. Without one, teams would need to create and maintain basic components from scratch, leading to inconsistencies and wasted time.
+---
 
-### Why Jotai for state management?
-React applications have different state management needs:
-- **Component-level state**: `useState` for local UI interactions
-- **Data-layer state**: `useQuery` or `Apollo` for remote data
-- **Cross-application state**: Jotai provides a minimal, elegant approach
+## 📄 Licença
 
-### What's the difference between components, sections, and pages?
-- **Components**: Reusable UI elements (`Button`, `List`, etc.)
-- **Sections**: Self-contained UI parts with their own logic (`Navigation`, `Sidebar`, etc.)
-- **Pages**: Root route components representing application views
+Este projeto foi desenvolvido como parte do teste técnico da **Brain Agriculture** e é propriedade intelectual de Philipe Loureiro.
 
-### Why TypeScript?
-TypeScript reduces runtime errors, improves code maintainability, and enhances developer experience with static typing and better IDE support.
+---
 
-### Why use Prettier?
-Prettier enforces consistent style across all contributors, reducing discussions in PR reviews and ensuring code quality.
+**AgroDash** - Desenvolvido com ❤️ por Philipe Loureiro para a Brain Agriculture
 
-## 🔗 Demo
-
-Check out the [live demo](https://react-pwa.surenatoyan.com/)
-
-<div>
- <img src="./public/demo-dark.png" width="280" alt="Dark theme demo"> 
- <img src="./public/demo-light.png" width="280" alt="Light theme demo">
-</div>
-
-## 📄 License
-
-[MIT](./LICENSE)
+[🏠 Home](/) • [📊 Dashboard](/dashboard) • [👥 Produtores](/produtores) • [📝 Docs](https://github.com/repo/wiki)
