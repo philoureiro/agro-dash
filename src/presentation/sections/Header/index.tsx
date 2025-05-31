@@ -25,27 +25,26 @@ interface HeaderProps {
 
 export default function Header({ themeMode: propThemeMode }: HeaderProps) {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
-
-  // Usa a prop se fornecida, senão usa o hook
   const currentTheme = propThemeMode || themeMode;
-
   const notifications = useNotifications();
 
-  function showNotification() {
+  function handleShowNotification(e: React.MouseEvent) {
+    e.stopPropagation();
     notifications.show(getRandomJoke(), {
       autoHideDuration: 5000,
     });
   }
 
-  function handleDocsClick() {
-    window.location.href = '/docs';
+  function handleToggleTheme(e: React.MouseEvent) {
+    e.stopPropagation();
+    toggleThemeMode();
   }
 
   return (
     <GlassHeader themeMode={currentTheme} data-pw={`theme-${currentTheme}`}>
       <HeaderContent>
         <LeftSection>
-          <TitleButton onClick={showNotification} themeMode={currentTheme}>
+          <TitleButton onClick={handleShowNotification} themeMode={currentTheme}>
             {title}
           </TitleButton>
         </LeftSection>
@@ -53,8 +52,15 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
         <RightSection>
           <Divider themeMode={currentTheme} />
 
+          {/* Botão de Docs com MenuBook */}
           <Tooltip data-tooltip="Docs">
-            <ActionButton onClick={handleDocsClick} themeMode={currentTheme} data-pw="docs-button">
+            <ActionButton
+              as="a"
+              href="/docs"
+              themeMode={currentTheme}
+              data-pw="docs-button"
+              onClick={(e) => e.stopPropagation()} // só por via das dúvidas
+            >
               <DocsIcon />
             </ActionButton>
           </Tooltip>
@@ -68,6 +74,8 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
               target="_blank"
               rel="noopener noreferrer"
               themeMode={currentTheme}
+              tabIndex={0}
+              onClick={(e) => e.stopPropagation()} // Não é obrigatório, mas só por via das dúvidas
             >
               <GitHubIcon />
             </ActionButton>
@@ -75,8 +83,13 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
 
           <Divider themeMode={currentTheme} />
 
+          {/* SÓ UM BOTÃO DE THEME! */}
           <Tooltip data-tooltip="Switch theme">
-            <ActionButton onClick={toggleThemeMode} themeMode={currentTheme} data-pw="theme-toggle">
+            <ActionButton
+              onClick={handleToggleTheme}
+              themeMode={currentTheme}
+              data-pw="theme-toggle"
+            >
               <ThemeIcon />
             </ActionButton>
           </Tooltip>
