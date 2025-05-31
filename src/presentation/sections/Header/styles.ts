@@ -91,7 +91,7 @@ export const TitleButton = styled.button<{ themeMode?: string }>`
   cursor: pointer;
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.02em;
 
