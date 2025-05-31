@@ -13,7 +13,7 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   align-items: center;
 
   /* Altura base */
-  height: 70px;
+  height: 75px;
   padding: 0.7rem 0;
 
   /* Remover completamente safe area */
@@ -140,7 +140,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
 
   /* Ajustes para iOS browser (não PWA) */
   @supports (-webkit-touch-callout: none) {
-    margin-top: -8px;
+    margin-top: 10px;
     margin-bottom: 8px;
     font-size: 1.6rem;
   }
