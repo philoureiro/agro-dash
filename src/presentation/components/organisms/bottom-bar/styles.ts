@@ -7,7 +7,7 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 1100;
+  z-index: 1100; /* BottomBar */
   display: flex;
   justify-content: space-around;
   align-items: center;
