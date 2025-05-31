@@ -16,7 +16,7 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   height: 70px;
   padding: 0.7rem 0;
 
-  /* Safe area para iPhone */
+  /* Safe area para iPhone - só quando necessário */
   padding-bottom: max(0.7rem, env(safe-area-inset-bottom));
 
   background: ${({ themeMode }) =>
@@ -76,11 +76,12 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
     padding: 0.4rem 0;
     padding-bottom: max(0.4rem, env(safe-area-inset-bottom));
 
-    /* PWA Mobile iOS específico - só iOS precisa de altura maior */
+    /* PWA Mobile iOS específico - MENOS padding extra */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
         padding: 1.2rem 0;
-        padding-bottom: calc(1.2rem + env(safe-area-inset-bottom));
+        /* Reduzir o padding bottom extra */
+        padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
         height: 95px;
       }
     }
@@ -127,7 +128,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
     min-height: 48px;
     font-size: 1.5rem;
 
-    /* PWA Mobile iOS específico - só iOS precisa de margins maiores */
+    /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
         margin-top: 25px;
@@ -179,7 +180,7 @@ export const BarItem = styled.button<{ active: boolean; themeMode?: string }>`
       }
     `}
 
-    /* PWA Mobile iOS específico - badge maior só no iOS */
+    /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
         ${({ active }) =>
@@ -239,7 +240,7 @@ export const Label = styled.span`
     font-size: 0.8rem;
     margin-top: 1px;
 
-    /* PWA Mobile iOS específico - fonte menor só no iOS */
+    /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
         font-size: 0.7rem;

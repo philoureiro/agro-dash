@@ -1,5 +1,4 @@
 import { welcome } from './application/utils/welcome';
-import './index.css';
 
 // `root` contains the main dependencies and providers of the base app
 //  - React, ReactDom, Jotai, ThemeProvider, etc.)
