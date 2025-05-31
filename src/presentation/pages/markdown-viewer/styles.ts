@@ -450,7 +450,7 @@ export const TableOfContents = styled.nav<{ theme?: any }>`
 /* TOC Mobile - Botão flutuante que abre drawer */
 export const MobileTocButton = styled.button<{ theme?: any }>`
   position: fixed;
-  top: 10%;
+  top: 15%;
   right: 1rem;
   transform: translateY(-50%);
   width: 3rem;

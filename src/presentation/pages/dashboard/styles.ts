@@ -20,6 +20,17 @@ const fadeUp = keyframes`
   100% { opacity: 1; transform: translateY(0);}
 `;
 
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
+
+const shimmer = keyframes`
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+`;
+
 export const DashboardContainer = styled.section<{ theme: DefaultTheme }>`
   width: 100%;
   padding: 2.5rem 1.2rem 3rem;
@@ -29,6 +40,7 @@ export const DashboardContainer = styled.section<{ theme: DefaultTheme }>`
   transition:
     background 0.2s,
     color 0.2s;
+
   h1 {
     font-size: 2.5rem;
     margin-bottom: 2.2rem;
@@ -75,7 +87,9 @@ export const CardKpi = styled.div<{ theme: DefaultTheme }>`
   opacity: 1;
   transition:
     background 0.18s,
-    box-shadow 0.18s;
+    box-shadow 0.18s,
+    transform 0.2s;
+
   &:hover {
     background: ${({ theme }) =>
       theme.palette?.primary?.main ? `${theme.palette.primary.main}13` : 'rgba(55,203,131,0.18)'};
@@ -116,6 +130,7 @@ export const ChartsGrid = styled.div`
   width: 100%;
   min-height: 0;
 `;
+
 export const ChartCard = styled.div<{ theme: DefaultTheme; isDark?: boolean }>`
   background: ${({ theme, isDark }) =>
     isDark
@@ -143,7 +158,13 @@ export const ChartCard = styled.div<{ theme: DefaultTheme; isDark?: boolean }>`
   width: 100%;
   transition:
     background 0.18s,
-    box-shadow 0.12s;
+    box-shadow 0.12s,
+    transform 0.2s;
+
+  /* 🔥 CORREÇÃO DO SCROLL MOBILE - MÉTODO MAIS LIMPO */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+
   &:hover {
     background: ${({ theme, isDark }) =>
       isDark
@@ -157,9 +178,15 @@ export const ChartCard = styled.div<{ theme: DefaultTheme; isDark?: boolean }>`
       ${({ theme }) =>
         theme.palette?.primary?.main ? `${theme.palette.primary.main}40` : 'rgba(44,208,137,0.23)'};
   }
+
   @media (max-width: 600px) {
     min-height: 170px;
     padding: 0.5rem 0.2rem;
+    /* Força o scroll vertical no mobile */
+    overflow: visible;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 `;
 
@@ -171,5 +198,114 @@ export const ChartTitle = styled.span<{ theme: DefaultTheme }>`
   letter-spacing: 0.02em;
   align-self: flex-start;
   margin-left: 15px;
-  margin-top: 15px;
+  margin-top: 0.2rem;
+`;
+
+// 🚀 COMPONENTES PARA EXPORTAÇÃO PDF
+
+export const ExportContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  @media (max-width: 600px) {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 1000;
+  }
+`;
+
+export const ExportButton = styled.button<{ isDark?: boolean; disabled?: boolean }>`
+  background: ${({ isDark, disabled }) =>
+    disabled
+      ? isDark
+        ? '#2a3d32'
+        : '#e0e0e0'
+      : isDark
+        ? 'linear-gradient(135deg, #37cb83 0%, #2f9469 100%)'
+        : 'linear-gradient(135deg, #37cb83 0%, #5ad0ff 100%)'};
+  color: ${({ isDark, disabled }) => (disabled ? (isDark ? '#6b7280' : '#9ca3af') : '#fff')};
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: ${({ disabled }) => (disabled ? 'none' : '0 4px 15px rgba(55, 203, 131, 0.3)')};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(55, 203, 131, 0.4);
+
+    &:before {
+      left: 100%;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
+  }
+
+  @media (max-width: 600px) {
+    padding: 10px 16px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+`;
+
+export const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+  div {
+    background: linear-gradient(135deg, #37cb83, #5ad0ff);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 600;
+    animation: ${pulse} 1.5s infinite;
+    box-shadow: 0 10px 30px rgba(55, 203, 131, 0.3);
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #37cb83, #5ad0ff, #ffa63b);
+      border-radius: 17px;
+      z-index: -1;
+      animation: ${shimmer} 2s infinite;
+      background-size: 400% 400%;
+    }
+  }
 `;
