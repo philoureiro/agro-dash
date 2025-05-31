@@ -1,17 +1,13 @@
-import { FullSizeCentered, Input, Select, Text } from '@components';
-import { useThemeMode } from '@theme';
+import { CustomInput, FullSizeCentered, Select, Text } from '@components';
 
 export const AddFarmer = () => {
-  const { themeMode } = useThemeMode();
-
   return (
     <>
       <meta name="title" content="Add farmer" />
       <FullSizeCentered>
         <Text variant="h3">Add farmer</Text>
 
-        <Input
-          themeMode={themeMode}
+        <CustomInput
           type="text"
           placeholder="Login"
           value={'login'}
@@ -21,7 +17,6 @@ export const AddFarmer = () => {
           autoComplete="username"
         />
         <Select
-          themeMode={themeMode}
           label="Select farmer"
           options={[
             { value: 'farmer1', label: 'Farmer 1' },

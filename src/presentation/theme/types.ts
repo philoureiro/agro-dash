@@ -11,3 +11,19 @@ type CustomThemeProviderProps = {
 
 export type { CustomThemeProviderProps };
 export { ThemeMode };
+
+export interface DefaultTheme {
+  palette: {
+    divider?: string;
+    background: {
+      paper: string;
+    };
+    text: {
+      primary: string;
+      secondary: string;
+    };
+    primary: {
+      main: string;
+    };
+  };
+}

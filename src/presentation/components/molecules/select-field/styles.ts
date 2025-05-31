@@ -1,12 +1,13 @@
-import { colors } from '@theme';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { DefaultTheme, colors } from '@theme';
 import styled from 'styled-components';
 
-export const SelectField = styled.select<{ themeMode?: string }>`
+export const SelectField = styled.select<{ theme?: DefaultTheme }>`
   padding: 10px;
-  border: 1px solid ${({ themeMode }) => (themeMode === 'dark' ? '#444' : '#d9dbe0')};
+  border: 1px solid ${({ theme }) => theme.palette.divider || '#d9dbe0'};
   border-radius: 8px;
-  background-color: ${({ themeMode }) => (themeMode === 'dark' ? '#222' : '#fff')};
-  color: ${({ themeMode }) => (themeMode === 'dark' ? '#fff' : '#333')};
+  background-color: ${({ theme }) => theme.palette.background.paper};
+  color: ${({ theme }) => theme.palette.text.primary};
   font-size: 14px;
   outline: none;
   height: 50px;
@@ -14,13 +15,13 @@ export const SelectField = styled.select<{ themeMode?: string }>`
 
   &:focus {
     border-color: ${colors.activeGreen};
-    background-color: ${({ themeMode }) => (themeMode === 'dark' ? '#333' : '#fff')};
+    background-color: ${({ theme }) => theme.palette.background.paper};
   }
 
   /* Estilo das options */
   option {
-    background-color: ${({ themeMode }) => (themeMode === 'dark' ? '#222' : '#fff')};
-    color: ${({ themeMode }) => (themeMode === 'dark' ? '#fff' : '#333')};
+    background-color: ${({ theme }) => theme.palette.background.paper};
+    color: ${({ theme }) => theme.palette.text.primary};
   }
 `;
 
@@ -30,9 +31,9 @@ export const FieldContainer = styled.div`
   width: 100%;
 `;
 
-export const InputLabel = styled.label<{ themeMode?: string }>`
+export const InputLabel = styled.label<{ theme?: any }>`
   font-size: 14px;
   margin-bottom: 4px;
-  color: ${({ themeMode }) => (themeMode === 'dark' ? '#ccc' : '#555')};
+  color: ${({ theme }) => theme.palette.text.secondary};
   transition: color 0.2s ease;
 `;
