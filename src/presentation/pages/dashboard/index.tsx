@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { FullSizeCentered, Text } from '@components';
+import { useThemeMode } from '@theme';
 import { VictoryLegend, VictoryPie } from 'victory';
 
 import { CardKpi, ChartCard, ChartTitle, ChartsGrid, Grid, KpiTitle, KpiValue } from './styles';
@@ -29,7 +30,9 @@ const usoSolo = [
   { x: 'Vegetação', y: 4700 },
 ];
 
-const COLORS = ['#37CB83', '#2B5A3E', '#5AD0FF', '#FFA63B', '#E95252', '#9181FF'];
+// Defina paletas para cada tema
+const COLORS_LIGHT = ['#37CB83', '#2B5A3E', '#5AD0FF', '#FFA63B', '#E95252', '#9181FF'];
+const COLORS_DARK = ['#34e899', '#2f9469', '#61dafb', '#ffbc54', '#ff686b', '#d1b3ff'];
 
 // helper para responsive height
 const useChartSize = () => {
@@ -39,22 +42,45 @@ const useChartSize = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  return width < 600 ? 170 : 250;
+  return width < 600 ? 150 : 210;
 };
 
 export const Dashboard = () => {
   const chartHeight = useChartSize();
+  const { themeMode: theme } = useThemeMode();
+
+  // Troca as cores dos gráficos conforme o tema
+  const isDark = theme === 'dark';
+  const COLORS = isDark ? COLORS_DARK : COLORS_LIGHT;
+
   const legendStyle = {
-    labels: { fill: '#fff', fontSize: 16, fontFamily: 'inherit' },
+    labels: {
+      fill: isDark ? '#fff' : '#333',
+      fontSize: 14,
+      fontFamily: 'inherit',
+      fontWeight: 500,
+    },
+  };
+
+  const pieStyle = {
+    data: {
+      stroke: isDark ? '#181f1b' : '#fff',
+      strokeWidth: 2,
+      filter: 'drop-shadow(0 1.5px 8px rgba(55,203,131,0.08))',
+    },
+    labels: {
+      fill: isDark ? '#fff' : '#333',
+      fontWeight: 700,
+      fontFamily: 'inherit',
+      fontSize: chartHeight < 180 ? 5 : 6,
+      filter: 'none',
+      padding: 7,
+    },
   };
 
   return (
     <>
-      <meta
-        name="title"
-        content="
-          Edit Farmer"
-      />
+      <meta name="title" content="Edit Farmer" />
       <FullSizeCentered
         style={{
           marginBottom: 100,
@@ -72,38 +98,31 @@ export const Dashboard = () => {
         <Grid>
           {kpis.map((kpi, idx) => (
             <CardKpi key={kpi.title} style={{ animationDelay: `${idx * 0.08}s` }}>
-              <KpiTitle>{kpi.title}</KpiTitle>
-              <KpiValue>{kpi.value.toLocaleString('pt-BR')}</KpiValue>
+              <KpiTitle isDark={isDark}>{kpi.title}</KpiTitle>
+              <KpiValue isDark={isDark}> {kpi.value.toLocaleString('pt-BR')}</KpiValue>
             </CardKpi>
           ))}
         </Grid>
         <ChartsGrid>
           {/* Fazendas por Estado */}
-          <ChartCard>
+          <ChartCard isDark={isDark}>
             <ChartTitle>Fazendas por Estado</ChartTitle>
             <VictoryPie
               data={fazendasPorEstado}
               colorScale={COLORS}
-              innerRadius={40}
+              innerRadius={chartHeight / 2.7}
               animate={{
                 duration: 1000,
                 easing: 'bounce',
               }}
-              style={{
-                data: { stroke: '#151f1b', strokeWidth: 2 },
-                labels: {
-                  fill: '#fff',
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
-                  fontSize: 15,
-                },
-              }}
+              style={pieStyle}
               height={chartHeight}
+              width={chartHeight}
               padAngle={2}
               labels={({ datum }) => `${datum.x}: ${datum.y}`}
             />
             <VictoryLegend
-              x={30}
+              x={18}
               y={chartHeight - 35}
               orientation="horizontal"
               gutter={18}
@@ -117,31 +136,24 @@ export const Dashboard = () => {
             />
           </ChartCard>
           {/* Culturas Plantadas */}
-          <ChartCard>
+          <ChartCard isDark={isDark}>
             <ChartTitle>Culturas Plantadas</ChartTitle>
             <VictoryPie
               data={culturasPlantadas}
               colorScale={COLORS}
-              innerRadius={40}
+              innerRadius={chartHeight / 2.7}
               animate={{
                 duration: 1000,
                 easing: 'bounce',
               }}
-              style={{
-                data: { stroke: '#151f1b', strokeWidth: 2 },
-                labels: {
-                  fill: '#fff',
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
-                  fontSize: 15,
-                },
-              }}
+              style={pieStyle}
               height={chartHeight}
+              width={chartHeight}
               padAngle={2}
               labels={({ datum }) => `${datum.x}: ${datum.y}`}
             />
             <VictoryLegend
-              x={30}
+              x={18}
               y={chartHeight - 35}
               orientation="horizontal"
               gutter={18}
@@ -155,33 +167,26 @@ export const Dashboard = () => {
             />
           </ChartCard>
           {/* Uso do Solo */}
-          <ChartCard>
+          <ChartCard isDark={isDark}>
             <ChartTitle>Uso do Solo</ChartTitle>
             <VictoryPie
               data={usoSolo}
               colorScale={COLORS}
-              innerRadius={40}
+              innerRadius={chartHeight / 2.7}
               animate={{
                 duration: 1000,
                 easing: 'bounce',
               }}
-              style={{
-                data: { stroke: '#151f1b', strokeWidth: 2 },
-                labels: {
-                  fill: '#fff',
-                  fontWeight: 600,
-                  fontFamily: 'inherit',
-                  fontSize: 15,
-                },
-              }}
+              style={pieStyle}
               height={chartHeight}
+              width={chartHeight}
               padAngle={2}
               labels={({ datum }) =>
                 `${datum.x}: ${datum.y.toLocaleString('pt-BR').replace(/\./g, ',')}`
               }
             />
             <VictoryLegend
-              x={30}
+              x={18}
               y={chartHeight - 35}
               orientation="horizontal"
               gutter={18}
