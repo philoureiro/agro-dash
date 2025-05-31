@@ -22,10 +22,10 @@ export const DocsWrapper = styled.div`
     padding: 1rem;
   }
 `;
+
 export const MarkdownContent = styled.div<{ theme?: any }>`
   max-width: 100%;
 
-  /* No desktop, deixa espaço para o TOC */
   @media (min-width: 1400px) {
     margin-right: 280px;
   }
@@ -38,27 +38,129 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     margin: 1.5rem 0;
   }
 
-  /* Tables */
+  /* TABELA SUPREMA */
   table {
-    min-width: 400px;
-    border-collapse: collapse;
+    min-width: 340px;
+    border-collapse: separate;
+    border-spacing: 0;
     margin: 1.5rem 0;
-    background: ${({ theme }) => theme.palette.background.paper};
-    border-radius: 8px;
+    background: ${({ theme }) =>
+      theme.palette.mode === 'dark' ? 'rgba(30,30,32,0.97)' : 'rgba(255,255,255,0.99)'};
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-    /* Remove width: 100%! */
+    box-shadow:
+      0 4px 32px 0 rgba(80, 80, 80, 0.09),
+      0 1.5px 8px 0 rgba(80, 80, 80, 0.07);
+    border: 1.5px solid
+      ${({ theme }) =>
+        theme.palette.mode === 'dark' ? 'rgba(52, 217, 114, 0.18)' : 'rgba(35, 45, 52, 0.08)'};
   }
 
-  @media (max-width: 600px) {
-    .table-wrapper {
-      margin: 1rem 0;
+  thead {
+    background: ${({ theme }) =>
+      theme.palette.mode === 'dark' ? 'rgba(25,25,28,0.97)' : 'rgba(246,248,250,1)'};
+  }
+  th {
+    font-weight: 700;
+    padding: 1.1rem 1.6rem;
+    color: ${({ theme }) => theme.palette.text.primary};
+    border-bottom: 1.5px solid
+      ${({ theme }) => (theme.palette.mode === 'dark' ? 'rgba(52, 217, 114, 0.18)' : '#E2E6EA')};
+    background: none;
+    text-align: left;
+    font-size: 1.09rem;
+    letter-spacing: 0.01em;
+  }
+
+  tbody {
+    background: none;
+  }
+  td {
+    padding: 0.98rem 1.6rem;
+    border-bottom: 1px solid
+      ${({ theme }) =>
+        theme.palette.mode === 'dark' ? 'rgba(120, 255, 170, 0.08)' : 'rgba(0,0,0,0.025)'};
+    font-size: 0.99rem;
+    background: none;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td {
+    background: ${({ theme }) =>
+      theme.palette.mode === 'dark' ? 'rgba(45, 65, 60, 0.09)' : 'rgba(55, 220, 112, 0.045)'};
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Bordas arredondadas da tabela */
+  table tr:first-child th:first-child {
+    border-top-left-radius: 18px;
+  }
+  table tr:first-child th:last-child {
+    border-top-right-radius: 18px;
+  }
+  table tr:last-child td:first-child {
+    border-bottom-left-radius: 18px;
+  }
+  table tr:last-child td:last-child {
+    border-bottom-right-radius: 18px;
+  }
+
+  /* Row highlight on hover */
+  tr:hover td {
+    background: ${({ theme }) =>
+      theme.palette.mode === 'dark' ? 'rgba(52, 217, 114, 0.12)' : 'rgba(52, 217, 114, 0.065)'};
+    transition: background 0.17s;
+  }
+
+  /* Responsivo mobile */
+  @media (max-width: 700px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+      width: 100%;
     }
     table {
-      min-width: 320px;
-      font-size: 0.9rem;
+      box-shadow: 0 1.5px 10px rgba(80, 80, 80, 0.09);
+      border-radius: 16px;
+      margin: 1.1rem 0;
+      min-width: unset;
     }
+    thead {
+      display: none;
+    }
+    tr {
+      margin-bottom: 1.2rem;
+      box-shadow: 0 2px 8px rgba(80, 80, 80, 0.07);
+      border-radius: 10px;
+      background: ${({ theme }) =>
+        theme.palette.mode === 'dark' ? 'rgba(25,25,25,0.96)' : 'rgba(255,255,255,0.99)'};
+    }
+    td {
+      border: none;
+      padding: 0.62rem 1rem;
+      position: relative;
+      font-size: 0.98rem;
+      min-width: unset;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+    /* Opcional: label no td se quiser data-label pelo ReactMarkdown */
+    /* td:before {
+      content: attr(data-label);
+      font-weight: 700;
+      color: ${({ theme }) => theme.palette.text.secondary};
+      display: inline-block;
+      min-width: 90px;
+      font-size: 0.92rem;
+      flex-shrink: 0;
+      padding-right: 0.7rem;
+    } */
   }
 
   /* Headers */
@@ -80,13 +182,11 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
 
     @media (max-width: 768px) {
       font-size: 2rem;
-
       &::before {
         font-size: 1.8rem;
       }
     }
   }
-
   h2 {
     font-size: 2rem;
     font-weight: 600;
@@ -102,35 +202,29 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
       font-size: 1.5rem;
     }
   }
-
   h3 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 1.5rem 0 1rem 0;
     color: ${({ theme }) => theme.palette.text.primary};
-
     @media (max-width: 768px) {
       font-size: 1.25rem;
     }
   }
-
   h4 {
     font-size: 1.25rem;
     font-weight: 600;
     margin: 1rem 0 0.5rem 0;
     color: ${({ theme }) => theme.palette.text.secondary};
-
     @media (max-width: 768px) {
       font-size: 1.1rem;
     }
   }
 
-  /* Paragraphs */
   p {
     margin: 1rem 0;
     font-size: 1rem;
     line-height: 1.7;
-
     @media (max-width: 768px) {
       font-size: 0.95rem;
     }
@@ -142,7 +236,6 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: all 0.2s ease;
-
     &:hover {
       border-bottom-color: ${({ theme }) => theme.palette.primary.main};
       background: ${({ theme }) =>
@@ -152,26 +245,21 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     }
   }
 
-  /* Lists */
   ul,
   ol {
     margin: 1rem 0;
     padding-left: 2rem;
-
     @media (max-width: 768px) {
       padding-left: 1.5rem;
     }
   }
-
   li {
     margin: 0.5rem 0;
-
     &::marker {
       color: ${({ theme }) => theme.palette.primary.main};
     }
   }
 
-  /* Blockquotes */
   blockquote {
     margin: 1.5rem 0;
     padding: 1rem 1.5rem;
@@ -200,7 +288,6 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
   /* Code blocks */
   pre {
     background: ${({ theme }) => (theme.palette.mode === 'dark' ? '#1e1e1e' : '#e0e5eb')};
-    /*     cor no dark            cor mais escura no light  ↑    */
     border: 1px solid ${({ theme }) => (theme.palette.mode === 'dark' ? '#333' : '#d3d9de')};
     border-radius: 8px;
     padding: 1.5rem;
@@ -209,10 +296,7 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     font-family: 'Fira Code', Consolas, 'Courier New', monospace;
     font-size: 0.96rem;
     line-height: 1.5;
-
-    color: ${({ theme }) =>
-      theme.palette.mode === 'dark' ? '#cdd9e5' : '#24324d'}; /* texto dark/light */
-    /* Tweak: no tema claro, texto mais escuro para contraste */
+    color: ${({ theme }) => (theme.palette.mode === 'dark' ? '#cdd9e5' : '#24324d')};
     code {
       background: none;
       padding: 0;
@@ -220,7 +304,6 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
       border-radius: 0;
       color: inherit;
     }
-
     @media (max-width: 768px) {
       padding: 1rem;
       font-size: 0.85rem;
@@ -228,7 +311,6 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     }
   }
 
-  /* Inline code */
   code {
     background: ${({ theme }) => (theme.palette.mode === 'dark' ? '#2d2d2d' : '#f3f5f7')};
     color: ${({ theme }) => (theme.palette.mode === 'dark' ? '#98fb98' : '#18781c')};
@@ -239,20 +321,17 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     border: 1px solid ${({ theme }) => theme.palette.divider};
   }
 
-  /* Badges */
   img[alt*='Status'],
   img[alt*='React'],
   img[alt*='TypeScript'],
   img[alt*='Redux'] {
     margin: 0 0.25rem;
     vertical-align: middle;
-
     @media (max-width: 768px) {
       margin: 0 0.1rem;
     }
   }
 
-  /* Horizontal rule */
   hr {
     border: none;
     height: 2px;
@@ -260,7 +339,6 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     margin: 2rem 0;
   }
 
-  /* Images */
   img {
     max-width: 100%;
     height: auto;
@@ -268,7 +346,6 @@ export const MarkdownContent = styled.div<{ theme?: any }>`
     margin: 1rem 0;
   }
 
-  /* Checkbox lists (GitHub style) */
   input[type='checkbox'] {
     margin-right: 0.5rem;
     transform: scale(1.2);

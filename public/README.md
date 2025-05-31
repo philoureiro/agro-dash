@@ -426,21 +426,21 @@ npm run build
 
 ## 📈 Roadmap
 
-### Sprint 1 (Semana 1) - MVP Core
+### Sprint 1 (Dia 1) - MVP Core
 
 - [x] Setup do projeto e arquitetura
 - [x] Atoms e Molecules básicos
 - [ ] CRUD básico de produtores
 - [ ] Validações CPF/CNPJ
 
-### Sprint 2 (Semana 2) - Features Completas
+### Sprint 2 (Dia 2) - Features Completas
 
 - [ ] Dashboard com gráficos
 - [ ] Gestão de fazendas múltiplas
 - [ ] Culturas por safra
 - [ ] Testes unitários (80%+)
 
-### Sprint 3 (Semana 3) - Polish & Deploy
+### Sprint 3 (Dia 3) - Polish & Deploy
 
 - [ ] Testes de integração
 - [ ] Responsividade completa
@@ -497,4 +497,4 @@ Este projeto foi desenvolvido como parte do teste técnico da **Brain Agricultur
 
 **AgroDash** - Desenvolvido com ❤️ por Philipe Loureiro para a Brain Agriculture
 
-[🏠 Home](/) • [📊 Dashboard](/dashboard) • [👥 Produtores](/produtores) • [📝 Docs](https://github.com/repo/wiki)
+[📊 Dashboard](/dashboard) • [🔍 Pesquisar](/pesquisar) • [➕ Cadastrar](/cadastrar) • [✏️ Editar](/editar) • [📄 Docs](https://github.com/philoureiro/agro-dash)
