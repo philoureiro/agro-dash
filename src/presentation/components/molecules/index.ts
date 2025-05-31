@@ -1,2 +1,2 @@
-export { default as FullSizeCentered } from './full-size-centered';
-export { default as Loading } from './loading';
+export * from './full-size-centered/styles';
+export * from './loading';

@@ -19,7 +19,7 @@ interface BottomBarProps {
   themeMode?: string;
 }
 
-const BottomBar: React.FC<BottomBarProps> = ({ themeMode }) => {
+export const BottomBar: React.FC<BottomBarProps> = ({ themeMode }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -36,5 +36,3 @@ const BottomBar: React.FC<BottomBarProps> = ({ themeMode }) => {
     </GlassBar>
   );
 };
-
-export default BottomBar;

@@ -1,1 +1,1 @@
-export { default as Centered } from './centered';
+export * from './centered/styles';

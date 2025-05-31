@@ -1,13 +1,11 @@
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { FullSizeCentered } from '../..';
+import { FullSizeCentered } from '@components';
 
-function Loading() {
+export function Loading() {
   return (
     <FullSizeCentered>
       <CircularProgress />
     </FullSizeCentered>
   );
 }
-
-export default Loading;
