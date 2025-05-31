@@ -30,8 +30,8 @@
       // "@layouts": ["./src/presentation/layouts/index.ts"],
       "@pages": ["./src/presentation/pages"],
       // "@routes": ["./src/presentation/routes/index.ts"],
-      "@sections": ["./src/presentation/sections"]
-      // "@theme": ["./src/presentation/theme/index.ts"],
+      "@sections": ["./src/presentation/sections"],
+      "@theme": ["./src/presentation/theme/index.ts"]
 
       // // ==== TESTS ====
       // "@tests": ["./src/tests/index.ts"],
