@@ -1,14 +1,9 @@
 // src/routes.tsx
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { Page1, Page2, Page3 } from '@pages';
+import { Dashboard, EditFarmer, Search } from '@pages';
 
-import Page4 from '../pages/Page4';
-
-// Importe suas páginas aqui (muda para os paths corretos do seu projeto)
-
-// EXEMPLO: caso use lazy loading (recomendado em app real)
-// const Dashboard = React.lazy(() => import('@pages/Dashboard'));
+import AddFarmer from '../pages/add-farmer';
 
 export const AppRoutes = () => (
   <Routes>
@@ -16,10 +11,10 @@ export const AppRoutes = () => (
     <Route path="/" element={<Navigate to="/dashboard" />} />
 
     {/* Rotas principais */}
-    <Route path="/dashboard" element={<Page1 />} />
-    <Route path="/pesquisar" element={<Page2 />} />
-    <Route path="/cadastrar" element={<Page3 />} />
-    <Route path="/editar" element={<Page4 />} />
+    <Route path="/dashboard" element={<Dashboard />} />
+    <Route path="/pesquisar" element={<Search />} />
+    <Route path="/cadastrar" element={<AddFarmer />} />
+    <Route path="/editar" element={<EditFarmer />} />
 
     {/* 404 - Rota não encontrada */}
     <Route path="*" element={<div>Página não encontrada</div>} />

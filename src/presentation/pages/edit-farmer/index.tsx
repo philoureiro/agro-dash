@@ -4,12 +4,16 @@ import { Button, Typography } from '@mui/material';
 
 import { FullSizeCentered } from '@components';
 
-function Page4() {
+export default function EditFarmer() {
   return (
     <>
-      <meta name="title" content="Page 4" />
+      <meta
+        name="title"
+        content="
+      Edit Farmer"
+      />
       <FullSizeCentered>
-        <Typography variant="h3">Page 4</Typography>
+        <Typography variant="h3">Edit Farmer</Typography>
         <Button
           to={`/${Math.random().toString()}`}
           component={Link}
@@ -24,5 +28,3 @@ function Page4() {
     </>
   );
 }
-
-export default Page4;

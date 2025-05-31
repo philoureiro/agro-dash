@@ -2,15 +2,13 @@ import { Typography } from '@mui/material';
 
 import { FullSizeCentered } from '@components';
 
-function Page1() {
+export default function Search() {
   return (
     <>
-      <meta name="title" content="Page 1" />
+      <meta name="title" content="Search Farmer" />
       <FullSizeCentered>
-        <Typography variant="h3">Page 1</Typography>
+        <Typography variant="h3">Search Farmer</Typography>
       </FullSizeCentered>
     </>
   );
 }
-
-export default Page1;
