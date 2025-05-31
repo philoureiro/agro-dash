@@ -1,10 +1,10 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
 
+import { repository, title } from '@config';
+import { useThemeMode } from '@theme';
 import { useNotifications } from '@toolpad/core/useNotifications';
 
-import { repository, title } from '../../../config';
-import { useThemeMode } from '../../theme/hooks';
 import {
   ActionButton,
   Divider,

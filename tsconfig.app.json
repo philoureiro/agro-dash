@@ -31,13 +31,13 @@
       "@pages": ["./src/presentation/pages"],
       // "@routes": ["./src/presentation/routes/index.ts"],
       "@sections": ["./src/presentation/sections"],
-      "@theme": ["./src/presentation/theme/index.ts"]
+      "@theme": ["./src/presentation/theme/index.ts"],
 
       // // ==== TESTS ====
       // "@tests": ["./src/tests/index.ts"],
 
       // // ==== THIRD-PARTY ====
-      // "@config": ["./src/config/index.ts"]
+      "@config": ["./src/config"]
     },
 
     /* Bundler mode */

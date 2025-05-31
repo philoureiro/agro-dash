@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material';
 
-import jokes from '../../../config/it-jokes';
+import { jokes } from '@config';
 
 function getRandomJoke() {
   const randomIndex = Math.round(Math.random() * (jokes.length - 1));

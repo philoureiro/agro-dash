@@ -26,6 +26,7 @@ export default defineConfig({
       '@pages': path.resolve(__dirname, './src/presentation/pages'),
       '@sections': path.resolve(__dirname, './src/presentation/sections'),
       '@theme': path.resolve(__dirname, './src/presentation/theme'),
+      '@config': path.resolve(__dirname, './src/config'),
     },
   },
   server: {
