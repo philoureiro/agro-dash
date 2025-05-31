@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
+import { updateStatusBarColor } from '@theme';
 import { useAtom } from 'jotai';
 
 import { themeModeState } from './atoms';
@@ -7,6 +8,11 @@ import { ThemeMode } from './types';
 
 function useThemeMode() {
   const [themeMode, setThemeMode] = useAtom(themeModeState);
+
+  // Chama sempre que o tema mudar
+  useEffect(() => {
+    updateStatusBarColor(themeMode === ThemeMode.DARK);
+  }, [themeMode]);
 
   const toggle = useCallback(
     () =>

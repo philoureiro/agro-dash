@@ -74,7 +74,7 @@ export const Dashboard = () => {
       fontFamily: 'inherit',
       fontSize: 5,
       filter: 'none',
-      padding: 3,
+      padding: 4,
     },
   };
 

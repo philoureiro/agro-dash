@@ -1,5 +1,5 @@
 export const updateStatusBarColor = (isDark: boolean) => {
-  // Atualiza o theme-color
+  // Atualiza o theme-color para Android/Chrome e cia.
   let metaThemeColor = document.querySelector('meta[name="theme-color"]');
   if (!metaThemeColor) {
     metaThemeColor = document.createElement('meta');
@@ -8,7 +8,7 @@ export const updateStatusBarColor = (isDark: boolean) => {
   }
   metaThemeColor.setAttribute('content', isDark ? '#111' : '#fafafa');
 
-  // Para iOS
+  // Para iOS PWA: barra preta sólida (black) ou clara padrão (default)
   let metaAppleStatusBar = document.querySelector(
     'meta[name="apple-mobile-web-app-status-bar-style"]',
   );
@@ -17,5 +17,5 @@ export const updateStatusBarColor = (isDark: boolean) => {
     metaAppleStatusBar.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
     document.head.appendChild(metaAppleStatusBar);
   }
-  metaAppleStatusBar.setAttribute('content', isDark ? 'black-translucent' : 'default');
+  metaAppleStatusBar.setAttribute('content', isDark ? 'black' : 'default');
 };
