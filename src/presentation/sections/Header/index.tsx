@@ -2,7 +2,6 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import ThemeIcon from '@mui/icons-material/InvertColors';
 import DocsIcon from '@mui/icons-material/MenuBook';
 
-// Ícone de documentação
 import { repository, title } from '@config';
 import { useThemeMode } from '@theme';
 import { useNotifications } from '@toolpad/core/useNotifications';
@@ -12,12 +11,14 @@ import {
   Divider,
   GlassHeader,
   HeaderContent,
+  Image,
   LeftSection,
   RightSection,
   TitleButton,
   Tooltip,
 } from './styles';
 import { getRandomJoke } from './utils';
+import favicon from '/favicon.svg';
 
 interface HeaderProps {
   themeMode?: string;
@@ -45,6 +46,7 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
       <HeaderContent>
         <LeftSection>
           <TitleButton onClick={handleShowNotification} themeMode={currentTheme}>
+            <Image src={favicon} alt="Agro Dash ícone" />
             {title}
           </TitleButton>
         </LeftSection>
@@ -59,7 +61,7 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
               href="/docs"
               themeMode={currentTheme}
               data-pw="docs-button"
-              onClick={(e) => e.stopPropagation()} // só por via das dúvidas
+              onClick={(e) => e.stopPropagation()}
             >
               <DocsIcon />
             </ActionButton>
@@ -75,7 +77,7 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
               rel="noopener noreferrer"
               themeMode={currentTheme}
               tabIndex={0}
-              onClick={(e) => e.stopPropagation()} // Não é obrigatório, mas só por via das dúvidas
+              onClick={(e) => e.stopPropagation()}
             >
               <GitHubIcon />
             </ActionButton>
@@ -83,7 +85,7 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
 
           <Divider themeMode={currentTheme} />
 
-          {/* SÓ UM BOTÃO DE THEME! */}
+          {/* Botão de Theme */}
           <Tooltip data-tooltip="Switch theme">
             <ActionButton
               onClick={handleToggleTheme}

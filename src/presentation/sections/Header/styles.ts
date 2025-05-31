@@ -206,3 +206,13 @@ export const Tooltip = styled.div`
     }
   }
 `;
+
+export const Image = styled.img`
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  vertical-align: middle;
+  display: inline-block;
+`;
