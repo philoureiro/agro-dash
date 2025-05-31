@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "heroku-postbuild": "npm run build",
-    "start": "vite preview --port $PORT --host 0.0.0.0",
+    "start": "vite preview",
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:check": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\"",
     "ts:check": "tsc --noEmit"
@@ -34,6 +34,7 @@
     "styled-components": "^6.1.18",
     "typescript": "~5.7.2",
     "usehooks-ts": "^3.1.1",
+    "victory": "^37.3.6",
     "vite": "^6.2.0",
     "vite-plugin-pwa": "^0.21.1"
   },
