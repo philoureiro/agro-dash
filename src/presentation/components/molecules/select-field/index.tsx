@@ -1,13 +1,14 @@
-import React from "react"
+import React from 'react';
 
-import { FieldContainer, SelectField, InputLabel } from "./styles"
+import { FieldContainer, InputLabel, SelectField } from './styles';
 
 interface SelectProps {
-  label: string // Rótulo do campo
-  value: string // Valor selecionado
-  onChange: (value: string) => void // Função chamada ao alterar o valor
-  options: { value: string; label: string }[] // Opções do select
-  style?: React.CSSProperties // Estilo opcional
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: { value: string; label: string }[];
+  themeMode?: string; // Adicione a prop de tema
+  style?: React.CSSProperties;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -15,12 +16,13 @@ export const Select: React.FC<SelectProps> = ({
   value,
   onChange,
   options,
+  themeMode,
   style,
 }) => {
   return (
     <FieldContainer style={style}>
-      <InputLabel>{label}</InputLabel>
-      <SelectField value={value} onChange={(e) => onChange(e.target.value)}>
+      <InputLabel themeMode={themeMode}>{label}</InputLabel>
+      <SelectField themeMode={themeMode} value={value} onChange={(e) => onChange(e.target.value)}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -28,5 +30,5 @@ export const Select: React.FC<SelectProps> = ({
         ))}
       </SelectField>
     </FieldContainer>
-  )
-}
+  );
+};
