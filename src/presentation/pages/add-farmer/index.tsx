@@ -647,9 +647,9 @@ export const AddFarmer = () => {
                       <span className="message">
                         {fieldStates.documentoValid
                           ? produtor.documento.replace(/\D/g, '').length === 11
-                            ? '✅ CPF válido!'
-                            : '✅ CNPJ válido!'
-                          : `❌ ${produtor.documento.replace(/\D/g, '').length <= 11 ? 'CPF' : 'CNPJ'} inválido. Verifique os dígitos.`}
+                            ? 'CPF válido!'
+                            : 'CNPJ válido!'
+                          : ` ${produtor.documento.replace(/\D/g, '').length <= 11 ? 'CPF' : 'CNPJ'} inválido. Verifique os dígitos.`}
                       </span>
                     </DocumentValidation>
                   )}
@@ -1029,7 +1029,7 @@ export const AddFarmer = () => {
               <Button
                 style={{
                   fontSize: 20,
-                  width: '350px',
+                  width: '400px',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}

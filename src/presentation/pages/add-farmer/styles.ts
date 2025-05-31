@@ -177,7 +177,7 @@ export const HeroImageOverlay = styled.div<{ isDark: boolean }>`
   background: ${({ isDark }) =>
     isDark
       ? 'linear-gradient(135deg, rgba(15, 20, 25, 0.7), rgba(26, 35, 50, 0.8))'
-      : 'linear-gradient(135deg, rgba(248, 250, 252, 0.7), rgba(226, 232, 240, 0.8))'};
+      : 'linear-gradient(135deg, rgba(129, 129, 130, 0.7), rgba(185, 185, 185, 0.8))'};
   pointer-events: none;
 `;
 
@@ -198,7 +198,6 @@ export const AnimatedCounter = styled.div<{ isDark: boolean }>`
 
   &:hover {
     transform: translateY(-3px) scale(1.05);
-    animation: ${pulse} 0.6s ease-in-out;
   }
 
   strong {
@@ -653,7 +652,7 @@ export const SaveDraftButton = styled.button<{ isDark: boolean }>`
   backdrop-filter: blur(10px);
 
   font-size: 12px;
-  max-width: 350px;
+  max-width: 400px;
 
   &:hover {
     background: ${({ isDark }) => (isDark ? '#5ad0ff' : '#3b82f6')};
