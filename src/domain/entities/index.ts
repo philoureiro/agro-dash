@@ -6,3 +6,4 @@ export * from './farm';
 export * from './producer';
 export * from './report-data';
 export * from './search-params';
+export * from './settings';

@@ -1,7 +1,7 @@
 // src/routes.tsx
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { AddFarmer, Dashboard, EditFarmer, Markdown, Search } from '@pages';
+import { AddFarmer, Dashboard, EditFarmer, Markdown, Search, Settings } from '@pages';
 
 export const AppRoutes = () => (
   <Routes>
@@ -14,6 +14,7 @@ export const AppRoutes = () => (
     <Route path="/pesquisar" element={<Search />} />
     <Route path="/cadastrar" element={<AddFarmer />} />
     <Route path="/editar" element={<EditFarmer />} />
+    <Route path="/configuracoes" element={<Settings />} />
 
     <Route path="*" element={<div>Página não encontrada</div>} />
   </Routes>

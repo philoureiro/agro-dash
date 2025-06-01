@@ -2,7 +2,7 @@
 import React from 'react';
 import { FiPlusCircle } from 'react-icons/fi';
 import { MdOutlineEditLocation } from 'react-icons/md';
-import { TbLayoutDashboardFilled } from 'react-icons/tb';
+import { TbLayoutDashboardFilled, TbSettingsFilled } from 'react-icons/tb';
 import { TbMapSearch } from 'react-icons/tb';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -13,6 +13,11 @@ const NAV_ITEMS = [
   { label: 'Pesquisar', icon: <TbMapSearch />, path: '/pesquisar' },
   { label: 'Cadastrar', icon: <FiPlusCircle />, path: '/cadastrar' },
   { label: 'Editar', icon: <MdOutlineEditLocation />, path: '/editar' },
+  {
+    label: 'Config',
+    icon: <TbSettingsFilled />,
+    path: '/configuracoes',
+  },
 ];
 
 interface BottomBarProps {
