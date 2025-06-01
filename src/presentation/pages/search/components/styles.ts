@@ -502,10 +502,37 @@ export const ActionButton = styled.button<{ $isDark: boolean; $variant: 'edit' |
   }
 `;
 
-// 📊 ESTATÍSTICAS SUPREMAS
 export const ItemStats = styled.div`
   margin-top: 1.5rem;
   animation: ${fadeInUp} 0.8s ease-out 0.6s both;
+
+  /* 🔧 CORREÇÃO: Altura máxima com scroll para evitar cortes */
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  /* 🎨 Scrollbar customizada para estatísticas - TEMA VERDE */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(55, 203, 131, 0.08);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #37cb83, #10b981);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #10b981, #37cb83);
+  }
+
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #37cb83 rgba(55, 203, 131, 0.08);
 `;
 
 export const StatRow = styled.div`
@@ -514,6 +541,7 @@ export const StatRow = styled.div`
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  min-height: 40px; /* 🔧 NOVA LINHA: Altura mínima para consistência */
 `;
 
 export const StatLabel = styled.div<{ $isDark: boolean }>`
