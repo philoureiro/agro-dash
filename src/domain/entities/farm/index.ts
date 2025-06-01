@@ -1,6 +1,5 @@
+import { Crop } from '@entities';
 import { States } from '@enums';
-
-import { Crop } from '../crop';
 
 export interface Farm {
   id: string; // UUID único da fazenda
@@ -9,6 +8,7 @@ export interface Farm {
   city: string; // Cidade onde está localizada
   state: States; // Estado (enum para padronização)
   zipCode?: string; // CEP da propriedade (opcional)
+  farmPhoto?: string; // 🔥 URL da foto da fazenda (opcional)
   totalArea: number; // Área total em hectares
   agriculturalArea: number; // Área agricultável em hectares
   vegetationArea: number; // Área de vegetação em hectares

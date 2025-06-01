@@ -29,6 +29,8 @@ export default defineConfig({
       '@config': path.resolve(__dirname, './src/config'),
       '@enums': path.resolve(__dirname, './src/domain/enums'),
       '@entities': path.resolve(__dirname, './src/domain/entities'),
+      '@mocks': path.resolve(__dirname, './src/infrastructure/mocks'),
+      '@seed': path.resolve(__dirname, './src/infrastructure/seed'),
     },
   },
   server: {

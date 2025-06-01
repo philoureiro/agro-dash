@@ -7,6 +7,7 @@ export interface Producer {
   name: string; // Nome completo ou razão social
   email?: string; // Email para contato (opcional)
   phone?: string; // Telefone para contato (opcional)
+  profilePhoto?: string; // 🔥 URL da foto do produtor (opcional)
   createdAt: Date; // Data de cadastro no sistema
   updatedAt: Date; // Data da última atualização
   active: boolean; // Status ativo/inativo (soft delete)

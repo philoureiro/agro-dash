@@ -39,7 +39,9 @@
       // "@tests": ["./src/tests/index.ts"],
 
       // // ==== THIRD-PARTY ====
-      "@config": ["./src/config"]
+      "@config": ["./src/config"],
+      "@mocks": ["./src/infrastructure/mocks"],
+      "@seed": ["./src/infrastructure/seed"]
     },
 
     /* Bundler mode */
