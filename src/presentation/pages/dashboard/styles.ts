@@ -83,14 +83,7 @@ export const DashboardContainer = styled.div<{ isDark: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${({ isDark }) =>
-      isDark
-        ? `radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
-           radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-           radial-gradient(circle at 40% 80%, rgba(245, 158, 11, 0.1) 0%, transparent 50%)`
-        : `radial-gradient(circle at 20% 50%, rgba(34, 197, 94, 0.05) 0%, transparent 50%),
-           radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
-           radial-gradient(circle at 40% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 50%)`};
+
     pointer-events: none;
     z-index: 0;
   }
@@ -101,10 +94,8 @@ export const DashboardContainer = styled.div<{ isDark: boolean }>`
   }
 
   .dashboard-title {
-    background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #f59e0b 100%);
     background-size: 200% 200%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+
     background-clip: text;
     animation: ${gradientShift} 4s ease infinite;
     font-weight: 800;
@@ -117,6 +108,11 @@ export const DashboardContainer = styled.div<{ isDark: boolean }>`
     opacity: 0.8;
     font-size: clamp(1rem, 2.5vw, 1.25rem);
     font-weight: 500;
+    margin-left: 14%;
+
+    @media (max-width: 768px) {
+      margin-left: 12%;
+    }
   }
 
   @media (max-width: 768px) {
@@ -360,9 +356,6 @@ export const InsightsSection = styled.section`
   .insights-title {
     margin-bottom: 2rem;
     text-align: center;
-    background: linear-gradient(135deg, #10b981, #3b82f6, #f59e0b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 800;
   }
@@ -532,7 +525,7 @@ export const FilterSection = styled.div`
 `;
 
 // 🏷️ CHIP DE FILTRO
-export const FilterChip = styled.button<{ isActive?: boolean }>`
+export const FilterChip = styled.button<{ isActive?: boolean; isDark?: boolean }>`
   padding: 0.5rem 1rem;
   border-radius: 2rem;
   border: 1px solid ${({ theme }) => theme.palette?.divider || '#E5E7EB'};
@@ -540,8 +533,8 @@ export const FilterChip = styled.button<{ isActive?: boolean }>`
     isActive
       ? theme.palette?.primary?.main || '#10B981'
       : theme.palette?.background?.paper || 'transparent'};
-  color: ${({ isActive, theme }) =>
-    isActive ? '#ffffff' : theme.palette?.text?.primary || '#374151'};
+
+  color: ${({ isDark }) => (isDark ? '#F8FAFC' : '#1E293B')};
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
