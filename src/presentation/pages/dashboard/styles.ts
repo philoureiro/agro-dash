@@ -279,25 +279,66 @@ export const ChartGrid = styled.div`
   }
 `;
 
-// 📈 CARD DO GRÁFICO
 export const ChartCard = styled.div<{ delay?: number }>`
-  background: ${({ theme }) => theme.palette?.background?.paper || 'rgba(255, 255, 255, 0.1)'};
-  backdrop-filter: blur(20px);
-  border: 1px solid ${({ theme }) => theme.palette?.divider || 'rgba(255, 255, 255, 0.1)'};
+  background: ${({ theme }) => theme.palette?.background?.paper || 'rgba(255,255,255,0.1)'};
   border-radius: 1.5rem;
   padding: 1.5rem;
   position: relative;
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 20px rgba(44, 62, 80, 0.07);
+  overflow: visible;
+  border: 2px solid transparent;
+  z-index: 0;
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: ${fadeInUp} 0.8s ease;
   animation-delay: ${({ delay = 0 }) => delay}ms;
   animation-fill-mode: both;
 
+  /* Pseudo para BORDAS APENAS */
+  &::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 1.5rem;
+    z-index: 2;
+    border: 1px solid transparent;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #f59e0b, #10b981);
+    background-size: 300% 100%;
+    opacity: 0;
+    transition: opacity 0.4s;
+    /* Trick para só aparecer nas bordas */
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0) padding-box;
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0) padding-box;
+    -webkit-mask-composite: xor;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    animation: borderShimmer 3.2s linear infinite;
+  }
+
+  @keyframes borderShimmer {
+    100% {
+      background-position: 300% 0;
+    }
+  }
+
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-4px) scale(1.01);
     box-shadow:
-      0 20px 40px rgba(0, 0, 0, 0.1),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
+      0 0 0 2px #10b981,
+      0 20px 40px rgba(0, 0, 0, 0.09);
   }
 
   @media (max-width: 640px) {

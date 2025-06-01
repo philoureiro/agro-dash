@@ -16,6 +16,7 @@ import {
 } from 'victory';
 
 import { AnimatedCounter } from './components/AnimatedCounter';
+import { ChartCardComponent } from './components/chartCardComponent';
 import { ClientOnly } from './components/clientOnly';
 import { CHART_COLORS } from './config';
 import {
@@ -433,7 +434,7 @@ export const Dashboard = () => {
         <ChartsSection>
           <ChartGrid>
             {/* 🗺️ FAZENDAS POR ESTADO - CORRIGIDO */}
-            <ChartCard delay={600}>
+            <ChartCardComponent delay={600}>
               <ChartHeader>
                 <ChartTitle>🗺️ Fazendas por Estado</ChartTitle>
                 <ChartSubtitle>
@@ -470,10 +471,10 @@ export const Dashboard = () => {
                   key={`farms-chart-${selectedFilter}`}
                 />
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 🌾 DISTRIBUIÇÃO DE CULTURAS - CORRIGIDO */}
-            <ChartCard delay={700}>
+            <ChartCardComponent delay={700}>
               <ChartHeader>
                 <ChartTitle>🌾 Culturas Plantadas</ChartTitle>
                 <ChartSubtitle>
@@ -514,10 +515,10 @@ export const Dashboard = () => {
                   />
                 </VictoryChart>
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 🌍 USO DO SOLO - CORRIGIDO */}
-            <ChartCard delay={800}>
+            <ChartCardComponent delay={800}>
               <ChartHeader>
                 <ChartTitle>🌍 Uso do Solo</ChartTitle>
                 <ChartSubtitle>Áreas agricultáveis vs vegetação</ChartSubtitle>
@@ -548,10 +549,10 @@ export const Dashboard = () => {
                   labels={({ datum }) => `${datum.type}\n${datum.percentage.toFixed(1)}%`}
                 />
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 📊 TIPOS DE PRODUTORES - CORRIGIDO */}
-            <ChartCard delay={900}>
+            <ChartCardComponent delay={900}>
               <ChartHeader>
                 <ChartTitle>👥 Tipos de Produtores</ChartTitle>
                 <ChartSubtitle>Pessoa Física vs Pessoa Jurídica</ChartSubtitle>
@@ -582,10 +583,10 @@ export const Dashboard = () => {
                   labels={({ datum }) => `${datum.type}\n${datum.percentage.toFixed(1)}%`}
                 />
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 📏 DISTRIBUIÇÃO POR TAMANHO - CORRIGIDO */}
-            <ChartCard delay={1000}>
+            <ChartCardComponent delay={1000}>
               <ChartHeader>
                 <ChartTitle>📏 Fazendas por Tamanho</ChartTitle>
                 <ChartSubtitle>
@@ -625,10 +626,10 @@ export const Dashboard = () => {
                   />
                 </VictoryChart>
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 🏆 TOP ESTADOS POR ÁREA - CORRIGIDO */}
-            <ChartCard delay={1100}>
+            <ChartCardComponent delay={1100}>
               <ChartHeader>
                 <ChartTitle>🏆 Top Estados por Área</ChartTitle>
                 <ChartSubtitle>
@@ -670,10 +671,10 @@ export const Dashboard = () => {
                   />
                 </VictoryChart>
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 📅 CULTURAS POR ANO - CORRIGIDO */}
-            <ChartCard delay={1200}>
+            <ChartCardComponent delay={1200}>
               <ChartHeader>
                 <ChartTitle>📅 Culturas por Ano</ChartTitle>
                 <ChartSubtitle>Evolução temporal das safras</ChartSubtitle>
@@ -711,10 +712,10 @@ export const Dashboard = () => {
                   />
                 </VictoryChart>
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
 
             {/* 📊 MÉTRICAS DE PERFORMANCE - CORRIGIDO E TRADUZIDO */}
-            <ChartCard delay={1300}>
+            <ChartCardComponent delay={1300}>
               <ChartHeader>
                 <ChartTitle>📊 Métricas de Performance</ChartTitle>
                 <ChartSubtitle>Produtividade, Sustentabilidade e Tecnologia</ChartSubtitle>
@@ -749,7 +750,7 @@ export const Dashboard = () => {
                   />
                 </VictoryChart>
               </ResponsiveChart>
-            </ChartCard>
+            </ChartCardComponent>
           </ChartGrid>
         </ChartsSection>
 
