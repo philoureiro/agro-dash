@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 
 import { CustomThemeProvider } from '@theme';
 import { ThemeGate } from '@theme';
-import { NotificationsProvider } from '@toolpad/core/useNotifications';
 import { Provider as JotaiProvider } from 'jotai';
 
 // ajuste o path conforme seu projeto
@@ -16,11 +15,9 @@ function render(App: ComponentType) {
     <StrictMode>
       <JotaiProvider>
         <CustomThemeProvider>
-          <NotificationsProvider>
-            <ThemeGate>
-              <App />
-            </ThemeGate>
-          </NotificationsProvider>
+          <ThemeGate>
+            <App />
+          </ThemeGate>
         </CustomThemeProvider>
       </JotaiProvider>
     </StrictMode>,

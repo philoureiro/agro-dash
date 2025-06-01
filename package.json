@@ -13,11 +13,8 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
-    "@toolpad/core": "^0.12.1",
     "@vitejs/plugin-react": "^4.3.4",
     "html2canvas": "^1.4.1",
     "jotai": "^2.12.1",

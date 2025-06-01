@@ -3,7 +3,6 @@ import DocsIcon from '@mui/icons-material/MenuBook';
 
 import { repository, title } from '@config';
 import { useThemeMode } from '@theme';
-import { useNotifications } from '@toolpad/core/useNotifications';
 
 import {
   ActionButton,
@@ -16,7 +15,6 @@ import {
   TitleButton,
   Tooltip,
 } from './styles';
-import { getRandomJoke } from './utils';
 import favicon from '/favicon.svg';
 
 interface HeaderProps {
@@ -26,20 +24,17 @@ interface HeaderProps {
 export default function Header({ themeMode: propThemeMode }: HeaderProps) {
   const { themeMode } = useThemeMode();
   const currentTheme = propThemeMode || themeMode;
-  const notifications = useNotifications();
-
-  function handleShowNotification(e: React.MouseEvent) {
-    e.stopPropagation();
-    notifications.show(getRandomJoke(), {
-      autoHideDuration: 5000,
-    });
-  }
 
   return (
     <GlassHeader themeMode={currentTheme} data-pw={`theme-${currentTheme}`}>
       <HeaderContent>
         <LeftSection>
-          <TitleButton onClick={handleShowNotification} themeMode={currentTheme}>
+          <TitleButton
+            onClick={() => {
+              window.location.href = '/';
+            }}
+            themeMode={currentTheme}
+          >
             <Image src={favicon} alt="Agro Dash ícone" />
             {title}
           </TitleButton>
