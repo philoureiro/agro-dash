@@ -31,6 +31,8 @@ export default defineConfig({
       '@entities': path.resolve(__dirname, './src/domain/entities'),
       '@mocks': path.resolve(__dirname, './src/infrastructure/mocks'),
       '@seed': path.resolve(__dirname, './src/infrastructure/seed'),
+      '@validations': path.resolve(__dirname, './src/domain/validations'),
+      '@storage': path.resolve(__dirname, './src/application/storage'),
     },
   },
   server: {
