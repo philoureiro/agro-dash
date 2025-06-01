@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Text } from '@components';
+import { useAppStore } from '@storage';
 import { useThemeMode } from '@theme';
 
 import {
@@ -31,147 +31,333 @@ import {
   ToggleSwitch,
 } from './styles';
 
-// 🎯 TIPOS
-interface AppStats {
-  totalSessions: number;
-  totalTimeSpent: string;
-  lastAccess: string;
-  settingsChanged: number;
-}
-
-interface SettingsState {
-  theme: 'light' | 'dark' | 'auto';
-  autoSave: boolean;
-  notifications: boolean;
-  analytics: boolean;
-  compactMode: boolean;
-  animations: boolean;
-}
-
 // 📊 COMPONENTE PRINCIPAL
 export const Settings: React.FC = () => {
   const { themeMode, toggle: toggleThemeMode } = useThemeMode();
   const isDark = themeMode === 'dark';
 
-  // 🎯 ESTADOS
-  const [settings, setSettings] = useState<SettingsState>({
-    theme: 'auto',
-    autoSave: true,
-    notifications: true,
-    analytics: false,
-    compactMode: false,
-    animations: true,
+  // 🎯 HOOKS DO APP STORE
+  const { getAllData, clearAllData } = useAppStore();
+
+  // 🎯 ESTADOS LOCAIS
+  const [compactMode, setCompactMode] = useState(() => {
+    return localStorage.getItem('agrodash-compact-mode') === 'true';
   });
 
-  const [stats, setStats] = useState<AppStats>({
-    totalSessions: 47,
-    totalTimeSpent: '2h 34m',
-    lastAccess: 'Hoje, 15:42',
-    settingsChanged: 12,
+  const [animations, setAnimations] = useState(() => {
+    return localStorage.getItem('agrodash-animations') !== 'false';
   });
 
-  const [showResetModal, setShowResetModal] = useState(false);
+  const [autoSave, setAutoSave] = useState(() => {
+    return localStorage.getItem('agrodash-auto-save') !== 'false';
+  });
+
+  const [notifications, setNotifications] = useState(() => {
+    return localStorage.getItem('agrodash-notifications') !== 'false';
+  });
+
+  // Estados de controle
+  const [showResetSystemModal, setShowResetSystemModal] = useState(false);
+  const [showResetDataModal, setShowResetDataModal] = useState(false);
+  const [showResetConfigModal, setShowResetConfigModal] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // 💾 CARREGA CONFIGURAÇÕES SALVAS
+  // Stats mock
+  const [totalSessions] = useState(47);
+  const [totalTimeSpent] = useState('2h 34m');
+  const [activeSettings, setActiveSettings] = useState(3);
+  const [lastAccess] = useState('Hoje, 15:42');
+
+  // 📊 CALCULA CONFIGURAÇÕES ATIVAS
   useEffect(() => {
-    const savedSettings = localStorage.getItem('agrodash-settings');
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        setSettings((prev) => ({ ...prev, ...parsed }));
-      } catch (error) {
-        console.warn('Erro ao carregar configurações:', error);
-      }
-    }
+    const count = [
+      isDark ? 1 : 0,
+      compactMode ? 1 : 0,
+      animations ? 1 : 0,
+      autoSave ? 1 : 0,
+      notifications ? 1 : 0,
+    ].reduce((sum, val) => sum + val, 0);
 
-    // 📊 SIMULA ESTATÍSTICAS
-    const savedStats = localStorage.getItem('agrodash-stats');
-    if (savedStats) {
-      try {
-        const parsed = JSON.parse(savedStats);
-        setStats((prev) => ({ ...prev, ...parsed }));
-      } catch (error) {
-        console.warn('Erro ao carregar estatísticas:', error);
-      }
-    }
-  }, []);
+    setActiveSettings(count);
+  }, [isDark, compactMode, animations, autoSave, notifications]);
 
-  // 💾 SALVA CONFIGURAÇÕES
-  const saveSettings = (newSettings: SettingsState) => {
-    setSettings(newSettings);
-    localStorage.setItem('agrodash-settings', JSON.stringify(newSettings));
+  // 🎨 APLICA MUDANÇAS CSS
+  useEffect(() => {
+    // Animações globais
+    document.documentElement.style.setProperty('--animations-enabled', animations ? '1' : '0');
 
-    // 📊 Atualiza stats
-    const newStats = {
-      ...stats,
-      settingsChanged: stats.settingsChanged + 1,
-      lastAccess: new Date().toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    };
-    setStats(newStats);
-    localStorage.setItem('agrodash-stats', JSON.stringify(newStats));
+    // Salva no localStorage
+    localStorage.setItem('agrodash-animations', animations.toString());
+  }, [animations]);
+
+  // 🎯 APLICA MODO COMPACTO
+  useEffect(() => {
+    document.documentElement.classList.toggle('compact-mode', compactMode);
+    localStorage.setItem('agrodash-compact-mode', compactMode.toString());
+  }, [compactMode]);
+
+  // 💾 SALVA OUTRAS CONFIGURAÇÕES
+  useEffect(() => {
+    localStorage.setItem('agrodash-auto-save', autoSave.toString());
+  }, [autoSave]);
+
+  useEffect(() => {
+    localStorage.setItem('agrodash-notifications', notifications.toString());
+  }, [notifications]);
+
+  // 🎨 HANDLERS DE TOGGLE
+  const handleThemeToggle = () => {
+    toggleThemeMode();
   };
 
-  // 🎨 ALTERNA CONFIGURAÇÃO
-  const toggleSetting = (key: keyof SettingsState) => {
-    const newSettings = {
-      ...settings,
-      [key]: !settings[key],
-    };
-    saveSettings(newSettings);
+  const handleAutoSaveToggle = () => {
+    setAutoSave((prev) => !prev);
+  };
 
-    // 🎯 APLICA TEMA IMEDIATAMENTE
-    if (key === 'theme') {
-      toggleThemeMode();
+  const handleNotificationsToggle = () => {
+    setNotifications((prev) => !prev);
+  };
+
+  // 📤 BACKUP COMPLETO DOS DADOS (FAZENDAS/PRODUTORES/CULTURAS)
+  const handleExportData = async () => {
+    try {
+      setIsExporting(true);
+
+      const allData = getAllData();
+
+      const exportData = {
+        timestamp: new Date().toISOString(),
+        version: '2.0.0',
+        type: 'complete-data',
+        data: {
+          producers: allData.producers,
+          farms: allData.farms,
+          crops: allData.crops,
+          // Outros dados do sistema
+          dashboardCache: localStorage.getItem('agrodash-dashboard-cache'),
+          userPreferences: localStorage.getItem('agrodash-user-preferences'),
+        },
+        stats: {
+          totalProducers: allData.producers.length,
+          totalFarms: allData.farms.length,
+          totalCrops: allData.crops.length,
+        },
+      };
+
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `agrodash-dados-completos-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+      alert('✅ Backup completo dos dados exportado com sucesso!');
+    } catch (error) {
+      console.error('Erro no export:', error);
+      setError('Erro ao exportar dados completos');
+    } finally {
+      setIsExporting(false);
     }
   };
 
-  // 🔄 RESET COMPLETO
-  const handleReset = async () => {
+  // ⚙️ BACKUP APENAS DAS CONFIGURAÇÕES
+  const handleExportSettings = async () => {
+    try {
+      setIsExporting(true);
+
+      const exportData = {
+        timestamp: new Date().toISOString(),
+        version: '2.0.0',
+        type: 'settings-only',
+        settings: {
+          theme: isDark ? 'dark' : 'light',
+          compactMode,
+          animations,
+          autoSave,
+          notifications,
+        },
+        stats: {
+          totalSessions,
+          totalTimeSpent,
+          activeSettings,
+          lastAccess,
+        },
+      };
+
+      const dataStr = JSON.stringify(exportData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `agrodash-configuracoes-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+      alert('✅ Configurações exportadas com sucesso!');
+    } catch (error) {
+      console.error('Erro no export:', error);
+      setError('Erro ao exportar configurações');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // 🔄 RESET COMPLETO DO SISTEMA (TUDO)
+  const handleResetSystem = async () => {
     setIsResetting(true);
 
-    // 🎭 SIMULA PROCESSO
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // 🗑️ LIMPA TUDO
-    localStorage.removeItem('agrodash-settings');
-    localStorage.removeItem('agrodash-stats');
-    localStorage.removeItem('agrodash-dashboard-data');
-    localStorage.removeItem('agrodash-user-preferences');
+      // Limpa TUDO
+      localStorage.clear();
+      clearAllData();
 
-    // 🔄 RESET ESTADOS
-    const defaultSettings: SettingsState = {
-      theme: 'auto',
-      autoSave: true,
-      notifications: true,
-      analytics: false,
-      compactMode: false,
-      animations: true,
-    };
+      // Reseta configurações visuais
 
-    const defaultStats: AppStats = {
-      totalSessions: 1,
-      totalTimeSpent: '0m',
-      lastAccess: 'Agora',
-      settingsChanged: 0,
-    };
+      setAutoSave(true);
+      setNotifications(true);
 
-    setSettings(defaultSettings);
-    setStats(defaultStats);
-    setIsResetting(false);
-    setShowResetModal(false);
+      setIsResetting(false);
+      setShowResetSystemModal(false);
 
-    // 🎉 FEEDBACK
-    alert('✅ Dados restaurados com sucesso!\nTodas as configurações foram redefinidas.');
+      alert('✅ Sistema completamente restaurado!\nTudo foi removido e resetado.');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error('Erro ao resetar sistema:', error);
+      setError('Erro ao restaurar sistema');
+      setIsResetting(false);
+    }
+  };
+
+  // 📊 RESET APENAS DOS DADOS (FAZENDAS/PRODUTORES/CULTURAS)
+  const handleResetData = async () => {
+    setIsResetting(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Limpa apenas dados do negócio
+      clearAllData();
+
+      // Remove dados específicos do localStorage
+      const dataKeys = [
+        'agro-dash-producers',
+        'agro-dash-farms',
+        'agro-dash-crops',
+        'agro-dash-app',
+        'agrodash-dashboard-cache',
+        'agrodash-user-preferences',
+      ];
+
+      dataKeys.forEach((key) => {
+        localStorage.removeItem(key);
+      });
+
+      setIsResetting(false);
+      setShowResetDataModal(false);
+
+      alert('✅ Dados do sistema removidos!\nFazendas, produtores e culturas foram resetados.');
+    } catch (error) {
+      console.error('Erro ao resetar dados:', error);
+      setError('Erro ao restaurar dados');
+      setIsResetting(false);
+    }
+  };
+
+  // ⚙️ RESET APENAS DAS CONFIGURAÇÕES
+  const handleResetConfig = async () => {
+    setIsResetting(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Remove apenas configurações
+      const configKeys = [
+        'agrodash-compact-mode',
+        'agrodash-animations',
+        'agrodash-auto-save',
+        'agrodash-notifications',
+        'agro-dash-app',
+        'theme-mode',
+      ];
+
+      configKeys.forEach((key) => {
+        localStorage.removeItem(key);
+      });
+
+      // Reseta configurações visuais
+      setCompactMode(false);
+      setAnimations(true);
+      setAutoSave(true);
+      setNotifications(true);
+
+      // Remove classes CSS
+      document.documentElement.classList.remove('compact-mode');
+      document.documentElement.style.setProperty('--animations-enabled', '1');
+
+      setIsResetting(false);
+      setShowResetConfigModal(false);
+
+      alert('✅ Configurações restauradas!\nTodas as preferências voltaram ao padrão.');
+    } catch (error) {
+      console.error('Erro ao resetar configurações:', error);
+      setError('Erro ao restaurar configurações');
+      setIsResetting(false);
+    }
+  };
+
+  // 🚨 HANDLER DE ERRO
+  const handleErrorDismiss = () => {
+    setError(null);
   };
 
   return (
     <SettingsContainer isDark={isDark}>
+      {/* ⚠️ ALERTA DE ERRO */}
+      {error && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#ef4444',
+            color: 'white',
+            padding: '12px 20px',
+            borderRadius: '8px',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+          }}
+        >
+          <span>❌ {error}</span>
+          <button
+            onClick={handleErrorDismiss}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              fontSize: '16px',
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* 🏆 HEADER */}
       <SettingsHeader>
         <SettingsTitle isDark={isDark}>⚙️ Configurações</SettingsTitle>
@@ -196,38 +382,14 @@ export const Settings: React.FC = () => {
 
           <SettingOption delay={100}>
             <OptionInfo>
-              <OptionLabel isDark={isDark}>Tema Escuro</OptionLabel>
+              <OptionLabel isDark={isDark}>{`Tema ${isDark ? 'Escuro' : 'Claro'}`}</OptionLabel>
               <OptionSubtext isDark={isDark}>
-                Ativa o modo escuro para reduzir o cansaço visual
+                {isDark
+                  ? 'Voltar para o modo claro para facilitar leitura'
+                  : 'Ativa o modo escuro para reduzir cansaço visual'}
               </OptionSubtext>
             </OptionInfo>
-            <ToggleSwitch isActive={isDark} isDark={isDark} onClick={() => toggleThemeMode()} />
-          </SettingOption>
-
-          <SettingOption delay={200}>
-            <OptionInfo>
-              <OptionLabel isDark={isDark}>Modo Compacto</OptionLabel>
-              <OptionSubtext isDark={isDark}>
-                Reduz espaçamentos para mostrar mais conteúdo
-              </OptionSubtext>
-            </OptionInfo>
-            <ToggleSwitch
-              isActive={settings.compactMode}
-              isDark={isDark}
-              onClick={() => toggleSetting('compactMode')}
-            />
-          </SettingOption>
-
-          <SettingOption delay={300}>
-            <OptionInfo>
-              <OptionLabel isDark={isDark}>Animações</OptionLabel>
-              <OptionSubtext isDark={isDark}>Habilita animações suaves na interface</OptionSubtext>
-            </OptionInfo>
-            <ToggleSwitch
-              isActive={settings.animations}
-              isDark={isDark}
-              onClick={() => toggleSetting('animations')}
-            />
+            <ToggleSwitch isActive={isDark} isDark={isDark} onClick={handleThemeToggle} />
           </SettingOption>
         </SettingsCard>
 
@@ -250,10 +412,20 @@ export const Settings: React.FC = () => {
                 Salva alterações automaticamente conforme você trabalha
               </OptionSubtext>
             </OptionInfo>
+            <ToggleSwitch isActive={autoSave} isDark={isDark} onClick={handleAutoSaveToggle} />
+          </SettingOption>
+
+          <SettingOption delay={200}>
+            <OptionInfo>
+              <OptionLabel isDark={isDark}>Notificações</OptionLabel>
+              <OptionSubtext isDark={isDark}>
+                Receba alertas sobre atualizações importantes
+              </OptionSubtext>
+            </OptionInfo>
             <ToggleSwitch
-              isActive={settings.autoSave}
+              isActive={notifications}
               isDark={isDark}
-              onClick={() => toggleSetting('autoSave')}
+              onClick={handleNotificationsToggle}
             />
           </SettingOption>
         </SettingsCard>
@@ -270,153 +442,181 @@ export const Settings: React.FC = () => {
 
           <StatsSection>
             <StatItem isDark={isDark} delay={100}>
-              <StatValue isDark={isDark}>{stats.totalSessions}</StatValue>
+              <StatValue isDark={isDark}>{totalSessions}</StatValue>
               <StatLabel isDark={isDark}>Sessões</StatLabel>
             </StatItem>
 
             <StatItem isDark={isDark} delay={200}>
-              <StatValue isDark={isDark}>{stats.totalTimeSpent}</StatValue>
+              <StatValue isDark={isDark}>{totalTimeSpent}</StatValue>
               <StatLabel isDark={isDark}>Tempo Total</StatLabel>
             </StatItem>
 
             <StatItem isDark={isDark} delay={300}>
-              <StatValue isDark={isDark}>{stats.settingsChanged}</StatValue>
-              <StatLabel isDark={isDark}>Configurações</StatLabel>
+              <StatValue isDark={isDark}>{activeSettings}</StatValue>
+              <StatLabel isDark={isDark}>Config. Ativas</StatLabel>
             </StatItem>
           </StatsSection>
 
           <SettingOption delay={400}>
             <OptionInfo>
               <OptionLabel isDark={isDark}>Último Acesso</OptionLabel>
-              <OptionSubtext isDark={isDark}>{stats.lastAccess}</OptionSubtext>
+              <OptionSubtext isDark={isDark}>{lastAccess}</OptionSubtext>
             </OptionInfo>
           </SettingOption>
         </SettingsCard>
 
-        {/* 🔄 AÇÕES */}
+        {/* 📦 BACKUP DE DADOS */}
         <SettingsCard isDark={isDark} delay={300}>
           <CardHeader>
-            <CardIcon isDark={isDark}>🔄</CardIcon>
+            <CardIcon isDark={isDark}>📦</CardIcon>
             <div>
-              <CardTitle isDark={isDark}>Gerenciamento de Dados</CardTitle>
-              <CardDescription isDark={isDark}>Restaure ou exporte seus dados</CardDescription>
-            </div>
-          </CardHeader>
-
-          <SettingOption delay={100}>
-            <OptionInfo>
-              <OptionLabel isDark={isDark}>Backup de dados</OptionLabel>
-              <OptionSubtext isDark={isDark}>
-                Exporte todos os seus dados para um arquivo
-              </OptionSubtext>
-            </OptionInfo>
-            <ActionButton
-              variant="secondary"
-              isDark={isDark}
-              size="small"
-              onClick={() => {
-                const dataStr = JSON.stringify({ settings, stats }, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `agrodash-backup-${new Date().toISOString().slice(0, 10)}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-              }}
-            >
-              📥 Exportar
-            </ActionButton>
-          </SettingOption>
-
-          <SettingOption delay={200}>
-            <OptionInfo>
-              <OptionLabel isDark={isDark}>Restaurar Dados</OptionLabel>
-              <OptionSubtext isDark={isDark}>Restaura todos os dados salvos</OptionSubtext>
-            </OptionInfo>
-            <ActionButton
-              variant="danger"
-              isDark={isDark}
-              size="small"
-              onClick={() => setShowResetModal(true)}
-            >
-              🗑️ Restaurar
-            </ActionButton>
-          </SettingOption>
-        </SettingsCard>
-
-        <SettingsCard isDark={isDark} delay={300}>
-          <CardHeader>
-            <CardIcon isDark={isDark}>⚙️</CardIcon>
-            <div>
-              <CardTitle isDark={isDark}>Gerenciamento de Configuração</CardTitle>
+              <CardTitle isDark={isDark}>Backup dos Dados</CardTitle>
               <CardDescription isDark={isDark}>
-                Restaure ou exporte suas configurações
+                Exporta fazendas, produtores, culturas e dados do sistema
               </CardDescription>
             </div>
           </CardHeader>
 
           <SettingOption delay={100}>
             <OptionInfo>
-              <OptionLabel isDark={isDark}>Backup de Configurações</OptionLabel>
+              <OptionLabel isDark={isDark}>Dados Completos</OptionLabel>
               <OptionSubtext isDark={isDark}>
-                Exporte suas preferências para um arquivo
+                Fazendas, produtores, culturas e cache do sistema
               </OptionSubtext>
             </OptionInfo>
             <ActionButton
               variant="secondary"
               isDark={isDark}
               size="small"
-              onClick={() => {
-                const dataStr = JSON.stringify({ settings, stats }, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `agrodash-backup-${new Date().toISOString().slice(0, 10)}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-              }}
+              onClick={handleExportData}
+              disabled={isExporting}
             >
-              📥 Exportar
+              📦 Exportar Dados
             </ActionButton>
           </SettingOption>
+        </SettingsCard>
 
-          <SettingOption delay={200}>
+        {/* ⚙️ BACKUP DE CONFIGURAÇÕES */}
+        <SettingsCard isDark={isDark} delay={400}>
+          <CardHeader>
+            <CardIcon isDark={isDark}>⚙️</CardIcon>
+            <div>
+              <CardTitle isDark={isDark}>Backup das Configurações</CardTitle>
+              <CardDescription isDark={isDark}>
+                Exporta apenas tema, preferências e estatísticas
+              </CardDescription>
+            </div>
+          </CardHeader>
+
+          <SettingOption delay={100}>
             <OptionInfo>
-              <OptionLabel isDark={isDark}>Restaurar Dados</OptionLabel>
+              <OptionLabel isDark={isDark}>Configurações e Stats</OptionLabel>
               <OptionSubtext isDark={isDark}>
-                Remove todas as configurações e dados salvos
+                Tema, modo compacto, animações e estatísticas
+              </OptionSubtext>
+            </OptionInfo>
+            <ActionButton
+              variant="secondary"
+              isDark={isDark}
+              size="small"
+              onClick={handleExportSettings}
+              disabled={isExporting}
+            >
+              ⚙️ Exportar Config
+            </ActionButton>
+          </SettingOption>
+        </SettingsCard>
+
+        {/* 🔄 RESTAURAR SISTEMA */}
+        <SettingsCard isDark={isDark} delay={500}>
+          <CardHeader>
+            <CardIcon isDark={isDark}>🔄</CardIcon>
+            <div>
+              <CardTitle isDark={isDark}>Restaurar Sistema</CardTitle>
+              <CardDescription isDark={isDark}>
+                Opções de reset individuais ou completo
+              </CardDescription>
+            </div>
+          </CardHeader>
+
+          <SettingOption delay={100}>
+            <OptionInfo>
+              <OptionLabel isDark={isDark}>Reset Completo</OptionLabel>
+              <OptionSubtext isDark={isDark}>
+                Remove TUDO: dados + configurações + cache
               </OptionSubtext>
             </OptionInfo>
             <ActionButton
               variant="danger"
               isDark={isDark}
               size="small"
-              onClick={() => setShowResetModal(true)}
+              onClick={() => setShowResetSystemModal(true)}
+              disabled={isResetting}
             >
-              🗑️ Restaurar
+              🗑️ Reset Total
+            </ActionButton>
+          </SettingOption>
+
+          <SettingOption delay={200}>
+            <OptionInfo>
+              <OptionLabel isDark={isDark}>Reset dos Dados</OptionLabel>
+              <OptionSubtext isDark={isDark}>
+                Remove apenas fazendas, produtores e culturas
+              </OptionSubtext>
+            </OptionInfo>
+            <ActionButton
+              variant="danger"
+              isDark={isDark}
+              size="small"
+              onClick={() => setShowResetDataModal(true)}
+              disabled={isResetting}
+            >
+              📊 Reset Dados
+            </ActionButton>
+          </SettingOption>
+
+          <SettingOption delay={300}>
+            <OptionInfo>
+              <OptionLabel isDark={isDark}>Reset das Configurações</OptionLabel>
+              <OptionSubtext isDark={isDark}>Volta apenas as preferências ao padrão</OptionSubtext>
+            </OptionInfo>
+            <ActionButton
+              variant="danger"
+              isDark={isDark}
+              size="small"
+              onClick={() => setShowResetConfigModal(true)}
+              disabled={isResetting}
+            >
+              ⚙️ Reset Config
             </ActionButton>
           </SettingOption>
         </SettingsCard>
       </SettingsGrid>
 
-      {/* 🎯 MODAL DE CONFIRMAÇÃO */}
-      <Modal isOpen={showResetModal} data-open={showResetModal}>
+      {/* 🎯 MODAL RESET SISTEMA COMPLETO */}
+      <Modal isOpen={showResetSystemModal} data-open={showResetSystemModal}>
         <ModalContent isDark={isDark}>
-          <ModalTitle isDark={isDark}>⚙️ Restaurar Dados</ModalTitle>
+          <ModalTitle isDark={isDark}>🗑️ Reset Completo do Sistema</ModalTitle>
           <ModalText isDark={isDark}>
-            Esta ação irá remover <strong>todas</strong> as suas configurações, preferências e dados
-            salvos. Esta operação não pode ser desfeita.
+            Esta ação irá remover <strong>ABSOLUTAMENTE TUDO</strong>:
             <br />
             <br />
-            Tem certeza que deseja continuar?
+            • 📊 Todas as fazendas, produtores e culturas
+            <br />
+            • ⚙️ Todas as configurações e preferências
+            <br />
+            • 📈 Todas as estatísticas de uso
+            <br />
+            • 🗂️ Todo o cache e dados temporários
+            <br />
+            <br />
+            <strong>⚠️ O sistema será completamente reiniciado!</strong>
           </ModalText>
           <ModalActions>
             <ActionButton
               variant="secondary"
               isDark={isDark}
-              onClick={() => setShowResetModal(false)}
+              onClick={() => setShowResetSystemModal(false)}
               disabled={isResetting}
             >
               ❌ Cancelar
@@ -424,14 +624,124 @@ export const Settings: React.FC = () => {
             <ActionButton
               variant="danger"
               isDark={isDark}
-              onClick={handleReset}
+              onClick={handleResetSystem}
               disabled={isResetting}
             >
-              {isResetting ? '🔄 Restaurando...' : '✅ Confirmar'}
+              {isResetting ? '🔄 Resetando...' : '✅ Reset Total'}
             </ActionButton>
           </ModalActions>
         </ModalContent>
       </Modal>
+
+      {/* 📊 MODAL RESET DADOS */}
+      <Modal isOpen={showResetDataModal} data-open={showResetDataModal}>
+        <ModalContent isDark={isDark}>
+          <ModalTitle isDark={isDark}>📊 Reset dos Dados</ModalTitle>
+          <ModalText isDark={isDark}>
+            Esta ação irá remover apenas os <strong>dados do negócio</strong>:
+            <br />
+            <br />
+            • 🏡 Todas as fazendas cadastradas
+            <br />
+            • 👥 Todos os produtores
+            <br />
+            • 🌾 Todas as culturas
+            <br />
+            • 📋 Cache do dashboard
+            <br />
+            <br />
+            <strong>✅ Suas configurações serão mantidas!</strong>
+          </ModalText>
+          <ModalActions>
+            <ActionButton
+              variant="secondary"
+              isDark={isDark}
+              onClick={() => setShowResetDataModal(false)}
+              disabled={isResetting}
+            >
+              ❌ Cancelar
+            </ActionButton>
+            <ActionButton
+              variant="danger"
+              isDark={isDark}
+              onClick={handleResetData}
+              disabled={isResetting}
+            >
+              {isResetting ? '🔄 Removendo...' : '✅ Reset Dados'}
+            </ActionButton>
+          </ModalActions>
+        </ModalContent>
+      </Modal>
+
+      {/* ⚙️ MODAL RESET CONFIGURAÇÕES */}
+      <Modal isOpen={showResetConfigModal} data-open={showResetConfigModal}>
+        <ModalContent isDark={isDark}>
+          <ModalTitle isDark={isDark}>⚙️ Reset das Configurações</ModalTitle>
+          <ModalText isDark={isDark}>
+            Esta ação irá resetar apenas as <strong>configurações</strong>:
+            <br />
+            <br />
+            • 🎨 Tema volta para o padrão do dispositivo
+            <br />
+            • 📱 Modo compacto desativado
+            <br />
+            • ✨ Animações ativadas
+            <br />
+            • 💾 Auto-save ativado
+            <br />
+            • 🔔 Notificações ativadas
+            <br />
+            <br />
+            <strong>✅ Seus dados serão mantidos!</strong>
+          </ModalText>
+          <ModalActions>
+            <ActionButton
+              variant="secondary"
+              isDark={isDark}
+              onClick={() => setShowResetConfigModal(false)}
+              disabled={isResetting}
+            >
+              ❌ Cancelar
+            </ActionButton>
+            <ActionButton
+              variant="danger"
+              isDark={isDark}
+              onClick={handleResetConfig}
+              disabled={isResetting}
+            >
+              {isResetting ? '🔄 Resetando...' : '✅ Reset Config'}
+            </ActionButton>
+          </ModalActions>
+        </ModalContent>
+      </Modal>
+
+      {/* 🔄 OVERLAY DE LOADING */}
+      {(isExporting || isResetting) && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            color: 'white',
+            fontSize: '18px',
+            fontWeight: 'bold',
+          }}
+        >
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>
+              {isResetting ? '🔄' : '📤'}
+            </div>
+            <div>{isResetting ? 'Processando reset...' : 'Exportando dados...'}</div>
+          </div>
+        </div>
+      )}
     </SettingsContainer>
   );
 };

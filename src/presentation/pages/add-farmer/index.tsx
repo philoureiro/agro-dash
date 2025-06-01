@@ -510,7 +510,7 @@ export const AddFarmer = () => {
 
   // 💾 SALVAR RASCUNHO
   const saveDraft = useCallback(() => {
-    localStorage.setItem('addFarmer_draft', JSON.stringify(produtor));
+    Item('addFarmer_draft', JSON.stringify(produtor));
     alert('💾 Rascunho salvo com sucesso!');
   }, [produtor]);
 

@@ -1,5 +1,4 @@
 import GitHubIcon from '@mui/icons-material/GitHub';
-import ThemeIcon from '@mui/icons-material/InvertColors';
 import DocsIcon from '@mui/icons-material/MenuBook';
 
 import { repository, title } from '@config';
@@ -25,7 +24,7 @@ interface HeaderProps {
 }
 
 export default function Header({ themeMode: propThemeMode }: HeaderProps) {
-  const { themeMode, toggle: toggleThemeMode } = useThemeMode();
+  const { themeMode } = useThemeMode();
   const currentTheme = propThemeMode || themeMode;
   const notifications = useNotifications();
 
@@ -34,11 +33,6 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
     notifications.show(getRandomJoke(), {
       autoHideDuration: 5000,
     });
-  }
-
-  function handleToggleTheme(e: React.MouseEvent) {
-    e.stopPropagation();
-    toggleThemeMode();
   }
 
   return (
@@ -80,19 +74,6 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <GitHubIcon />
-            </ActionButton>
-          </Tooltip>
-
-          <Divider themeMode={currentTheme} />
-
-          {/* Botão de Theme */}
-          <Tooltip data-tooltip="Switch theme">
-            <ActionButton
-              onClick={handleToggleTheme}
-              themeMode={currentTheme}
-              data-pw="theme-toggle"
-            >
-              <ThemeIcon />
             </ActionButton>
           </Tooltip>
         </RightSection>
