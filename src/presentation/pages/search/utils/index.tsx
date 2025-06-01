@@ -199,3 +199,120 @@ export const transformToUnifiedItems = (
 
   return [...producerItems, ...farmItems, ...cropItems];
 };
+
+export const loadDataReal = async ({
+  setIsInitialLoading,
+  setProgress,
+  setLoadingMessage,
+  setLoadedCounts,
+  setSelectedItem,
+  transformToUnifiedItems,
+  ProducerService,
+  FarmService,
+  CropService,
+}: {
+  setIsInitialLoading: (value: boolean) => void;
+  setProgress: (value: number | ((prev: number) => number)) => void;
+  setLoadingMessage: (msg: string) => void;
+  setLoadedCounts: (
+    value:
+      | { producers: number; farms: number; crops: number }
+      | ((prev: { producers: number; farms: number; crops: number }) => {
+          producers: number;
+          farms: number;
+          crops: number;
+        }),
+  ) => void;
+  setSelectedItem: (item: UnifiedItem) => void;
+  transformToUnifiedItems: (producers: Producer[], farms: Farm[], crops: Crop[]) => UnifiedItem[];
+  ProducerService: { getAllProducers: () => Promise<Producer[]> };
+  FarmService: { searchFarms: (query: string, options?: Record<string, unknown>) => Farm[] };
+  CropService: { searchCrops: (query: string, options?: Record<string, unknown>) => Crop[] };
+}) => {
+  const startTime = performance.now();
+  setIsInitialLoading(true);
+  setProgress(0);
+
+  try {
+    setLoadingMessage('Conectando aos dados...');
+    setProgress(5);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    setLoadingMessage('Carregando dados...');
+    setProgress(15);
+
+    const loadPromises = [
+      (async () => {
+        const producers = await Promise.resolve(ProducerService.getAllProducers());
+        setLoadedCounts((prev) => ({ ...prev, producers: producers.length }));
+        setProgress((prev: number) => prev + 25);
+        return producers;
+      })(),
+      (async () => {
+        const farms = await Promise.resolve(FarmService.searchFarms(''));
+        setLoadedCounts((prev) => ({ ...prev, farms: farms.length }));
+        setProgress((prev: number) => prev + 25);
+        return farms;
+      })(),
+      (async () => {
+        const crops = await Promise.resolve(CropService.searchCrops(''));
+        setLoadedCounts((prev) => ({ ...prev, crops: crops.length }));
+        setProgress((prev: number) => prev + 25);
+        return crops;
+      })(),
+    ];
+
+    const [producers, farms, crops] = (await Promise.all(loadPromises)) as [
+      Producer[],
+      Farm[],
+      Crop[],
+    ];
+
+    setLoadingMessage('Processando dados...');
+    setProgress(75);
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const items = transformToUnifiedItems(producers, farms, crops);
+    setProgress(90);
+
+    setLoadingMessage('Finalizando...');
+
+    if (items.length > 0) {
+      setSelectedItem(items[0]);
+    }
+
+    setProgress(100);
+    setLoadingMessage('Carregamento concluído!');
+
+    const loadTime = performance.now() - startTime;
+    const minTime = 400;
+    const maxTime = 1000;
+
+    let remainingTime = 0;
+
+    if (loadTime < minTime) {
+      remainingTime = minTime - loadTime;
+    } else if (loadTime > maxTime) {
+      remainingTime = 0;
+    } else {
+      remainingTime = 100;
+    }
+
+    if (remainingTime > 0) {
+      await new Promise((resolve) => setTimeout(resolve, remainingTime));
+    }
+  } catch (error) {
+    console.error('Erro ao carregar dados:', error);
+    setLoadingMessage('Erro no carregamento');
+    setProgress(0);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  } finally {
+    setIsInitialLoading(false);
+    setProgress(0);
+    setLoadingMessage('Inicializando...');
+    setLoadedCounts({ producers: 0, farms: 0, crops: 0 });
+  }
+};

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
-import { LoadingOverlay, Text } from '@components';
-import { Crop, Farm, Producer } from '@entities';
+import { ConfirmModal, LoadingOverlay, Text } from '@components';
+import { useToast } from '@hooks';
 import { CropService, FarmService, ProducerService, SearchService } from '@services';
 import { useThemeMode } from '@theme';
 
@@ -14,6 +14,7 @@ import { SearchType, UnifiedItem } from './types';
 import {
   getTypeColor,
   getTypeIcon,
+  loadDataReal,
   scrollToTop,
   transformToUnifiedItems,
   useDebounce,
@@ -26,7 +27,10 @@ export const Search = () => {
   const isDesktop = useScreenSize();
   const navigate = useNavigate();
 
+  const { toast } = useToast();
+
   // 🎯 STATES SUPREMOS
+
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState<SearchType>('all');
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
@@ -148,154 +152,97 @@ export const Search = () => {
   );
 
   // 🗑️ EXCLUIR ITEM USANDO SERVICES
-  const handleDelete = useCallback(
-    async (item: UnifiedItem) => {
-      if (!window.confirm(`Tem certeza que deseja excluir ${item.displayName}?`)) {
-        return;
+  const [deleteModalData, setDeleteModalData] = useState<{
+    isVisible: boolean;
+    item: UnifiedItem | null;
+    loading: boolean;
+  }>({
+    isVisible: false,
+    item: null,
+    loading: false,
+  });
+
+  const handleDelete = useCallback((item: UnifiedItem) => {
+    setDeleteModalData({
+      isVisible: true,
+      item,
+      loading: false,
+    });
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    if (!deleteModalData.item) return;
+
+    setDeleteModalData((prev) => ({ ...prev, loading: true }));
+
+    try {
+      let success = false;
+      const item = deleteModalData.item;
+
+      // Usando apenas services para exclusão
+      switch (item.type) {
+        case 'producer':
+          success = await ProducerService.deleteProducer(item.id);
+          break;
+        case 'farm':
+          success = await FarmService.deleteFarm(item.id);
+          break;
+        case 'crop':
+          success = await CropService.deleteCrop(item.id);
+          break;
       }
 
-      try {
-        let success = false;
-
-        // Usando apenas services para exclusão
-        switch (item.type) {
-          case 'producer':
-            success = await ProducerService.deleteProducer(item.id);
-            break;
-          case 'farm':
-            success = await FarmService.deleteFarm(item.id);
-            break;
-          case 'crop':
-            success = await CropService.deleteCrop(item.id);
-            break;
-        }
-
-        if (!success) {
-          throw new Error('Falha ao excluir item');
-        }
-
-        // Se o item excluído era o selecionado, seleciona outro
-        if (selectedItem?.id === item.id) {
-          const remainingItems = filteredItems.filter((i) => i.id !== item.id);
-          setSelectedItem(remainingItems.length > 0 ? remainingItems[0] : null);
-        }
-      } catch (error) {
-        console.error('Erro ao excluir item:', error);
-        alert('Erro ao excluir item. Tente novamente.');
+      if (!success) {
+        throw new Error('Falha ao excluir item');
       }
-    },
-    [selectedItem, filteredItems],
-  );
+
+      // Sucesso - mostrar toast e atualizar UI
+      toast.success('Sucesso!', `${item.displayName} foi excluído com sucesso.`);
+
+      // Se o item excluído era o selecionado, seleciona outro
+      if (selectedItem?.id === item.id) {
+        const remainingItems = filteredItems.filter((i) => i.id !== item.id);
+        setSelectedItem(remainingItems.length > 0 ? remainingItems[0] : null);
+      }
+
+      // Fechar modal
+      setDeleteModalData({
+        isVisible: false,
+        item: null,
+        loading: false,
+      });
+    } catch (error) {
+      console.error('Erro ao excluir item:', error);
+      toast.error('Erro!', 'Erro ao excluir item. Tente novamente.');
+
+      setDeleteModalData((prev) => ({ ...prev, loading: false }));
+    }
+  }, [deleteModalData.item, selectedItem, filteredItems, toast]);
+
+  const cancelDelete = useCallback(() => {
+    setDeleteModalData({
+      isVisible: false,
+      item: null,
+      loading: false,
+    });
+  }, []);
 
   // 🚀 CARREGAMENTO REAL E OTIMIZADO
   useEffect(() => {
-    const loadDataReal = async () => {
-      const startTime = performance.now();
-      setIsInitialLoading(true);
-      setProgress(0);
-
-      try {
-        // 🎯 ETAPA 1: Inicialização
-        setLoadingMessage('Conectando aos dados...');
-        setProgress(5);
-
-        // Pequeno delay para evitar flash muito rápido
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        // 🎯 ETAPA 2: Carregar dados em paralelo para máxima performance
-        setLoadingMessage('Carregando dados...');
-        setProgress(15);
-
-        const loadPromises = [
-          // Carrega produtores
-          (async () => {
-            const producers = await Promise.resolve(ProducerService.getAllProducers());
-            setLoadedCounts((prev) => ({ ...prev, producers: producers.length }));
-            setProgress((prev) => prev + 25);
-            return producers;
-          })(),
-
-          // Carrega fazendas
-          (async () => {
-            const farms = await Promise.resolve(FarmService.searchFarms(''));
-            setLoadedCounts((prev) => ({ ...prev, farms: farms.length }));
-            setProgress((prev) => prev + 25);
-            return farms;
-          })(),
-
-          // Carrega culturas
-          (async () => {
-            const crops = await Promise.resolve(CropService.searchCrops(''));
-            setLoadedCounts((prev) => ({ ...prev, crops: crops.length }));
-            setProgress((prev) => prev + 25);
-            return crops;
-          })(),
-        ];
-
-        // Aguarda todos os dados carregarem
-        const [producers, farms, crops] = (await Promise.all(loadPromises)) as [
-          Producer[],
-          Farm[],
-          Crop[],
-        ];
-
-        // 🎯 ETAPA 3: Processar dados
-        setLoadingMessage('Processando dados...');
-        setProgress(75);
-
-        // Simula processamento mínimo para dar feedback
-        await new Promise((resolve) => setTimeout(resolve, 50));
-
-        const items = transformToUnifiedItems(producers, farms, crops);
-        setProgress(90);
-
-        // 🎯 ETAPA 4: Finalizar
-        setLoadingMessage('Finalizando...');
-
-        if (items.length > 0) {
-          setSelectedItem(items[0]);
-        }
-
-        setProgress(100);
-        setLoadingMessage('Carregamento concluído!');
-
-        // 🚀 TEMPO MÍNIMO INTELIGENTE
-        const loadTime = performance.now() - startTime;
-        const minTime = 400; // Tempo mínimo para não dar flash
-        const maxTime = 1000; // Tempo máximo para não demorar
-
-        let remainingTime = 0;
-
-        if (loadTime < minTime) {
-          // Se foi muito rápido, adiciona um pouco de delay
-          remainingTime = minTime - loadTime;
-        } else if (loadTime > maxTime) {
-          // Se demorou muito, sai imediatamente
-          remainingTime = 0;
-        } else {
-          // Se foi no tempo ideal, só uma pequena pausa no 100%
-          remainingTime = 100;
-        }
-
-        if (remainingTime > 0) {
-          await new Promise((resolve) => setTimeout(resolve, remainingTime));
-        }
-      } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        setLoadingMessage('Erro no carregamento');
-        setProgress(0);
-
-        // Em caso de erro, sai rapidamente
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      } finally {
-        setIsInitialLoading(false);
-        setProgress(0);
-        setLoadingMessage('Inicializando...');
-        setLoadedCounts({ producers: 0, farms: 0, crops: 0 });
-      }
-    };
-
-    loadDataReal();
+    loadDataReal({
+      setIsInitialLoading,
+      setProgress,
+      setLoadingMessage,
+      setLoadedCounts,
+      setSelectedItem,
+      transformToUnifiedItems,
+      ProducerService: {
+        ...ProducerService,
+        getAllProducers: async () => ProducerService.getAllProducers(),
+      },
+      FarmService,
+      CropService,
+    });
   }, []); // 🚀 Só executa uma vez na inicialização
 
   // 🎨 OVERLAY OTIMIZADO
@@ -397,6 +344,20 @@ export const Search = () => {
             getTypeColor={getTypeColor}
           />
         )}
+
+        <ConfirmModal
+          isVisible={deleteModalData.isVisible}
+          isDark={isDark}
+          type="danger"
+          title="Confirmar Exclusão"
+          subtitle={`Você está prestes a excluir ${deleteModalData.item?.displayName}`}
+          message="Esta ação não pode ser desfeita. Tem certeza que deseja continuar?"
+          confirmText="Sim, Excluir"
+          cancelText="Cancelar"
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+          loading={deleteModalData.loading}
+        />
       </SearchContainer>
     </>
   );
