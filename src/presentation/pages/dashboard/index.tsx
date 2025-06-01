@@ -17,6 +17,7 @@ import {
 
 import { AnimatedCounter } from './components/AnimatedCounter';
 import { ClientOnly } from './components/clientOnly';
+import { CHART_COLORS } from './config';
 import {
   ActionButton,
   ChartCard,
@@ -51,77 +52,7 @@ import {
   ResponsiveChart,
   StatBadge,
 } from './styles';
-
-// 🎨 PALETAS DE CORES SUPREMAS
-const CHART_COLORS = {
-  light: {
-    primary: ['#10B981', '#059669', '#047857', '#065F46', '#064E3B'],
-    secondary: ['#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF', '#1E3A8A'],
-    accent: ['#F59E0B', '#D97706', '#B45309', '#92400E', '#78350F'],
-    success: ['#10B981', '#059669', '#047857'],
-    warning: ['#F59E0B', '#D97706', '#B45309'],
-    danger: ['#EF4444', '#DC2626', '#B91C1C'],
-    gradient: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6'],
-  },
-  dark: {
-    primary: ['#34D399', '#10B981', '#059669', '#047857', '#065F46'],
-    secondary: ['#60A5FA', '#3B82F6', '#2563EB', '#1D4ED8', '#1E40AF'],
-    accent: ['#FBBF24', '#F59E0B', '#D97706', '#B45309', '#92400E'],
-    success: ['#34D399', '#10B981', '#059669'],
-    warning: ['#FBBF24', '#F59E0B', '#D97706'],
-    danger: ['#F87171', '#EF4444', '#DC2626'],
-    gradient: ['#34D399', '#60A5FA', '#FBBF24', '#F87171', '#A78BFA'],
-  },
-};
-
-// 🇧🇷 TRADUÇÕES PT-BR
-const TRANSLATIONS = {
-  // Tipos de culturas
-  crops: {
-    Soja: 'Soja',
-    Milho: 'Milho',
-    Café: 'Café',
-    Algodão: 'Algodão',
-    Arroz: 'Arroz',
-    'Cana-de-açúcar': 'Cana',
-    Trigo: 'Trigo',
-    Feijão: 'Feijão',
-    Soybean: 'Soja',
-    Corn: 'Milho',
-    Coffee: 'Café',
-    Cotton: 'Algodão',
-    Rice: 'Arroz',
-    Sugarcane: 'Cana',
-    Wheat: 'Trigo',
-    Beans: 'Feijão',
-    Other: 'Outros',
-  },
-  // Tamanhos de fazenda
-  farmSizes: {
-    SMALL: 'Pequena',
-    MEDIUM: 'Média',
-    LARGE: 'Grande',
-    Small: 'Pequena',
-    Medium: 'Média',
-    Large: 'Grande',
-  },
-  // Métricas de performance
-  metrics: {
-    Productivity: 'Produtividade',
-    Sustainability: 'Sustentabilidade',
-    Technology: 'Tecnologia',
-  },
-  // Uso do solo
-  landUse: {
-    Agricultural: 'Área Agrícola',
-    Vegetation: 'Vegetação',
-  },
-  // Tipos de produtores
-  producerTypes: {
-    CPF: 'Pessoa Física',
-    CNPJ: 'Pessoa Jurídica',
-  },
-};
+import { getFilterLabel, translateData } from './utils';
 
 // 🔄 HOOK PARA TAMANHO RESPONSIVO DOS GRÁFICOS
 const useResponsiveChartSize = () => {
@@ -148,47 +79,6 @@ const useResponsiveChartSize = () => {
   }, [updateDimensions]);
 
   return dimensions;
-};
-
-// 🏷️ FUNÇÃO AUXILIAR PARA LABELS DOS FILTROS
-const getFilterLabel = (filter: string): string => {
-  switch (filter) {
-    case 'all':
-      return 'Todos os Dados';
-    case 'month':
-      return 'Este Mês';
-    case 'quarter':
-      return 'Este Trimestre';
-    case 'year':
-      return 'Este Ano';
-    default:
-      return 'Todos';
-  }
-};
-
-// 🔧 FUNÇÃO PARA TRADUZIR DADOS
-const translateData = (data: any[], type: keyof typeof TRANSLATIONS): any[] => {
-  const translations = TRANSLATIONS[type];
-
-  return data.map((item) => ({
-    ...item,
-    // Traduz diferentes campos baseado no tipo
-    ...(type === 'crops' && {
-      crop: translations[item.crop as keyof typeof translations] || item.crop,
-    }),
-    ...(type === 'farmSizes' && {
-      size: translations[item.size as keyof typeof translations] || item.size,
-    }),
-    ...(type === 'metrics' && {
-      metric: translations[item.metric as keyof typeof translations] || item.metric,
-    }),
-    ...(type === 'landUse' && {
-      type: translations[item.type as keyof typeof translations] || item.type,
-    }),
-    ...(type === 'producerTypes' && {
-      type: translations[item.type as keyof typeof translations] || item.type,
-    }),
-  }));
 };
 
 // 📊 COMPONENTE PRINCIPAL DA DASHBOARD
