@@ -653,13 +653,13 @@ export const ActionButton = styled.button<{ variant?: 'primary' | 'secondary' }>
 `;
 
 // 🔄 OVERLAY DE LOADING
-export const LoadingOverlay = styled.div`
+export const LoadingOverlay = styled.div<{ isDark?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: ${({ isDark }) => (isDark ? 'rgba(30, 41, 59, 0.92)' : 'rgba(0, 0, 0, 0.8)')};
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;

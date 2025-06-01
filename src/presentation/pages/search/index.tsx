@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
-import { Text } from '@components';
-import { SearchService } from '@services';
-import { useCropStore, useFarmStore, useProducerStore } from '@storage';
+import { LoadingOverlay, Text } from '@components';
+import { Crop, Farm, Producer } from '@entities';
+import { CropService, FarmService, ProducerService, SearchService } from '@services';
 import { useThemeMode } from '@theme';
 
 import { RenderDesktop } from './components/RenderDesktop';
@@ -25,31 +26,31 @@ export const Search = () => {
   const isDesktop = useScreenSize();
   const navigate = useNavigate();
 
-  // 🏪 STORE HOOKS
-  const deleteProducer = useProducerStore((state) => state.deleteProducer);
-  const deleteFarm = useFarmStore((state) => state.deleteFarm);
-  const deleteCrop = useCropStore((state) => state.deleteCrop);
-
   // 🎯 STATES SUPREMOS
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState<SearchType>('all');
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState('Inicializando...');
+  const [loadedCounts, setLoadedCounts] = useState({
+    producers: 0,
+    farms: 0,
+    crops: 0,
+  });
 
   // 🔍 DEBOUNCE PARA PESQUISA
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // 🧠 BUSCA USANDO SEARCHSERVICE SUPREMO
+  // 🧠 BUSCA USANDO APENAS SERVICES - SUPREMO
   const searchResults = useMemo(() => {
     if (!debouncedSearchTerm.trim()) {
-      // Se não há termo de busca, pega todos os dados ativos
+      // Cache os dados para evitar recalcular toda vez
       return {
-        producers:
-          useProducerStore.getState().getActiveProducers?.() ||
-          useProducerStore.getState().producers ||
-          [],
-        farms: useFarmStore.getState().getActiveFarms?.() || useFarmStore.getState().farms || [],
-        crops: useCropStore.getState().getActiveCrops?.() || useCropStore.getState().crops || [],
+        producers: ProducerService.getAllProducers(),
+        farms: FarmService.searchFarms(''),
+        crops: CropService.searchCrops(''),
         total: 0,
       };
     }
@@ -63,19 +64,33 @@ export const Search = () => {
     return transformToUnifiedItems(producers, farms, crops);
   }, [searchResults]);
 
-  // 🔍 FILTRO POR TIPO
+  // 🔍 FILTRO POR TIPO USANDO SERVICES
   const filteredItems = useMemo(() => {
     if (searchType === 'all') return allItems;
 
-    const typeMap: Record<SearchType, string> = {
-      all: 'all',
-      producers: 'producer',
-      farms: 'farm',
-      crops: 'crop',
-    };
+    // Filtro direto usando services para performance máxima
+    switch (searchType) {
+      case 'producers': {
+        const producers = debouncedSearchTerm.trim()
+          ? ProducerService.searchProducers(debouncedSearchTerm)
+          : ProducerService.getAllProducers();
+        return transformToUnifiedItems(producers, [], []);
+      }
 
-    return allItems.filter((item) => item.type === typeMap[searchType]);
-  }, [allItems, searchType]);
+      case 'farms': {
+        const farms = FarmService.searchFarms(debouncedSearchTerm);
+        return transformToUnifiedItems([], farms, []);
+      }
+
+      case 'crops': {
+        const crops = CropService.searchCrops(debouncedSearchTerm);
+        return transformToUnifiedItems([], [], crops);
+      }
+
+      default:
+        return allItems;
+    }
+  }, [allItems, searchType, debouncedSearchTerm]);
 
   // 🎲 ITEM ALEATÓRIO ÉPICO
   const handleRandomItem = useCallback(() => {
@@ -132,7 +147,7 @@ export const Search = () => {
     [navigate],
   );
 
-  // 🗑️ EXCLUIR ITEM
+  // 🗑️ EXCLUIR ITEM USANDO SERVICES
   const handleDelete = useCallback(
     async (item: UnifiedItem) => {
       if (!window.confirm(`Tem certeza que deseja excluir ${item.displayName}?`)) {
@@ -140,16 +155,23 @@ export const Search = () => {
       }
 
       try {
+        let success = false;
+
+        // Usando apenas services para exclusão
         switch (item.type) {
           case 'producer':
-            await deleteProducer(item.id);
+            success = await ProducerService.deleteProducer(item.id);
             break;
           case 'farm':
-            await deleteFarm(item.id);
+            success = await FarmService.deleteFarm(item.id);
             break;
           case 'crop':
-            await deleteCrop(item.id);
+            success = await CropService.deleteCrop(item.id);
             break;
+        }
+
+        if (!success) {
+          throw new Error('Falha ao excluir item');
         }
 
         // Se o item excluído era o selecionado, seleciona outro
@@ -162,15 +184,160 @@ export const Search = () => {
         alert('Erro ao excluir item. Tente novamente.');
       }
     },
-    [deleteProducer, deleteFarm, deleteCrop, selectedItem, filteredItems],
+    [selectedItem, filteredItems],
   );
 
-  // 🎯 INICIALIZAR COM PRIMEIRO ITEM
+  // 🚀 CARREGAMENTO REAL E OTIMIZADO
   useEffect(() => {
-    if (!selectedItem && filteredItems.length > 0) {
-      setSelectedItem(filteredItems[0]);
-    }
-  }, [filteredItems, selectedItem]);
+    const loadDataReal = async () => {
+      const startTime = performance.now();
+      setIsInitialLoading(true);
+      setProgress(0);
+
+      try {
+        // 🎯 ETAPA 1: Inicialização
+        setLoadingMessage('Conectando aos dados...');
+        setProgress(5);
+
+        // Pequeno delay para evitar flash muito rápido
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // 🎯 ETAPA 2: Carregar dados em paralelo para máxima performance
+        setLoadingMessage('Carregando dados...');
+        setProgress(15);
+
+        const loadPromises = [
+          // Carrega produtores
+          (async () => {
+            const producers = await Promise.resolve(ProducerService.getAllProducers());
+            setLoadedCounts((prev) => ({ ...prev, producers: producers.length }));
+            setProgress((prev) => prev + 25);
+            return producers;
+          })(),
+
+          // Carrega fazendas
+          (async () => {
+            const farms = await Promise.resolve(FarmService.searchFarms(''));
+            setLoadedCounts((prev) => ({ ...prev, farms: farms.length }));
+            setProgress((prev) => prev + 25);
+            return farms;
+          })(),
+
+          // Carrega culturas
+          (async () => {
+            const crops = await Promise.resolve(CropService.searchCrops(''));
+            setLoadedCounts((prev) => ({ ...prev, crops: crops.length }));
+            setProgress((prev) => prev + 25);
+            return crops;
+          })(),
+        ];
+
+        // Aguarda todos os dados carregarem
+        const [producers, farms, crops] = (await Promise.all(loadPromises)) as [
+          Producer[],
+          Farm[],
+          Crop[],
+        ];
+
+        // 🎯 ETAPA 3: Processar dados
+        setLoadingMessage('Processando dados...');
+        setProgress(75);
+
+        // Simula processamento mínimo para dar feedback
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        const items = transformToUnifiedItems(producers, farms, crops);
+        setProgress(90);
+
+        // 🎯 ETAPA 4: Finalizar
+        setLoadingMessage('Finalizando...');
+
+        if (items.length > 0) {
+          setSelectedItem(items[0]);
+        }
+
+        setProgress(100);
+        setLoadingMessage('Carregamento concluído!');
+
+        // 🚀 TEMPO MÍNIMO INTELIGENTE
+        const loadTime = performance.now() - startTime;
+        const minTime = 400; // Tempo mínimo para não dar flash
+        const maxTime = 1000; // Tempo máximo para não demorar
+
+        let remainingTime = 0;
+
+        if (loadTime < minTime) {
+          // Se foi muito rápido, adiciona um pouco de delay
+          remainingTime = minTime - loadTime;
+        } else if (loadTime > maxTime) {
+          // Se demorou muito, sai imediatamente
+          remainingTime = 0;
+        } else {
+          // Se foi no tempo ideal, só uma pequena pausa no 100%
+          remainingTime = 100;
+        }
+
+        if (remainingTime > 0) {
+          await new Promise((resolve) => setTimeout(resolve, remainingTime));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+        setLoadingMessage('Erro no carregamento');
+        setProgress(0);
+
+        // Em caso de erro, sai rapidamente
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      } finally {
+        setIsInitialLoading(false);
+        setProgress(0);
+        setLoadingMessage('Inicializando...');
+        setLoadedCounts({ producers: 0, farms: 0, crops: 0 });
+      }
+    };
+
+    loadDataReal();
+  }, []); // 🚀 Só executa uma vez na inicialização
+
+  // 🎨 OVERLAY OTIMIZADO
+  if (isInitialLoading) {
+    return (
+      <LoadingOverlay
+        isVisible={true}
+        isDark={isDark}
+        type="search"
+        variant="rings"
+        title="🚀 Carregando Sistema"
+        subtitle="Obtendo dados em tempo real"
+        loadingText={loadingMessage}
+        showProgress={true}
+        progress={progress}
+        stats={[
+          {
+            label: 'Produtores',
+            value: loadedCounts.producers > 0 ? loadedCounts.producers.toLocaleString() : '...',
+          },
+          {
+            label: 'Fazendas',
+            value: loadedCounts.farms > 0 ? loadedCounts.farms.toLocaleString() : '...',
+          },
+          {
+            label: 'Culturas',
+            value: loadedCounts.crops > 0 ? loadedCounts.crops.toLocaleString() : '...',
+          },
+        ]}
+        cancelable={true}
+        onCancel={() => {
+          setIsInitialLoading(false);
+          setProgress(0);
+        }}
+        estimatedDuration={1000}
+        spinnerColor="#27ae60"
+        spinnerSize="large"
+        blurIntensity="medium"
+        icon={<FiSearch size={32} />}
+      />
+    );
+  }
 
   return (
     <>

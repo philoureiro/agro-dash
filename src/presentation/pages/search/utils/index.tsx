@@ -5,6 +5,7 @@ import { IoLeafOutline, IoPeople } from 'react-icons/io5';
 import { TbPlant2 } from 'react-icons/tb';
 
 import { Crop, Farm, Producer } from '@entities';
+import { CropService, FarmService } from '@services';
 
 import { SearchType, UnifiedItem } from '../types';
 
@@ -114,55 +115,69 @@ export const getTypeColor = (type: string) => {
   return colorMap[type] || '#95a5a6';
 };
 
-// 🔧 FUNÇÃO PARA TRANSFORMAR DADOS EM ITENS UNIFICADOS
+// 🔧 FUNÇÃO SUPREMA PARA TRANSFORMAR DADOS EM ITENS UNIFICADOS USANDO SERVICES
 export const transformToUnifiedItems = (
   producers: Producer[],
   farms: Farm[],
   crops: Crop[],
 ): UnifiedItem[] => {
   const producerItems: UnifiedItem[] = producers.map((p) => {
-    // Find the first farm for this producer to get city/state info
-    const producerFarm = farms.find((f) => f.producerId === p.id);
+    // Usa service para buscar fazendas do produtor
+    const producerFarms = FarmService.searchFarms('', { producerId: p.id });
+    const totalArea = producerFarms.reduce((acc, f) => acc + (f.totalArea || 0), 0);
+
+    // Busca culturas das fazendas do produtor usando service
+    const producerCrops = producerFarms.flatMap((farm) =>
+      CropService.searchCrops('', { farmId: farm.id }),
+    );
+
     return {
       id: p.id,
       type: 'producer' as const,
       displayName: p.name,
       displayType: 'Produtor',
-      displayLocation: producerFarm
-        ? `${producerFarm.city || 'N/A'}, ${producerFarm.state || 'N/A'}`
-        : 'N/A',
+      displayLocation:
+        producerFarms.length > 0
+          ? `${producerFarms[0].city || 'N/A'}, ${producerFarms[0].state || 'N/A'}`
+          : 'N/A',
       displaySize: `${p.document || 'N/A'}`,
       image: getItemImage(p, 'producers'),
       stats: {
-        fazendas: farms.filter((f) => f.producerId === p.id).length,
-        área: farms
-          .filter((f) => f.producerId === p.id)
-          .reduce((acc, f) => acc + (f.totalArea || 0), 0),
-        culturas: crops.filter((c) => farms.find((f) => f.id === c.farmId && f.producerId === p.id))
-          .length,
+        fazendas: producerFarms.length,
+        área: totalArea,
+        culturas: producerCrops.length,
       },
       originalData: p,
     };
   });
 
-  const farmItems: UnifiedItem[] = farms.map((f) => ({
-    id: f.id,
-    type: 'farm' as const,
-    displayName: f.name,
-    displayType: 'Fazenda',
-    displayLocation: `${f.city || 'N/A'}, ${f.state || 'N/A'}`,
-    displaySize: `${(f.totalArea || 0).toLocaleString()} hectares`,
-    image: getItemImage(f, 'farms'),
-    stats: {
-      produtividade: f.productivity || 0,
-      sustentabilidade: f.sustainability || 0,
-      tecnologia: f.technology || 0,
-    },
-    originalData: f,
-  }));
+  const farmItems: UnifiedItem[] = farms.map((f) => {
+    // Usa service para obter detalhes completos da fazenda
+    const farmDetails = FarmService.getFarmWithDetails(f.id);
+
+    return {
+      id: f.id,
+      type: 'farm' as const,
+      displayName: f.name,
+      displayType: 'Fazenda',
+      displayLocation: `${f.city || 'N/A'}, ${f.state || 'N/A'}`,
+      displaySize: `${(f.totalArea || 0).toLocaleString()} hectares`,
+      image: getItemImage(f, 'farms'),
+      stats: {
+        produtividade: f.productivity || 0,
+        sustentabilidade: f.sustainability || 0,
+        tecnologia: f.technology || 0,
+        utilização: farmDetails?.utilizationPercentage || 0,
+      },
+      originalData: f,
+    };
+  });
 
   const cropItems: UnifiedItem[] = crops.map((c) => {
     const farm = farms.find((f) => f.id === c.farmId);
+    // Usa service para obter detalhes da cultura
+    const cropDetails = CropService.getCropWithDetails(c.id);
+
     return {
       id: c.id,
       type: 'crop' as const,
@@ -175,6 +190,8 @@ export const transformToUnifiedItems = (
         área: c.plantedArea || 0,
         safra: parseInt(c.harvestYear) || new Date().getFullYear(),
         fazenda: farm?.name || 'N/A',
+        produção: cropDetails?.expectedProduction || 0,
+        status: cropDetails?.cropStatus || 'planted',
       },
       originalData: c,
     };

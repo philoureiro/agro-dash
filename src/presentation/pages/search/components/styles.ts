@@ -899,6 +899,154 @@ export const SectionTitle = styled.h3<{ $isDark: boolean }>`
   }
 `;
 
+// 🎨 ANIMAÇÕES DO LOADING SUPREMO
+const spinRings = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+const fadeInScale = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+const dotPulse = keyframes`
+  0%, 20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  80%, 100% {
+    opacity: 0;
+  }
+`;
+
+const shimmerGlow = keyframes`
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+`;
+
+// 🌟 OVERLAY DE LOADING SUPREMO
+export const LoadingOverlay = styled.div<{ $isDark: boolean }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: ${({ $isDark }) =>
+    $isDark
+      ? 'linear-gradient(135deg, rgba(15, 20, 25, 0.95), rgba(26, 35, 50, 0.95))'
+      : 'linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.95))'};
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  animation: ${fadeInScale} 0.5s ease-out;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${({ $isDark }) =>
+      $isDark
+        ? 'radial-gradient(circle at center, rgba(52, 152, 219, 0.1) 0%, transparent 70%)'
+        : 'radial-gradient(circle at center, rgba(52, 152, 219, 0.05) 0%, transparent 70%)'};
+    animation: ${shimmerGlow} 3s ease-in-out infinite;
+  }
+`;
+
+export const LoadingSpinner = styled.div<{ $isDark: boolean }>`
+  position: relative;
+  width: 80px;
+  height: 80px;
+  z-index: 1;
+
+  .spinner-ring {
+    position: absolute;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    animation: ${spinRings} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+
+    &:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      border-top: 3px solid ${({ $isDark }) => ($isDark ? '#3498db' : '#2980b9')};
+      animation-delay: -0.45s;
+    }
+
+    &:nth-child(2) {
+      width: 64px;
+      height: 64px;
+      top: 8px;
+      left: 8px;
+      border-top: 3px solid ${({ $isDark }) => ($isDark ? '#27ae60' : '#219a52')};
+      animation-delay: -0.3s;
+    }
+
+    &:nth-child(3) {
+      width: 48px;
+      height: 48px;
+      top: 16px;
+      left: 16px;
+      border-top: 3px solid ${({ $isDark }) => ($isDark ? '#f39c12' : '#e67e22')};
+      animation-delay: -0.15s;
+    }
+  }
+`;
+
+export const LoadingText = styled.div<{ isDark: boolean }>`
+  color: ${({ isDark }) => (isDark ? '#fff' : '#27ae60')};
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+`;
+
+export const LoadingDots = styled.div`
+  display: flex;
+  gap: 0.1rem;
+
+  span {
+    animation: ${dotPulse} 1.4s ease-in-out infinite both;
+
+    &:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0s;
+    }
+  }
+`;
+
 // 🎯 ALIASES PARA COMPATIBILIDADE COM CÓDIGO ANTIGO
 export const FarmCard = ItemCard;
 export const FarmDetails = ItemDetails;
