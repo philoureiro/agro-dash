@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button, Text } from '@components';
+import { useToast } from '@hooks';
 import { DashboardService } from '@services';
 import { useThemeMode } from '@theme';
 import {
@@ -84,6 +85,7 @@ const useResponsiveChartSize = () => {
 
 // 📊 COMPONENTE PRINCIPAL DA DASHBOARD
 export const Dashboard = () => {
+  const { toast } = useToast();
   const { themeMode } = useThemeMode();
   const isDark = themeMode === 'dark';
   const colors = CHART_COLORS[isDark ? 'dark' : 'light'];
@@ -215,7 +217,8 @@ export const Dashboard = () => {
     console.log('📊 Dashboard Ref:', dashboardRef.current);
 
     if (!dashboardRef.current) {
-      alert('❌ Elemento da dashboard não encontrado!');
+      toast.error('Erro!', 'Elemento da dashboard não encontrado!');
+
       return;
     }
 
@@ -227,7 +230,7 @@ export const Dashboard = () => {
       await exportToPDF(dashboardRef.current, filteredData, selectedFilter, isDark);
     } catch (error) {
       console.error('💥 Erro na exportação:', error);
-      alert('❌ Erro ao gerar PDF');
+      toast.error('Erro!', 'Erro ao gerar PDF.');
     } finally {
       setIsExporting(false);
     }

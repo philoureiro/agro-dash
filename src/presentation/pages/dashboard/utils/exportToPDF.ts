@@ -1,3 +1,6 @@
+import { use } from 'react';
+
+import { useToast } from '@hooks';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -7,6 +10,7 @@ export const exportToPDF = async (
   selectedFilter: string,
   isDark: boolean,
 ) => {
+  const { toast } = useToast();
   if (!dashboardElement) {
     console.error('❌ Dashboard element não encontrado');
     return;
@@ -135,9 +139,11 @@ export const exportToPDF = async (
     pdf.save(fileName);
 
     console.log('✅ PDF salvo:', fileName);
-    alert(`✅ PDF "${fileName}" gerado!`);
+
+    toast.success('Sucesso!', `✅ PDF "${fileName}" gerado!`);
   } catch (error) {
     console.error('❌ Erro:', error);
-    alert('❌ Erro ao gerar PDF');
+
+    toast.success('Erro!', `Erro ao gerar PDF.`);
   }
 };

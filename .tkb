@@ -59,7 +59,7 @@
     "fTOauLq8-Vum6n1zCQKyM": {
       "id": "fTOauLq8-Vum6n1zCQKyM",
       "description": "fazer um toast decente e remover os outros que nao sao usados",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "j985HFM-bxBbxXCQWMLyD": {
       "id": "j985HFM-bxBbxXCQWMLyD",
@@ -81,8 +81,7 @@
         "wau_DLufnQUi1gusKrnub",
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
-        "fTO5wUNun7lNV8HZqMU-v",
-        "fTOauLq8-Vum6n1zCQKyM"
+        "fTO5wUNun7lNV8HZqMU-v"
       ]
     },
     {
@@ -94,6 +93,7 @@
       "id": "column-done",
       "title": "Done",
       "tasksIds": [
+        "fTOauLq8-Vum6n1zCQKyM",
         "j985HFM-bxBbxXCQWMLyD",
         "i9ZNZTPHO-HBaeosyaZ0f"
       ]
