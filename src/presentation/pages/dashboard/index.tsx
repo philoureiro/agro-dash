@@ -52,7 +52,7 @@ import {
   ResponsiveChart,
   StatBadge,
 } from './styles';
-import { getFilterLabel, translateData } from './utils';
+import { filterChartData, getFilterLabel, getFilterMultiplier, translateData } from './utils';
 
 // 🔄 HOOK PARA TAMANHO RESPONSIVO DOS GRÁFICOS
 const useResponsiveChartSize = () => {
@@ -96,39 +96,6 @@ export const Dashboard = () => {
   const [filteredData, setFilteredData] = useState<any>(null);
   const [selectedFilter, setSelectedFilter] = useState('Todos');
   const [error, setError] = useState<string | null>(null);
-
-  // 🎯 FUNÇÃO AUXILIAR PARA MULTIPLICADORES DE FILTRO
-  const getFilterMultiplier = (filter: string): number => {
-    switch (filter) {
-      case 'month':
-        return 0.3;
-      case 'quarter':
-        return 0.6;
-      case 'year':
-        return 0.9;
-      default:
-        return 1;
-    }
-  };
-
-  // 🔥 FUNÇÃO PARA FILTRAR DADOS DE GRÁFICOS
-  const filterChartData = (data: any[], filter: string): any[] => {
-    const multiplier = getFilterMultiplier(filter);
-
-    return data
-      .map((item) => ({
-        ...item,
-        count: Math.max(
-          1,
-          Math.floor((item.count || item.totalArea || item.percentage) * multiplier),
-        ),
-        totalArea: item.totalArea
-          ? Math.max(100, Math.floor(item.totalArea * multiplier))
-          : undefined,
-        percentage: item.percentage ? Math.min(item.percentage * multiplier, 100) : undefined,
-      }))
-      .filter((item) => (item.count || item.totalArea || 0) > 0);
-  };
 
   // 🎯 FUNÇÃO SUPREMA DE FILTRO DE DADOS
   const applyFilterToData = useCallback((rawData: any, filter: string) => {
@@ -322,7 +289,7 @@ export const Dashboard = () => {
         {/* 🎯 HEADER SECTION */}
         <HeaderSection>
           <div>
-            <Text variant="h1" className="dashboard-title">
+            <Text variant="h3" className="dashboard-title">
               🌾 AgroDash Analytics
             </Text>
             <Text variant="subtitle" className="dashboard-subtitle">
@@ -336,6 +303,7 @@ export const Dashboard = () => {
             <FilterSection>
               {['all', 'month', 'quarter', 'year'].map((filter) => (
                 <FilterChip
+                  isDark={isDark}
                   key={filter}
                   isActive={selectedFilter === filter}
                   onClick={() => handleFilterChange(filter)}
