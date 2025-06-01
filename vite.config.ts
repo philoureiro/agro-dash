@@ -33,6 +33,7 @@ export default defineConfig({
       '@seed': path.resolve(__dirname, './src/infrastructure/seed'),
       '@validations': path.resolve(__dirname, './src/domain/validations'),
       '@storage': path.resolve(__dirname, './src/application/storage'),
+      '@services': path.resolve(__dirname, './src/application/services'),
     },
   },
   server: {

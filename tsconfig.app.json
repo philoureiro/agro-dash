@@ -9,7 +9,7 @@
     "baseUrl": "./",
     "paths": {
       "@hooks": ["./src/application/hooks"],
-      // "@services": ["./src/application/services/index.ts"],
+      "@services": ["./src/application/services"],
       // "@usecases": ["./src/application/usecases/index.ts"],
       "@utils": ["./src/application/utils"],
       // "@docs": ["./src/application/docs/index.ts"],
