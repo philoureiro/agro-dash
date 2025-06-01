@@ -63,7 +63,8 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
 
   /* Mobile responsivo (site normal) */
   @media (max-width: 540px) {
-    padding: 0.35rem 0;
+    padding: 5px;
+    padding-right: 12px;
     padding-bottom: 0.35rem;
   }
 
@@ -71,13 +72,15 @@ export const GlassBar = styled.nav<{ themeMode?: string }>`
   @media (display-mode: standalone) {
     /* PWA Desktop/Windows */
     height: 70px;
-    padding: 0.4rem 0;
+    padding: 5px;
+    padding-right: 12px;
     padding-bottom: 0.4rem;
 
     /* PWA Mobile iOS específico */
     @supports (-webkit-touch-callout: none) {
       @media (max-width: 540px) {
-        padding: 1.2rem 0;
+        padding: 5px;
+        padding-right: 12px;
         padding-bottom: 1.2rem;
         height: 95px;
       }

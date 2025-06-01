@@ -63,12 +63,7 @@ export const SettingsHeader = styled.div`
 export const SettingsTitle = styled.h1<{ isDark: boolean }>`
   font-size: 3rem;
   font-weight: 800;
-  background: ${({ isDark }) =>
-    isDark
-      ? 'linear-gradient(135deg, #64748b 0%, #cbd5e1 50%, #e2e8f0 100%)'
-      : 'linear-gradient(135deg, #1e293b 0%, #475569 50%, #64748b 100%)'};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+
   background-clip: text;
   margin: 0 0 1rem;
   letter-spacing: -0.02em;
@@ -80,7 +75,7 @@ export const SettingsTitle = styled.h1<{ isDark: boolean }>`
 
 export const SettingsSubtitle = styled.p<{ isDark: boolean }>`
   font-size: 1.2rem;
-  color: ${({ isDark }) => (isDark ? '#94a3b8' : '#64748b')};
+
   font-weight: 500;
   margin: 0;
   max-width: 600px;
@@ -104,7 +99,7 @@ export const SettingsGrid = styled.div`
 
 // 🎯 CARD DE SEÇÃO
 export const SettingsCard = styled.div<{ isDark: boolean; delay?: number }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255, 255, 255, 0.9)')};
+  background: ${({ theme }) => theme.palette?.background?.paper || 'rgba(255, 255, 255, 0.1)'};
   backdrop-filter: blur(20px);
   border: 1px solid
     ${({ isDark }) => (isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(148, 163, 184, 0.2)')};
@@ -139,13 +134,14 @@ export const CardIcon = styled.div<{ isDark: boolean }>`
   padding: 0.8rem;
   background: ${({ isDark }) =>
     isDark
-      ? 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
-      : 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)'};
+      ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+      : 'linear-gradient(135deg, #34d399 0%, #10b981 100%)'};
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+  margin-top: -7%;
 `;
 
 export const CardTitle = styled.h3<{ isDark: boolean }>`
@@ -161,6 +157,8 @@ export const CardDescription = styled.p<{ isDark: boolean }>`
   color: ${({ isDark }) => (isDark ? '#94a3b8' : '#64748b')};
   margin: 0 0 1.5rem;
   line-height: 1.5;
+  display: flex;
+  max-width: 400px;
 `;
 
 // 🎯 OPÇÕES DE CONFIGURAÇÃO
@@ -348,7 +346,7 @@ export const StatItem = styled.div<{ isDark: boolean; delay?: number }>`
 export const StatValue = styled.div<{ isDark: boolean }>`
   font-size: 1.5rem;
   font-weight: 800;
-  color: ${({ isDark }) => (isDark ? '#60a5fa' : '#3b82f6')};
+  color: ${({ isDark }) => (isDark ? '#10b981' : '#059669')};
   margin-bottom: 0.25rem;
 `;
 

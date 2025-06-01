@@ -54,7 +54,7 @@
     "i9ZNZTPHO-HBaeosyaZ0f": {
       "id": "i9ZNZTPHO-HBaeosyaZ0f",
       "description": "configuração: salvar tema preferido, restaurar dados completamente, ver se tem mais coisa legal de configurar\n",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "fTOauLq8-Vum6n1zCQKyM": {
       "id": "fTOauLq8-Vum6n1zCQKyM",
@@ -64,7 +64,7 @@
     "j985HFM-bxBbxXCQWMLyD": {
       "id": "j985HFM-bxBbxXCQWMLyD",
       "description": "bottom bar precisa ajustar layout",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     }
   },
   "columns": [
@@ -82,9 +82,7 @@
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
         "fTO5wUNun7lNV8HZqMU-v",
-        "i9ZNZTPHO-HBaeosyaZ0f",
-        "fTOauLq8-Vum6n1zCQKyM",
-        "j985HFM-bxBbxXCQWMLyD"
+        "fTOauLq8-Vum6n1zCQKyM"
       ]
     },
     {
@@ -95,7 +93,10 @@
     {
       "id": "column-done",
       "title": "Done",
-      "tasksIds": []
+      "tasksIds": [
+        "j985HFM-bxBbxXCQWMLyD",
+        "i9ZNZTPHO-HBaeosyaZ0f"
+      ]
     }
   ]
 }

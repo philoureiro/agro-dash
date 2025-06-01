@@ -397,9 +397,7 @@ export const Settings: React.FC = () => {
             <CardIcon isDark={isDark}>🔔</CardIcon>
             <div>
               <CardTitle isDark={isDark}>Sistema</CardTitle>
-              <CardDescription isDark={isDark}>
-                Configurações de funcionamento e performance
-              </CardDescription>
+              <CardDescription isDark={isDark}>Configurações de funcionamento</CardDescription>
             </div>
           </CardHeader>
 
@@ -501,7 +499,7 @@ export const Settings: React.FC = () => {
             <div>
               <CardTitle isDark={isDark}>Backup das Configurações</CardTitle>
               <CardDescription isDark={isDark}>
-                Exporta apenas tema, preferências e estatísticas
+                Exporta tema, preferências e estatísticas
               </CardDescription>
             </div>
           </CardHeader>

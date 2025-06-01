@@ -21,7 +21,6 @@ import { ClientOnly } from './components/clientOnly';
 import { CHART_COLORS } from './config';
 import {
   ActionButton,
-  ChartCard,
   ChartGrid,
   ChartHeader,
   ChartSubtitle,
