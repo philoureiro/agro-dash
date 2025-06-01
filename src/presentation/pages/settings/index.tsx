@@ -253,7 +253,7 @@ export const Settings: React.FC = () => {
               onClick={() => handleExportData(setIsExporting, getAllData, setError)}
               disabled={isExporting}
             >
-              '' 📦 Exportar Dados
+              📦 Exportar Dados
             </ActionButton>
           </SettingOption>
         </SettingsCard>
