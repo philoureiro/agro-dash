@@ -191,7 +191,7 @@ export const MetricCard = styled.div<{ delay?: number }>`
       0 0 0 1px rgba(255, 255, 255, 0.05);
 
     ${MetricIcon} {
-      transform: scale(1.1) rotate(5deg);
+      transform: scale(1.4) rotate(5deg);
     }
   }
 
@@ -412,7 +412,15 @@ export const InsightsSection = styled.section`
   }
 `;
 
+// 🎨 ÍCONE DO INSIGHT
+export const InsightIcon = styled.div`
+  font-size: 3rem;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));
+`;
+
 // 💡 CARD DE INSIGHT
+
 export const InsightCard = styled.div<{ delay?: number }>`
   background: ${({ theme }) => theme.palette?.background?.paper || 'rgba(255, 255, 255, 0.1)'};
   backdrop-filter: blur(20px);
@@ -424,11 +432,14 @@ export const InsightCard = styled.div<{ delay?: number }>`
   gap: 1.5rem;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    box-shadow 0.36s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
   animation: ${slideInRight} 0.6s ease;
   animation-delay: ${({ delay = 0 }) => delay}ms;
   animation-fill-mode: both;
 
+  /* Linha lateral animada */
   &::before {
     content: '';
     position: absolute;
@@ -439,13 +450,21 @@ export const InsightCard = styled.div<{ delay?: number }>`
     background: linear-gradient(180deg, #10b981, #3b82f6, #f59e0b);
     background-size: 100% 200%;
     animation: ${shimmer} 3s ease infinite;
+    z-index: 1;
   }
 
+  /* Box-shadow ELEGANTE só no hover */
   &:hover {
-    transform: translateX(8px);
+    transform: translateX(8px) scale(1.018);
     box-shadow:
-      0 10px 30px rgba(0, 0, 0, 0.1),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
+      0 8px 32px rgba(16, 185, 129, 0.15),
+      0 2px 24px rgba(59, 130, 246, 0.09),
+      0 2px 8px rgba(44, 62, 80, 0.04);
+    z-index: 3;
+
+    ${InsightIcon} {
+      transform: scale(1.2) rotate(5deg);
+    }
   }
 
   @media (max-width: 640px) {
@@ -453,13 +472,6 @@ export const InsightCard = styled.div<{ delay?: number }>`
     flex-direction: column;
     text-align: center;
   }
-`;
-
-// 🎨 ÍCONE DO INSIGHT
-export const InsightIcon = styled.div`
-  font-size: 3rem;
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));
 `;
 
 // 📝 CONTEÚDO DO INSIGHT
