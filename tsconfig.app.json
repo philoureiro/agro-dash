@@ -31,7 +31,9 @@
       "@pages": ["./src/presentation/pages"],
       // "@routes": ["./src/presentation/routes/index.ts"],
       "@sections": ["./src/presentation/sections"],
-      "@theme": ["./src/presentation/theme/index.ts"],
+      "@theme": ["./src/presentation/theme"],
+      "@enums": ["./src/domain/enums"],
+      "@entities": ["./src/domain/entities"],
 
       // // ==== TESTS ====
       // "@tests": ["./src/tests/index.ts"],

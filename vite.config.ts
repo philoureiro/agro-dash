@@ -27,6 +27,8 @@ export default defineConfig({
       '@sections': path.resolve(__dirname, './src/presentation/sections'),
       '@theme': path.resolve(__dirname, './src/presentation/theme'),
       '@config': path.resolve(__dirname, './src/config'),
+      '@enums': path.resolve(__dirname, './src/domain/enums'),
+      '@entities': path.resolve(__dirname, './src/domain/entities'),
     },
   },
   server: {
