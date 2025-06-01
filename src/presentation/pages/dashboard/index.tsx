@@ -54,6 +54,7 @@ import {
   StatBadge,
 } from './styles';
 import { filterChartData, getFilterLabel, getFilterMultiplier, translateData } from './utils';
+import { exportToPDF } from './utils/exportToPDF';
 
 // 🔄 HOOK PARA TAMANHO RESPONSIVO DOS GRÁFICOS
 const useResponsiveChartSize = () => {
@@ -211,15 +212,27 @@ export const Dashboard = () => {
 
   // 📄 HANDLER DE EXPORTAÇÃO
   const handleExport = async () => {
+    console.log('🎯 Handle Export chamado');
+    console.log('📊 Dashboard Ref:', dashboardRef.current);
+
+    if (!dashboardRef.current) {
+      alert('❌ Elemento da dashboard não encontrado!');
+      return;
+    }
+
     setIsExporting(true);
+
     try {
-      console.log('Exportando dados filtrados:', selectedFilter, filteredData);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log('🚀 Chamando exportToPDF...');
+
+      await exportToPDF(dashboardRef.current, filteredData, selectedFilter, isDark);
+    } catch (error) {
+      console.error('💥 Erro na exportação:', error);
+      alert('❌ Erro ao gerar PDF');
     } finally {
       setIsExporting(false);
     }
   };
-
   // ⚡ LOADING STATE
   if (isLoading) {
     return (
@@ -274,17 +287,28 @@ export const Dashboard = () => {
 
   return (
     <ClientOnly>
-      <DashboardContainer ref={dashboardRef} isDark={isDark}>
-        {/* 🚫 OVERLAY DE EXPORTAÇÃO */}
+      {/* 🚫 OVERLAY DE EXPORTAÇÃO */}
+
+      <DashboardContainer ref={dashboardRef} isDark={isDark} data-dashboard-main="true">
         {isExporting && (
-          <LoadingOverlay>
-            <LoadingSpinner>
-              <div />
-              <div />
-              <div />
-            </LoadingSpinner>
-            <Text>Gerando relatório PDF para: {getFilterLabel(selectedFilter)}...</Text>
-          </LoadingOverlay>
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999,
+              color: 'white',
+              fontSize: '18px',
+            }}
+          >
+            📄 Gerando PDF...
+          </div>
         )}
 
         {/* 🎯 HEADER SECTION */}
@@ -300,10 +324,11 @@ export const Dashboard = () => {
             </Text>
           </div>
 
-          <ExportSection>
-            <FilterSection>
+          <ExportSection data-export-section="true">
+            <FilterSection data-filter-section="true">
               {['all', 'month', 'quarter', 'year'].map((filter) => (
                 <FilterChip
+                  data-filter-chip="true"
                   isDark={isDark}
                   key={filter}
                   isActive={selectedFilter === filter}
@@ -314,7 +339,12 @@ export const Dashboard = () => {
               ))}
             </FilterSection>
 
-            <ActionButton onClick={handleExport} disabled={isExporting} variant="primary">
+            <ActionButton
+              onClick={handleExport}
+              disabled={isExporting}
+              variant="primary"
+              data-export-button="true"
+            >
               {isExporting ? '📄 Gerando...' : `📊 Exportar ${getFilterLabel(selectedFilter)}`}
             </ActionButton>
           </ExportSection>
