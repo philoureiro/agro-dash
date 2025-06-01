@@ -38,6 +38,7 @@ export const Search = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState('Inicializando...');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [loadedCounts, setLoadedCounts] = useState({
     producers: 0,
     farms: 0,
@@ -48,9 +49,12 @@ export const Search = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // 🧠 BUSCA USANDO APENAS SERVICES - SUPREMO
+
   const searchResults = useMemo(() => {
+    // Force refresh usando o trigger
+    const _ = refreshTrigger;
+
     if (!debouncedSearchTerm.trim()) {
-      // Cache os dados para evitar recalcular toda vez
       return {
         producers: ProducerService.getAllProducers(),
         farms: FarmService.searchFarms(''),
@@ -60,8 +64,7 @@ export const Search = () => {
     }
 
     return SearchService.globalSearch(debouncedSearchTerm);
-  }, [debouncedSearchTerm]);
-
+  }, [debouncedSearchTerm, refreshTrigger]); // 🔥 ADICIONAR refreshTrigger aqui
   // 🎯 COMBINAR RESULTADOS E CRIAR ITEMS UNIFICADOS
   const allItems = useMemo(() => {
     const { producers, farms, crops } = searchResults;
@@ -138,19 +141,18 @@ export const Search = () => {
     [searchTerm, isDesktop],
   );
 
-  // ✏️ EDITAR ITEM
   const handleEdit = useCallback(
     (item: UnifiedItem) => {
-      const editRoutes = {
-        producer: `/produtores/editar/${item.id}`,
-        farm: `/fazendas/editar/${item.id}`,
-        crop: `/culturas/editar/${item.id}`,
+      const typeParams = {
+        producer: 'user',
+        farm: 'farm',
+        crop: 'crop',
       };
-      navigate(editRoutes[item.type]);
+
+      navigate(`/editar?type=${typeParams[item.type]}&id=${item.id}`);
     },
     [navigate],
   );
-
   // 🗑️ EXCLUIR ITEM USANDO SERVICES
   const [deleteModalData, setDeleteModalData] = useState<{
     isVisible: boolean;
@@ -176,34 +178,26 @@ export const Search = () => {
     setDeleteModalData((prev) => ({ ...prev, loading: true }));
 
     try {
-      let success = false;
       const item = deleteModalData.item;
 
-      // Usando apenas services para exclusão
+      // 🔥 EXCLUSÃO
       switch (item.type) {
         case 'producer':
-          success = await ProducerService.deleteProducer(item.id);
+          await ProducerService.deleteProducer(item.id);
           break;
         case 'farm':
-          success = await FarmService.deleteFarm(item.id);
+          await FarmService.deleteFarm(item.id);
           break;
         case 'crop':
-          success = await CropService.deleteCrop(item.id);
+          await CropService.deleteCrop(item.id);
           break;
       }
 
-      if (!success) {
-        throw new Error('Falha ao excluir item');
-      }
+      // 🚀 FORÇAR REFRESH COMPLETO - MÉTODO NINJA!
+      setRefreshTrigger((prev) => prev + 1);
 
-      // Sucesso - mostrar toast e atualizar UI
-      toast.success('Sucesso!', `${item.displayName} foi excluído com sucesso.`);
-
-      // Se o item excluído era o selecionado, seleciona outro
-      if (selectedItem?.id === item.id) {
-        const remainingItems = filteredItems.filter((i) => i.id !== item.id);
-        setSelectedItem(remainingItems.length > 0 ? remainingItems[0] : null);
-      }
+      // Limpar seleção
+      setSelectedItem(null);
 
       // Fechar modal
       setDeleteModalData({
@@ -211,13 +205,20 @@ export const Search = () => {
         item: null,
         loading: false,
       });
+
+      // Toast
+      toast.success('Sucesso!', `${item.displayName} foi excluído com sucesso.`);
     } catch (error) {
       console.error('Erro ao excluir item:', error);
       toast.error('Erro!', 'Erro ao excluir item. Tente novamente.');
 
-      setDeleteModalData((prev) => ({ ...prev, loading: false }));
+      setDeleteModalData({
+        isVisible: false,
+        item: null,
+        loading: false,
+      });
     }
-  }, [deleteModalData.item, selectedItem, filteredItems, toast]);
+  }, [deleteModalData.item, toast]);
 
   const cancelDelete = useCallback(() => {
     setDeleteModalData({

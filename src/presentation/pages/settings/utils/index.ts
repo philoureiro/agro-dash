@@ -179,6 +179,7 @@ export const handleResetData = async (
     setShowResetDataModal(false);
 
     toast.success('Sucesso!', ' Dados do sistema removidos!');
+    window.location.reload();
   } catch (error) {
     console.error('Erro ao resetar dados:', error);
     setError('Erro ao restaurar dados');
