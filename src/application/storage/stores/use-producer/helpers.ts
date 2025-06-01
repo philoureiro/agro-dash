@@ -1,4 +1,4 @@
-import { useProducerStore as useProducerStoreBase } from './index';
+import { useProducerStore as useProducerStoreBase } from '..';
 
 // ============= HOOKS AUXILIARES =============
 

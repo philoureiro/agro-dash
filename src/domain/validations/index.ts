@@ -1,5 +1,7 @@
 import { DocumentType } from '@enums';
 
+// ============= VALIDAÇÕES DE DOCUMENTO =============
+
 // Validação de CPF (algoritmo simplificado)
 export const validateCPF = (cpf: string): boolean => {
   const cleanCPF = cpf.replace(/\D/g, '');
@@ -31,10 +33,43 @@ export const validateDocument = (document: string, type: DocumentType): boolean 
   return false;
 };
 
-// Função para gerar UUID simples
+// ============= GERADORES DE ID =============
+
+// Função para gerar UUID simples para produtores
 export const generateProducerId = (): string => {
   return 'prod-' + Math.random().toString(36).substring(2, 11);
 };
+
+// 🔥 Função para gerar UUID simples para fazendas
+export const generateFarmId = (): string => {
+  return 'farm-' + Math.random().toString(36).substring(2, 11);
+};
+
+// Função para gerar UUID simples para culturas
+export const generateCropId = (): string => {
+  return 'crop-' + Math.random().toString(36).substring(2, 11);
+};
+
+// ============= VALIDAÇÕES DE ÁREA =============
+
+// Validação de áreas da fazenda
+export const validateFarmAreas = (
+  totalArea: number,
+  agriculturalArea: number,
+  vegetationArea: number,
+): boolean => {
+  if (totalArea <= 0 || agriculturalArea < 0 || vegetationArea < 0) {
+    return false;
+  }
+  return agriculturalArea + vegetationArea <= totalArea;
+};
+
+// Validação se área plantada não excede área agricultável
+export const validatePlantedArea = (plantedArea: number, agriculturalArea: number): boolean => {
+  return plantedArea > 0 && plantedArea <= agriculturalArea;
+};
+
+// ============= FORMATADORES =============
 
 // Formatar CPF
 export const formatCPF = (cpf: string): string => {
@@ -57,4 +92,14 @@ export const formatDocument = (document: string, type: DocumentType): string => 
     return formatCNPJ(document);
   }
   return document;
+};
+
+// Formatar área em hectares
+export const formatArea = (area: number): string => {
+  return `${area.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} ha`;
+};
+
+// Formatar percentual
+export const formatPercentage = (value: number): string => {
+  return `${value.toFixed(1)}%`;
 };
