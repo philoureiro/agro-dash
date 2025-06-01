@@ -1,28 +1,51 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  FiEdit3,
+  FiHome,
+  FiLayers,
+  FiMapPin,
+  FiSearch,
+  FiShuffle,
+  FiTrash2,
+  FiTrendingUp,
+  FiUsers,
+} from 'react-icons/fi';
+import { HiOutlineChartBar, HiOutlineLocationMarker, HiOutlineSparkles } from 'react-icons/hi';
+import { IoLeafOutline, IoPeople } from 'react-icons/io5';
+import { TbPlant2 } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { Typography } from '@mui/material';
 
-import { Text } from '@components';
+import { Button, Text } from '@components';
+import { SearchService } from '@services';
+import { useCropStore, useFarmStore, useProducerStore } from '@storage';
 import { useThemeMode } from '@theme';
 
 import {
-  AllFarmsSection,
+  ActionButton,
+  ActionButtonsContainer,
+  AllItemsSection,
   DesktopLayout,
-  FarmCard,
-  FarmDetails,
-  FarmGrid,
-  FarmImage,
-  FarmInfo,
-  FarmLocation,
-  FarmName,
-  FarmNumber,
-  FarmSize,
-  FarmStats,
-  FarmType,
+  EmptyStateIcon,
   GridContainer,
   HeroImage,
   HeroImageOverlay,
   HeroSection,
+  IconWrapper,
+  ItemCard,
+  ItemDetails,
+  ItemGrid,
+  ItemHeader,
+  ItemImage,
+  ItemInfo,
+  ItemLocation,
+  ItemName,
+  ItemNumber,
+  ItemSize,
+  ItemStats,
+  ItemType,
+  ItemTypeIcon,
   LeftPanel,
   MiniCard,
   MiniCardImage,
@@ -30,14 +53,15 @@ import {
   MiniCardName,
   MiniCardType,
   NoResultsContainer,
-  RandomButton,
+  ResultsCount,
   RightPanel,
   SearchButton,
   SearchContainer,
   SearchInput,
   SearchInputContainer,
   SearchSection,
-  SectionTitle,
+  SearchTypeButton,
+  SearchTypeSelector,
   ShimmerEffect,
   StatBar,
   StatFill,
@@ -46,86 +70,10 @@ import {
   StatValue,
 } from './styles';
 
-// 🚜 MOCK DE FAZENDAS ÉPICAS
-const fazendas = [
-  {
-    id: 1,
-    name: 'Fazenda Sol Dourado',
-    type: 'Soja Premium',
-    image:
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&crop=center',
-    size: '1,250 hectares',
-    location: 'Mato Grosso',
-    typeColor: '#F7DC6F',
-    stats: {
-      produtividade: 85,
-      sustentabilidade: 92,
-      tecnologia: 78,
-    },
-  },
-  {
-    id: 2,
-    name: 'Fazenda Verde Esperança',
-    type: 'Milho Orgânico',
-    image:
-      'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop&crop=center',
-    size: '890 hectares',
-    location: 'Goiás',
-    typeColor: '#82E0AA',
-    stats: {
-      produtividade: 78,
-      sustentabilidade: 95,
-      tecnologia: 82,
-    },
-  },
-  {
-    id: 3,
-    name: 'Fazenda Terra Nova',
-    type: 'Café Especial',
-    image:
-      'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop&crop=center',
-    size: '340 hectares',
-    location: 'Minas Gerais',
-    typeColor: '#D2691E',
-    stats: {
-      produtividade: 90,
-      sustentabilidade: 88,
-      tecnologia: 75,
-    },
-  },
-  {
-    id: 4,
-    name: 'Fazenda Águas Claras',
-    type: 'Algodão Premium',
-    image:
-      'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&crop=center',
-    size: '2,100 hectares',
-    location: 'Bahia',
-    typeColor: '#F8F8FF',
-    stats: {
-      produtividade: 87,
-      sustentabilidade: 84,
-      tecnologia: 91,
-    },
-  },
-  {
-    id: 5,
-    name: 'Fazenda Horizonte Azul',
-    type: 'Cana-de-Açúcar',
-    image:
-      'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=800&h=600&fit=crop&crop=center',
-    size: '3,500 hectares',
-    location: 'São Paulo',
-    typeColor: '#98FB98',
-    stats: {
-      produtividade: 93,
-      sustentabilidade: 79,
-      tecnologia: 88,
-    },
-  },
-];
+// 🎯 TIPOS DE PESQUISA
+type SearchType = 'all' | 'producers' | 'farms' | 'crops';
 
-// 🔍 HOOK PARA DEBOUNCE
+// 🔍 HOOK PARA DEBOUNCE SUPREMO
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -160,43 +108,18 @@ const useScreenSize = () => {
   return isDesktop;
 };
 
-// 🚀 FUNÇÃO PARA SCROLL SUAVE ATÉ O TOPO
+// 🚀 FUNÇÃO PARA SCROLL SUAVE ÉPICO
 const scrollToTop = () => {
-  // Múltiplas estratégias para garantir que funciona em todos os browsers
-  const scrollTargets = [document.documentElement, document.body, window];
-
-  // Scroll suave usando comportamento nativo
   try {
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth',
     });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    // Fallback para browsers mais antigos
     window.scrollTo(0, 0);
   }
 
-  // Garante que elementos específicos também scrollem para o topo
-  scrollTargets.forEach((target) => {
-    if (target && typeof target.scrollTo === 'function') {
-      try {
-        target.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: 'smooth',
-        });
-      } catch {
-        // Se for um HTMLElement, tenta acessar scrollTop
-        if (target instanceof HTMLElement) {
-          target.scrollTop = 0;
-        }
-      }
-    }
-  });
-
-  // Força scroll para containers específicos que podem ter overflow
   const containers = document.querySelectorAll('[data-scroll-container]');
   containers.forEach((container) => {
     if (container && typeof container.scrollTo === 'function') {
@@ -209,57 +132,166 @@ const scrollToTop = () => {
   });
 };
 
+// 🎨 FUNÇÃO PARA PEGAR IMAGEM PADRÃO BASEADA NO TIPO
+const getDefaultImage = (type: SearchType) => {
+  const images = {
+    producers:
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=600&fit=crop&crop=center',
+    farms:
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&crop=center',
+    crops:
+      'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop&crop=center',
+    all: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop&crop=center',
+  };
+  return images[type];
+};
+
+// 🎯 FUNÇÃO PARA PEGAR ÍCONE BASEADO NO TIPO
+const getTypeIcon = (type: string) => {
+  const iconMap: { [key: string]: JSX.Element } = {
+    producer: <IoPeople size={20} />,
+    farm: <FiHome size={20} />,
+    crop: <TbPlant2 size={20} />,
+    producers: <FiUsers size={20} />,
+    farms: <HiOutlineLocationMarker size={20} />,
+    crops: <IoLeafOutline size={20} />,
+  };
+  return iconMap[type] || <FiLayers size={20} />;
+};
+
+// 🏷️ FUNÇÃO PARA PEGAR COR BASEADA NO TIPO
+const getTypeColor = (type: string) => {
+  const colorMap: { [key: string]: string } = {
+    producer: '#3498db',
+    farm: '#27ae60',
+    crop: '#f39c12',
+    producers: '#3498db',
+    farms: '#27ae60',
+    crops: '#f39c12',
+  };
+  return colorMap[type] || '#95a5a6';
+};
+
 export const Search = () => {
   const { themeMode: theme } = useThemeMode();
   const isDark = theme === 'dark';
   const isDesktop = useScreenSize();
+  const navigate = useNavigate();
 
+  // 🏪 STORE HOOKS
+  const deleteProducer = useProducerStore((state) => state.deleteProducer);
+  const deleteFarm = useFarmStore((state) => state.deleteFarm);
+  const deleteCrop = useCropStore((state) => state.deleteCrop);
+
+  // 🎯 STATES SUPREMOS
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFarm, setSelectedFarm] = useState(fazendas[0]);
+  const [searchType, setSearchType] = useState<SearchType>('all');
+  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // 🔍 DEBOUNCE PARA PESQUISA
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // 🔍 FILTRO INTELIGENTE COM DEBOUNCE
-  const filteredFarms = useMemo(() => {
-    if (!debouncedSearchTerm.trim()) return fazendas;
+  // 🧠 BUSCA USANDO SEARCHSERVICE SUPREMO
+  const searchResults = useMemo(() => {
+    if (!debouncedSearchTerm.trim()) {
+      // Se não há termo de busca, usa busca global vazia para pegar todos
+      return SearchService.globalSearch('');
+    }
 
-    return fazendas.filter(
-      (farm) =>
-        farm.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        farm.type.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        farm.location.toLowerCase().includes(debouncedSearchTerm.toLowerCase()),
-    );
+    return SearchService.globalSearch(debouncedSearchTerm);
   }, [debouncedSearchTerm]);
 
-  // 🎲 FAZENDA ALEATÓRIA
-  const handleRandomFarm = useCallback(() => {
+  // 🎯 COMBINAR RESULTADOS E CRIAR ITEMS UNIFICADOS
+  const allItems = useMemo(() => {
+    const { producers, farms, crops } = searchResults;
+
+    const producerItems = producers.map((p) => ({
+      ...p,
+      type: 'producer' as const,
+      displayName: p.name,
+      displayType: 'Produtor',
+      displayLocation: `${p.city}, ${p.state}`,
+      displaySize: `${p.document}`,
+      image: getDefaultImage('producers'),
+      stats: {
+        fazendas: farms.filter((f) => f.producerId === p.id).length,
+        área: farms.filter((f) => f.producerId === p.id).reduce((acc, f) => acc + f.totalArea, 0),
+        culturas: crops.filter((c) => farms.find((f) => f.id === c.farmId && f.producerId === p.id))
+          .length,
+      },
+    }));
+
+    const farmItems = farms.map((f) => ({
+      ...f,
+      type: 'farm' as const,
+      displayName: f.name,
+      displayType: 'Fazenda',
+      displayLocation: `${f.city}, ${f.state}`,
+      displaySize: `${f.totalArea.toLocaleString()} hectares`,
+      image: getDefaultImage('farms'),
+      stats: {
+        produtividade: f.productivity,
+        sustentabilidade: f.sustainability,
+        tecnologia: f.technology,
+      },
+    }));
+
+    const cropItems = crops.map((c) => {
+      const farm = farms.find((f) => f.id === c.farmId);
+      return {
+        ...c,
+        type: 'crop' as const,
+        displayName: c.type,
+        displayType: 'Cultura',
+        displayLocation: farm ? `${farm.city}, ${farm.state}` : 'N/A',
+        displaySize: `${c.plantedArea.toLocaleString()} hectares`,
+        image: getDefaultImage('crops'),
+        stats: {
+          área: c.plantedArea,
+          safra: parseInt(c.harvestYear),
+          fazenda: farm?.name || 'N/A',
+        },
+      };
+    });
+
+    return [...producerItems, ...farmItems, ...cropItems];
+  }, [searchResults]);
+
+  // 🔍 FILTRO POR TIPO
+  const filteredItems = useMemo(() => {
+    if (searchType === 'all') return allItems;
+
+    const typeMap = {
+      producers: 'producer',
+      farms: 'farm',
+      crops: 'crop',
+    };
+
+    return allItems.filter((item) => item.type === typeMap[searchType]);
+  }, [allItems, searchType]);
+
+  // 🎲 ITEM ALEATÓRIO ÉPICO
+  const handleRandomItem = useCallback(() => {
+    if (filteredItems.length === 0) return;
+
     setIsLoading(true);
     setTimeout(() => {
-      const randomFarm = fazendas[Math.floor(Math.random() * fazendas.length)];
-      setSelectedFarm(randomFarm);
+      const randomItem = filteredItems[Math.floor(Math.random() * filteredItems.length)];
+      setSelectedItem(randomItem);
       setSearchTerm('');
       setIsLoading(false);
-
-      // 🚀 SCROLL PARA O TOPO APÓS SELECIONAR FAZENDA ALEATÓRIA
-      setTimeout(() => {
-        scrollToTop();
-      }, 100);
+      setTimeout(() => scrollToTop(), 100);
     }, 800);
-  }, []);
+  }, [filteredItems]);
 
-  // 🔍 BUSCA POR FAZENDA
+  // 🔍 BUSCA SUPREMA
   const handleSearch = useCallback(() => {
-    if (filteredFarms.length > 0) {
-      setSelectedFarm(filteredFarms[0]);
-
-      // 🚀 SCROLL PARA O TOPO APÓS BUSCA
-      setTimeout(() => {
-        scrollToTop();
-      }, 100);
+    if (filteredItems.length > 0) {
+      setSelectedItem(filteredItems[0]);
+      setTimeout(() => scrollToTop(), 100);
     }
-  }, [filteredFarms]);
+  }, [filteredItems]);
 
   // ⌨️ BUSCA COM ENTER
   const handleKeyPress = useCallback(
@@ -271,270 +303,504 @@ export const Search = () => {
     [handleSearch],
   );
 
-  // 🖱️ SELECIONAR FAZENDA - COM SCROLL TO TOP
-  const handleSelectFarm = useCallback(
-    (farm: (typeof fazendas)[0]) => {
-      setSelectedFarm(farm);
+  // 🖱️ SELECIONAR ITEM
+  const handleSelectItem = useCallback(
+    (item: any) => {
+      setSelectedItem(item);
       if (searchTerm) setSearchTerm('');
-
-      // 🚀 SCROLL SUAVE PARA O TOPO DA PÁGINA
-      setTimeout(() => {
-        scrollToTop();
-      }, 100);
+      setTimeout(() => scrollToTop(), 100);
     },
     [searchTerm],
   );
 
-  // 🎨 RENDERIZAÇÃO MOBILE
+  // ✏️ EDITAR ITEM
+  const handleEdit = useCallback(
+    (item: any) => {
+      const editRoutes = {
+        producer: `/produtores/editar/${item.id}`,
+        farm: `/fazendas/editar/${item.id}`,
+        crop: `/culturas/editar/${item.id}`,
+      };
+      navigate(editRoutes[item.type]);
+    },
+    [navigate],
+  );
+
+  // 🗑️ EXCLUIR ITEM
+  const handleDelete = useCallback(
+    async (item: any) => {
+      if (!window.confirm(`Tem certeza que deseja excluir ${item.displayName}?`)) {
+        return;
+      }
+
+      try {
+        switch (item.type) {
+          case 'producer':
+            await deleteProducer(item.id);
+            break;
+          case 'farm':
+            await deleteFarm(item.id);
+            break;
+          case 'crop':
+            await deleteCrop(item.id);
+            break;
+        }
+
+        // Se o item excluído era o selecionado, seleciona outro
+        if (selectedItem?.id === item.id) {
+          const remainingItems = filteredItems.filter((i) => i.id !== item.id);
+          setSelectedItem(remainingItems.length > 0 ? remainingItems[0] : null);
+        }
+      } catch (error) {
+        console.error('Erro ao excluir item:', error);
+        alert('Erro ao excluir item. Tente novamente.');
+      }
+    },
+    [deleteProducer, deleteFarm, deleteCrop, selectedItem, filteredItems],
+  );
+
+  // 🎯 INICIALIZAR COM PRIMEIRO ITEM
+  useEffect(() => {
+    if (!selectedItem && filteredItems.length > 0) {
+      setSelectedItem(filteredItems[0]);
+    }
+  }, [filteredItems, selectedItem]);
+
+  // 🎨 RENDERIZAÇÃO MOBILE SUPREMA
   const renderMobileLayout = () => (
     <>
-      {/* 🌄 SEÇÃO HERO COM IMAGEM DA FAZENDA */}
-      <HeroSection isDark={isDark}>
-        <HeroImage src={selectedFarm.image} alt={selectedFarm.name} loading="lazy" />
-        <HeroImageOverlay isDark={isDark} />
-        {isLoading && <ShimmerEffect />}
-      </HeroSection>
+      {/* 🌄 SEÇÃO HERO ÉPICA */}
+      {selectedItem && (
+        <HeroSection $isDark={isDark}>
+          <HeroImage src={selectedItem.image} alt={selectedItem.displayName} loading="lazy" />
+          <HeroImageOverlay $isDark={isDark} />
+          {isLoading && <ShimmerEffect />}
+        </HeroSection>
+      )}
 
-      {/* 🔍 SEÇÃO DE PESQUISA */}
+      {/* 🔍 SEÇÃO DE PESQUISA SUPREMA */}
       <SearchSection>
-        <SearchInputContainer isDark={isDark}>
+        <SearchTypeSelector>
+          {(['all', 'producers', 'farms', 'crops'] as SearchType[]).map((type) => (
+            <SearchTypeButton
+              key={type}
+              $isDark={isDark}
+              $isActive={searchType === type}
+              onClick={() => setSearchType(type)}
+            >
+              <IconWrapper>{getTypeIcon(type)}</IconWrapper>
+              {type === 'all'
+                ? 'Todos'
+                : type === 'producers'
+                  ? 'Produtores'
+                  : type === 'farms'
+                    ? 'Fazendas'
+                    : 'Culturas'}
+            </SearchTypeButton>
+          ))}
+        </SearchTypeSelector>
+
+        <SearchInputContainer $isDark={isDark}>
           <SearchInput
-            isDark={isDark}
+            $isDark={isDark}
             type="text"
-            placeholder="Digite o nome da fazenda..."
+            placeholder={`Buscar ${
+              searchType === 'all'
+                ? 'tudo'
+                : searchType === 'producers'
+                  ? 'produtores'
+                  : searchType === 'farms'
+                    ? 'fazendas'
+                    : 'culturas'
+            }...`}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyPress={handleKeyPress}
           />
-          <SearchButton isDark={isDark} onClick={handleSearch} disabled={isLoading}>
-            🔍
+          <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoading}>
+            <FiSearch size={18} />
           </SearchButton>
         </SearchInputContainer>
 
-        <RandomButton isDark={isDark} onClick={handleRandomFarm} disabled={isLoading}>
-          🎲 Fazenda Aleatória
-        </RandomButton>
+        <Button isDark={isDark} onClick={handleRandomItem} disabled={isLoading}>
+          <FiShuffle size={16} />
+          Item Aleatório
+        </Button>
       </SearchSection>
 
-      {/* 📊 CARD DA FAZENDA SELECIONADA */}
-      {selectedFarm && (
-        <FarmCard isDark={isDark}>
-          <FarmNumber isDark={isDark}>#{selectedFarm.id.toString().padStart(3, '0')}</FarmNumber>
-          <FarmName isDark={isDark}>{selectedFarm.name}</FarmName>
-          <FarmType typeColor={selectedFarm.typeColor} isDark={isDark}>
-            {selectedFarm.type}
-          </FarmType>
+      {/* 📊 CARD DO ITEM SELECIONADO */}
+      {selectedItem && (
+        <ItemCard $isDark={isDark}>
+          <ItemHeader>
+            <ItemNumber $isDark={isDark}>#{selectedItem.id.toString().padStart(3, '0')}</ItemNumber>
+            <ActionButtonsContainer>
+              <ActionButton
+                $isDark={isDark}
+                $variant="edit"
+                onClick={() => handleEdit(selectedItem)}
+              >
+                <FiEdit3 size={16} />
+              </ActionButton>
+              <ActionButton
+                $isDark={isDark}
+                $variant="delete"
+                onClick={() => handleDelete(selectedItem)}
+              >
+                <FiTrash2 size={16} />
+              </ActionButton>
+            </ActionButtonsContainer>
+          </ItemHeader>
 
-          <FarmDetails>
-            <FarmSize isDark={isDark}>📏 {selectedFarm.size}</FarmSize>
-            <FarmLocation isDark={isDark}>📍 {selectedFarm.location}</FarmLocation>
-          </FarmDetails>
+          <ItemName $isDark={isDark}>{selectedItem.displayName}</ItemName>
+          <ItemType $typeColor={getTypeColor(selectedItem.type)} $isDark={isDark}>
+            <ItemTypeIcon>{getTypeIcon(selectedItem.type)}</ItemTypeIcon>
+            {selectedItem.displayType}
+          </ItemType>
 
-          <FarmStats>
+          <ItemDetails>
+            <ItemSize $isDark={isDark}>
+              <FiTrendingUp size={16} />
+              {selectedItem.displaySize}
+            </ItemSize>
+            <ItemLocation $isDark={isDark}>
+              <FiMapPin size={16} />
+              {selectedItem.displayLocation}
+            </ItemLocation>
+          </ItemDetails>
+
+          <ItemStats>
             <Typography
               variant="h6"
               style={{
                 marginBottom: '1rem',
                 color: isDark ? '#fff' : '#2c3e50',
                 fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
               }}
             >
-              Estatísticas da Fazenda
+              <HiOutlineChartBar size={20} />
+              Estatísticas
             </Typography>
 
-            {Object.entries(selectedFarm.stats).map(([key, value]) => (
+            {Object.entries(selectedItem.stats).map(([key, value]) => (
               <StatRow key={key}>
-                <StatLabel isDark={isDark}>{key.charAt(0).toUpperCase() + key.slice(1)}</StatLabel>
-                <StatValue isDark={isDark}>{value}</StatValue>
-                <StatBar isDark={isDark}>
-                  <StatFill percentage={value} isDark={isDark} />
-                </StatBar>
+                <StatLabel $isDark={isDark}>{key.charAt(0).toUpperCase() + key.slice(1)}</StatLabel>
+                <StatValue $isDark={isDark}>
+                  {typeof value === 'number' ? value.toLocaleString() : value}
+                </StatValue>
+                {typeof value === 'number' && value <= 100 && (
+                  <StatBar $isDark={isDark}>
+                    <StatFill $percentage={value} $isDark={isDark} />
+                  </StatBar>
+                )}
               </StatRow>
             ))}
-          </FarmStats>
-        </FarmCard>
+          </ItemStats>
+        </ItemCard>
       )}
 
-      {/* 🌾 GRID DE FAZENDAS FILTRADAS */}
-      <AllFarmsSection>
-        <SectionTitle isDark={isDark}>
-          {searchTerm
-            ? `${filteredFarms.length} fazenda(s) encontrada(s)`
-            : `Todas as ${fazendas.length} fazendas`}
-        </SectionTitle>
+      {/* 🌾 GRID DE TODOS OS ITENS */}
+      <AllItemsSection>
+        <ResultsCount $isDark={isDark}>
+          <HiOutlineSparkles size={20} />
+          {filteredItems.length}{' '}
+          {filteredItems.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
+        </ResultsCount>
 
-        {filteredFarms.length > 0 ? (
+        {filteredItems.length > 0 ? (
           <GridContainer>
-            {filteredFarms.map((farm) => (
-              <FarmCard
-                key={farm.id}
-                isDark={isDark}
-                onClick={() => handleSelectFarm(farm)}
+            {filteredItems.map((item) => (
+              <ItemCard
+                key={`${item.type}-${item.id}`}
+                $isDark={isDark}
+                onClick={() => handleSelectItem(item)}
                 style={{
                   cursor: 'pointer',
-                  transform: selectedFarm.id === farm.id ? 'scale(1.05)' : 'scale(1)',
+                  transform:
+                    selectedItem?.id === item.id && selectedItem?.type === item.type
+                      ? 'scale(1.02)'
+                      : 'scale(1)',
                   border:
-                    selectedFarm.id === farm.id
-                      ? `2px solid ${isDark ? '#37cb83' : '#27ae60'}`
+                    selectedItem?.id === item.id && selectedItem?.type === item.type
+                      ? `2px solid ${getTypeColor(item.type)}`
                       : undefined,
                 }}
               >
-                <FarmImage src={farm.image} alt={farm.name} />
-                <FarmInfo>
-                  <FarmNumber isDark={isDark}>#{farm.id.toString().padStart(3, '0')}</FarmNumber>
-                  <FarmName isDark={isDark} style={{ fontSize: '1.2rem' }}>
-                    {farm.name}
-                  </FarmName>
-                  <FarmType typeColor={farm.typeColor} isDark={isDark}>
-                    {farm.type}
-                  </FarmType>
-                </FarmInfo>
-              </FarmCard>
+                <ItemImage src={item.image} alt={item.displayName} />
+                <ItemInfo>
+                  <ItemNumber $isDark={isDark}>#{item.id.toString().padStart(3, '0')}</ItemNumber>
+                  <ItemName $isDark={isDark} style={{ fontSize: '1.2rem' }}>
+                    {item.displayName}
+                  </ItemName>
+                  <ItemType $typeColor={getTypeColor(item.type)} $isDark={isDark}>
+                    <ItemTypeIcon>{getTypeIcon(item.type)}</ItemTypeIcon>
+                    {item.displayType}
+                  </ItemType>
+                  <ActionButtonsContainer style={{ marginTop: '1rem' }}>
+                    <ActionButton
+                      $isDark={isDark}
+                      $variant="edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(item);
+                      }}
+                    >
+                      <FiEdit3 size={14} />
+                    </ActionButton>
+                    <ActionButton
+                      $isDark={isDark}
+                      $variant="delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(item);
+                      }}
+                    >
+                      <FiTrash2 size={14} />
+                    </ActionButton>
+                  </ActionButtonsContainer>
+                </ItemInfo>
+              </ItemCard>
             ))}
           </GridContainer>
         ) : (
-          <NoResultsContainer isDark={isDark}>
-            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔍</div>
+          <NoResultsContainer $isDark={isDark}>
+            <EmptyStateIcon>
+              <FiSearch size={48} />
+            </EmptyStateIcon>
             <Typography variant="h6" style={{ marginBottom: '0.5rem' }}>
-              Ops! Nenhuma fazenda encontrada
+              Ops! Nenhum resultado encontrado
             </Typography>
-            <Typography variant="body1" style={{ opacity: 0.7 }}>
-              Tente buscar por nome, tipo de cultivo ou localização
+            <Typography variant="body1" style={{ opacity: 0.7, textAlign: 'center' }}>
+              Tente buscar por nome, tipo ou localização
             </Typography>
-            <RandomButton isDark={isDark} onClick={handleRandomFarm} style={{ marginTop: '1rem' }}>
-              🎲 Que tal uma fazenda aleatória?
-            </RandomButton>
+            <Button isDark={isDark} onClick={handleRandomItem} style={{ marginTop: '1rem' }}>
+              <FiShuffle size={16} />
+              Que tal um item aleatório?
+            </Button>
           </NoResultsContainer>
         )}
-      </AllFarmsSection>
+      </AllItemsSection>
     </>
   );
 
-  // 🖥️ RENDERIZAÇÃO DESKTOP
+  // 🖥️ RENDERIZAÇÃO DESKTOP SUPREMA
   const renderDesktopLayout = () => (
     <DesktopLayout>
-      {/* 🎯 PAINEL ESQUERDO - FAZENDA SELECIONADA */}
-      <LeftPanel isDark={isDark}>
-        <HeroSection isDark={isDark} isDesktop>
-          <HeroImage src={selectedFarm.image} alt={selectedFarm.name} loading="lazy" />
-          <HeroImageOverlay isDark={isDark} />
-          {isLoading && <ShimmerEffect />}
-        </HeroSection>
+      {/* 🎯 PAINEL ESQUERDO - ITEM SELECIONADO */}
+      <LeftPanel $isDark={isDark}>
+        {selectedItem && (
+          <>
+            <HeroSection $isDark={isDark} $isDesktop>
+              <HeroImage src={selectedItem.image} alt={selectedItem.displayName} loading="lazy" />
+              <HeroImageOverlay $isDark={isDark} />
+              {isLoading && <ShimmerEffect />}
+            </HeroSection>
 
-        <SearchSection>
-          <SearchInputContainer isDark={isDark}>
-            <SearchInput
-              isDark={isDark}
-              type="text"
-              placeholder="Buscar fazendas..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <SearchButton isDark={isDark} onClick={handleSearch} disabled={isLoading}>
-              🔍
-            </SearchButton>
-          </SearchInputContainer>
+            <SearchSection>
+              <SearchTypeSelector>
+                {(['all', 'producers', 'farms', 'crops'] as SearchType[]).map((type) => (
+                  <SearchTypeButton
+                    key={type}
+                    $isDark={isDark}
+                    $isActive={searchType === type}
+                    onClick={() => setSearchType(type)}
+                  >
+                    <IconWrapper>{getTypeIcon(type)}</IconWrapper>
+                    {type === 'all'
+                      ? 'Todos'
+                      : type === 'producers'
+                        ? 'Produtores'
+                        : type === 'farms'
+                          ? 'Fazendas'
+                          : 'Culturas'}
+                  </SearchTypeButton>
+                ))}
+              </SearchTypeSelector>
 
-          <RandomButton isDark={isDark} onClick={handleRandomFarm} disabled={isLoading}>
-            🎲 Fazenda Aleatória
-          </RandomButton>
-        </SearchSection>
+              <SearchInputContainer $isDark={isDark}>
+                <SearchInput
+                  $isDark={isDark}
+                  type="text"
+                  placeholder="Buscar..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                />
+                <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoading}>
+                  <FiSearch size={18} />
+                </SearchButton>
+              </SearchInputContainer>
 
-        <FarmCard isDark={isDark} isDesktop>
-          <FarmNumber isDark={isDark}>#{selectedFarm.id.toString().padStart(3, '0')}</FarmNumber>
-          <FarmName isDark={isDark}>{selectedFarm.name}</FarmName>
-          <FarmType typeColor={selectedFarm.typeColor} isDark={isDark}>
-            {selectedFarm.type}
-          </FarmType>
+              <Button isDark={isDark} onClick={handleRandomItem} disabled={isLoading}>
+                <FiShuffle size={16} />
+                Item Aleatório
+              </Button>
+            </SearchSection>
 
-          <FarmDetails>
-            <FarmSize isDark={isDark}>📏 {selectedFarm.size}</FarmSize>
-            <FarmLocation isDark={isDark}>📍 {selectedFarm.location}</FarmLocation>
-          </FarmDetails>
+            <ItemCard $isDark={isDark} $isDesktop>
+              <ItemHeader>
+                <ItemNumber $isDark={isDark}>
+                  #{selectedItem.id.toString().padStart(3, '0')}
+                </ItemNumber>
+                <ActionButtonsContainer>
+                  <ActionButton
+                    $isDark={isDark}
+                    $variant="edit"
+                    onClick={() => handleEdit(selectedItem)}
+                  >
+                    <FiEdit3 size={16} />
+                  </ActionButton>
+                  <ActionButton
+                    $isDark={isDark}
+                    $variant="delete"
+                    onClick={() => handleDelete(selectedItem)}
+                  >
+                    <FiTrash2 size={16} />
+                  </ActionButton>
+                </ActionButtonsContainer>
+              </ItemHeader>
 
-          <FarmStats>
-            <Typography
-              variant="h6"
-              style={{
-                marginBottom: '1rem',
-                color: isDark ? '#fff' : '#2c3e50',
-                fontWeight: 'bold',
-              }}
-            >
-              Estatísticas da Fazenda
-            </Typography>
+              <ItemName $isDark={isDark}>{selectedItem.displayName}</ItemName>
+              <ItemType $typeColor={getTypeColor(selectedItem.type)} $isDark={isDark}>
+                <ItemTypeIcon>{getTypeIcon(selectedItem.type)}</ItemTypeIcon>
+                {selectedItem.displayType}
+              </ItemType>
 
-            {Object.entries(selectedFarm.stats).map(([key, value]) => (
-              <StatRow key={key}>
-                <StatLabel isDark={isDark}>{key.charAt(0).toUpperCase() + key.slice(1)}</StatLabel>
-                <StatValue isDark={isDark}>{value}</StatValue>
-                <StatBar isDark={isDark}>
-                  <StatFill percentage={value} isDark={isDark} />
-                </StatBar>
-              </StatRow>
-            ))}
-          </FarmStats>
-        </FarmCard>
+              <ItemDetails>
+                <ItemSize $isDark={isDark}>
+                  <FiTrendingUp size={16} />
+                  {selectedItem.displaySize}
+                </ItemSize>
+                <ItemLocation $isDark={isDark}>
+                  <FiMapPin size={16} />
+                  {selectedItem.displayLocation}
+                </ItemLocation>
+              </ItemDetails>
+
+              <ItemStats>
+                <Typography
+                  variant="h6"
+                  style={{
+                    marginBottom: '1rem',
+                    color: isDark ? '#fff' : '#2c3e50',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <HiOutlineChartBar size={20} />
+                  Estatísticas
+                </Typography>
+
+                {Object.entries(selectedItem.stats).map(([key, value]) => (
+                  <StatRow key={key}>
+                    <StatLabel $isDark={isDark}>
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </StatLabel>
+                    <StatValue $isDark={isDark}>
+                      {typeof value === 'number' ? value.toLocaleString() : value}
+                    </StatValue>
+                    {typeof value === 'number' && value <= 100 && (
+                      <StatBar $isDark={isDark}>
+                        <StatFill $percentage={value} $isDark={isDark} />
+                      </StatBar>
+                    )}
+                  </StatRow>
+                ))}
+              </ItemStats>
+            </ItemCard>
+          </>
+        )}
       </LeftPanel>
 
-      {/* 🌾 PAINEL DIREITO - TODAS AS FAZENDAS */}
-      <RightPanel isDark={isDark}>
-        <SectionTitle isDark={isDark}>
-          {searchTerm
-            ? `${filteredFarms.length} fazenda(s) encontrada(s)`
-            : `Todas as ${fazendas.length} fazendas`}
-        </SectionTitle>
+      {/* 🌾 PAINEL DIREITO - TODOS OS ITENS */}
+      <RightPanel $isDark={isDark}>
+        <ResultsCount $isDark={isDark}>
+          <HiOutlineSparkles size={20} />
+          {filteredItems.length} {filteredItems.length === 1 ? 'resultado' : 'resultados'}
+        </ResultsCount>
 
-        <FarmGrid>
-          {filteredFarms.length > 0 ? (
-            filteredFarms.map((farm) => (
+        <ItemGrid>
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
               <MiniCard
-                key={farm.id}
-                isDark={isDark}
-                isSelected={selectedFarm.id === farm.id}
-                onClick={() => handleSelectFarm(farm)}
+                key={`${item.type}-${item.id}`}
+                $isDark={isDark}
+                $isSelected={selectedItem?.id === item.id && selectedItem?.type === item.type}
+                onClick={() => handleSelectItem(item)}
               >
-                <MiniCardImage src={farm.image} alt={farm.name} />
+                <MiniCardImage src={item.image} alt={item.displayName} />
                 <MiniCardInfo>
-                  <FarmNumber isDark={isDark} style={{ fontSize: '0.8rem', margin: 0 }}>
-                    #{farm.id.toString().padStart(3, '0')}
-                  </FarmNumber>
-                  <MiniCardName isDark={isDark}>{farm.name}</MiniCardName>
-                  <MiniCardType typeColor={farm.typeColor} isDark={isDark}>
-                    {farm.type}
+                  <ItemNumber $isDark={isDark} style={{ fontSize: '0.8rem', margin: 0 }}>
+                    #{item.id.toString().padStart(3, '0')}
+                  </ItemNumber>
+                  <MiniCardName $isDark={isDark}>{item.displayName}</MiniCardName>
+                  <MiniCardType $typeColor={getTypeColor(item.type)} $isDark={isDark}>
+                    <ItemTypeIcon>{getTypeIcon(item.type)}</ItemTypeIcon>
+                    {item.displayType}
                   </MiniCardType>
                   <div
                     style={{
                       fontSize: '0.8rem',
                       color: isDark ? 'rgba(255,255,255,0.7)' : 'rgba(44,62,80,0.7)',
                       marginTop: '0.5rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
                     }}
                   >
-                    📍 {farm.location}
+                    <FiMapPin size={12} />
+                    {item.displayLocation}
                   </div>
+                  <ActionButtonsContainer style={{ marginTop: '0.8rem' }}>
+                    <ActionButton
+                      $isDark={isDark}
+                      $variant="edit"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEdit(item);
+                      }}
+                    >
+                      <FiEdit3 size={12} />
+                    </ActionButton>
+                    <ActionButton
+                      $isDark={isDark}
+                      $variant="delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(item);
+                      }}
+                    >
+                      <FiTrash2 size={12} />
+                    </ActionButton>
+                  </ActionButtonsContainer>
                 </MiniCardInfo>
               </MiniCard>
             ))
           ) : (
-            <NoResultsContainer isDark={isDark}>
-              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
+            <NoResultsContainer $isDark={isDark}>
+              <EmptyStateIcon>
+                <FiSearch size={36} />
+              </EmptyStateIcon>
               <Typography variant="h6" style={{ marginBottom: '0.5rem' }}>
-                Nenhuma fazenda encontrada
+                Nenhum resultado encontrado
               </Typography>
               <Typography variant="body2" style={{ opacity: 0.7 }}>
                 Tente buscar por nome, tipo ou localização
               </Typography>
             </NoResultsContainer>
           )}
-        </FarmGrid>
+        </ItemGrid>
       </RightPanel>
     </DesktopLayout>
   );
 
   return (
     <>
-      <meta name="title" content="Explorador de Fazendas" />
+      <meta name="title" content="Explorador Supremo" />
       <div
         style={{
           display: 'flex',
@@ -546,11 +812,11 @@ export const Search = () => {
         }}
       >
         <Text variant="h3" style={{ fontWeight: 'bold', textAlign: 'center' }}>
-          Pesquisar
+          🔍 Pesquisar
         </Text>
       </div>
 
-      <SearchContainer isDark={isDark} data-scroll-container>
+      <SearchContainer $isDark={isDark} data-scroll-container>
         {isDesktop ? renderDesktopLayout() : renderMobileLayout()}
       </SearchContainer>
     </>
