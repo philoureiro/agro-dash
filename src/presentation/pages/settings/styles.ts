@@ -48,6 +48,7 @@ export const SettingsContainer = styled.div<{ isDark: boolean }>`
 
   @media (max-width: 768px) {
     padding: 1rem;
+    margin-bottom: 120px;
   }
 `;
 
@@ -172,7 +173,7 @@ export const SettingOption = styled.div<{ delay?: number }>`
   animation: ${slideIn} 0.4s ease-out;
   animation-delay: ${({ delay = 0 }) => delay}ms;
   animation-fill-mode: both;
-
+  gap: 5px;
   &:last-child {
     border-bottom: none;
   }
@@ -192,9 +193,12 @@ export const OptionLabel = styled.label<{ isDark: boolean }>`
 `;
 
 export const OptionSubtext = styled.span<{ isDark: boolean }>`
+  display: flex;
   font-size: 0.875rem;
   color: ${({ isDark }) => (isDark ? '#94a3b8' : '#64748b')};
   line-height: 1.4;
+  max-width: 240px;
+  text-align: left;
 `;
 
 // 🎨 TOGGLE SWITCH

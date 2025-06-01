@@ -384,9 +384,7 @@ export const Settings: React.FC = () => {
             <OptionInfo>
               <OptionLabel isDark={isDark}>{`Tema ${isDark ? 'Escuro' : 'Claro'}`}</OptionLabel>
               <OptionSubtext isDark={isDark}>
-                {isDark
-                  ? 'Voltar para o modo claro para facilitar leitura'
-                  : 'Ativa o modo escuro para reduzir cansaço visual'}
+                {`Voltar para o modo ${isDark ? 'Claro' : 'Escuro'} para facilitar leitura`}
               </OptionSubtext>
             </OptionInfo>
             <ToggleSwitch isActive={isDark} isDark={isDark} onClick={handleThemeToggle} />
