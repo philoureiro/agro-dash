@@ -51,40 +51,12 @@ export const SliderThumb = styled.div<{
 
 // 🏭 FARM CARD ESPECÍFICO
 export const FarmCard = styled.div<{ isDark: boolean; isValid?: boolean }>`
-  background: ${({ isDark, isValid }) => {
-    if (isValid) {
-      return isDark
-        ? 'linear-gradient(135deg, rgba(55, 203, 131, 0.1), rgba(26, 35, 50, 0.8))'
-        : 'linear-gradient(135deg, rgba(55, 203, 131, 0.05), rgba(248, 250, 252, 0.8))';
-    }
-    return isDark ? 'rgba(26, 35, 50, 0.8)' : 'rgba(248, 250, 252, 0.8)';
-  }};
-  border: ${({ isDark, isValid }) => {
-    if (isValid) return isDark ? '2px solid #37cb83' : '2px solid #27ae60';
-    return isDark ? '1px solid rgba(55, 203, 131, 0.2)' : '1px solid rgba(55, 203, 131, 0.1)';
-  }};
   border-radius: 16px;
-  padding: 2rem;
   backdrop-filter: blur(15px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: ${({ isValid }) =>
-      isValid
-        ? 'linear-gradient(90deg, #37cb83, #27ae60)'
-        : 'linear-gradient(90deg, rgba(55, 203, 131, 0.5), rgba(39, 174, 96, 0.5))'};
-    border-radius: 16px 16px 0 0;
-  }
-
-  &:hover {
+  */ &:hover {
     transform: translateY(-3px);
     box-shadow: ${({ isDark, isValid }) => {
       if (isValid) {
@@ -94,10 +66,6 @@ export const FarmCard = styled.div<{ isDark: boolean; isValid?: boolean }>`
       }
       return isDark ? '0 15px 30px rgba(0, 0, 0, 0.3)' : '0 15px 30px rgba(0, 0, 0, 0.1)';
     }};
-  }
-
-  @media (max-width: 768px) {
-    padding: 1.5rem;
   }
 `;
 
@@ -116,12 +84,13 @@ export const FarmHeader = styled.div`
 `;
 
 export const PreviewImage = styled.img`
-  width: 120px;
-  height: 80px;
+  width: 100%;
+  max-height: 300px;
   object-fit: cover;
   border-radius: 8px;
-  flex-shrink: 0;
+  flex: 1 1 0;
   transition: transform 0.3s ease;
+  display: block;
 
   &:hover {
     transform: scale(1.05);
@@ -133,19 +102,48 @@ export const PreviewImage = styled.img`
   }
 `;
 
+export const PreviewContainer = styled.div<{ isDark: boolean }>`
+  display: flex;
+  width: 100%;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  border-radius: 12px;
+
+  transition: all 0.3s ease;
+
+  @media (max-width: 736px) {
+    padding: 0.5rem;
+    flex-direction: column;
+  }
+`;
+
 export const PreviewInfo = styled.div`
-  flex: 1;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   h4 {
     margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+    font-size: 30px;
     font-weight: bold;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   p {
     margin: 0.2rem 0;
-    font-size: 0.9rem;
+    font-size: 20px;
     opacity: 0.8;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 `;
 

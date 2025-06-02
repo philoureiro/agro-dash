@@ -1,39 +1,21 @@
-// src/components/AddFarmer/CropForm.tsx
 import React from 'react';
 
-import { Button } from '@components';
+import { Button, Input } from '@components';
 import { Crop, Farm } from '@entities';
 
 import { RemoveButton } from '../farm-form/styles';
-import {
-  FloatingLabel,
-  FormCard,
-  FormGrid,
-  InputGroup,
-  StyledInput,
-  StyledSelect,
-} from '../producer-form/styles';
+import { FormCard, FormGrid } from '../producer-form/styles';
 import { CropCard, CropHeader, CropTypeIcon, CropValidation, ProductivityMeter } from './styles';
 
-// Define a type for tempId
-type TempId = { tempId: string };
-
-// Define a type for CropValidation
-export interface CropValidationType {
-  [farmId: string]: {
-    [cropId: string]: {
-      typeValid: boolean;
-      areaValid: boolean;
-      datesValid: boolean;
-      [key: string]: boolean;
-    };
-  };
-}
-
 interface CropFormProps {
-  farms: (Farm & TempId)[];
-  crops: Record<string, Crop[]>; // crops por farmId
-  validation: { crops?: CropValidationType };
+  farms: (Farm & { tempId: string })[];
+  crops: Record<string, Crop[]>;
+  validation: {
+    crops: Record<
+      string,
+      Record<string, { typeValid: boolean; areaValid: boolean; datesValid: boolean }>
+    >;
+  };
   onAddCrop: (farmId: string) => void;
   onRemoveCrop: (farmId: string, cropId: string) => void;
   onUpdateCrop: (farmId: string, cropId: string, updates: Partial<Crop>) => void;
@@ -49,7 +31,7 @@ export const CropForm: React.FC<CropFormProps> = ({
   onUpdateCrop,
   isDark,
 }) => {
-  // 🌱 TIPOS DE CULTURAS COM ÍCONES
+  // 🌱 TIPOS DE CULTURAS
   const cropTypes = [
     { value: 'SOJA', label: 'Soja', icon: '🌾', color: '#F1C40F' },
     { value: 'MILHO', label: 'Milho', icon: '🌽', color: '#F39C12' },
@@ -65,62 +47,14 @@ export const CropForm: React.FC<CropFormProps> = ({
     { value: 'MANDIOCA', label: 'Mandioca', icon: '🍠', color: '#D2691E' },
   ];
 
-  // 📅 CALCULAR DIAS PARA COLHEITA
-  const getDaysToHarvest = (harvestDate: string | Date | null): number | null => {
-    if (!harvestDate) return null;
-    const harvest = new Date(harvestDate);
-    const today = new Date();
-    const diffTime = harvest.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // 🎯 VALIDAÇÕES
+  const isValidImageUrl = (url: string): boolean => {
+    return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(url);
   };
 
-  // 🎯 STATUS DA CULTURA
-  const getCropStatus = (plantingDate: string | Date | null, harvestDate: string | Date | null) => {
-    const now = new Date();
-
-    if (!plantingDate) return { status: 'planned', color: '#95A5A6', label: 'Planejada' };
-
-    const planting = new Date(plantingDate);
-    if (planting > now) return { status: 'planned', color: '#95A5A6', label: 'Planejada' };
-
-    if (!harvestDate) return { status: 'growing', color: '#27AE60', label: 'Crescendo' };
-
-    const harvest = new Date(harvestDate);
-    if (harvest > now) return { status: 'growing', color: '#27AE60', label: 'Crescendo' };
-
-    return { status: 'ready', color: '#F39C12', label: 'Pronta para Colheita' };
-  };
-
-  // 🎨 COMPONENTE DE MEDIDOR DE PRODUTIVIDADE
-  const ProductivityIndicator: React.FC<{
-    plantedArea: number;
-    expectedYield: number;
-    farmArea: number;
-  }> = ({ plantedArea, expectedYield, farmArea }) => {
-    const totalProduction = plantedArea * expectedYield;
-    const utilizationPercentage = farmArea > 0 ? (plantedArea / farmArea) * 100 : 0;
-
-    return (
-      <ProductivityMeter isDark={isDark}>
-        <div className="metric">
-          <span className="label">Produção Estimada:</span>
-          <span className="value">{totalProduction.toLocaleString()} ton</span>
-        </div>
-        <div className="metric">
-          <span className="label">Utilização da Área:</span>
-          <span className="value">{utilizationPercentage.toFixed(1)}%</span>
-        </div>
-        <div className="progress-bar">
-          <div
-            className="progress-fill"
-            style={{
-              width: `${Math.min(utilizationPercentage, 100)}%`,
-              background: utilizationPercentage > 100 ? '#E74C3C' : '#27AE60',
-            }}
-          />
-        </div>
-      </ProductivityMeter>
-    );
+  const formatDate = (date: Date | undefined): string => {
+    if (!date) return '';
+    return new Date(date).toISOString().split('T')[0];
   };
 
   return (
@@ -146,11 +80,7 @@ export const CropForm: React.FC<CropFormProps> = ({
 
       {farms.map((farm, farmIndex) => {
         const farmCrops = crops[farm.tempId] || [];
-
-        const totalPlantedArea = farmCrops.reduce(
-          (sum: number, crop: Crop) => sum + (crop.plantedArea || 0),
-          0,
-        );
+        const totalPlantedArea = farmCrops.reduce((sum, crop) => sum + (crop.plantedArea || 0), 0);
         const availableArea = (farm.agriculturalArea || 0) - totalPlantedArea;
 
         return (
@@ -216,18 +146,14 @@ export const CropForm: React.FC<CropFormProps> = ({
                 <Button
                   isDark={isDark}
                   onClick={() => onAddCrop(farm.tempId)}
-                  disabled={availableArea <= 0}
                   style={{
-                    background:
-                      availableArea <= 0
-                        ? 'rgba(149, 165, 166, 0.5)'
-                        : 'linear-gradient(135deg, #27ae60, #229954)',
+                    background: 'linear-gradient(135deg, #27ae60, #229954)',
                     border: 'none',
                     borderRadius: '10px',
                     padding: '10px 20px',
                     color: 'white',
                     fontWeight: 'bold',
-                    cursor: availableArea <= 0 ? 'not-allowed' : 'pointer',
+                    cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
@@ -263,24 +189,16 @@ export const CropForm: React.FC<CropFormProps> = ({
                 <p>Nenhuma cultura plantada nesta fazenda</p>
               </div>
             ) : (
-              farmCrops.map((crop: Crop, cropIndex: number) => {
-                // Use CropValidationType for cropValidation, fallback to default values
-                const cropValidation = validation.crops?.[farm.tempId]?.[crop.id] ?? {
+              farmCrops.map((crop, cropIndex) => {
+                const cropValidation = validation.crops[farm.tempId]?.[crop.id] || {
                   typeValid: false,
                   areaValid: false,
                   datesValid: false,
                 };
+
                 const isValid =
-                  typeof cropValidation === 'object' &&
-                  cropValidation !== null &&
-                  Object.values(cropValidation).length > 0
-                    ? Object.values(cropValidation).every(Boolean)
-                    : false;
+                  cropValidation.typeValid && cropValidation.areaValid && cropValidation.datesValid;
                 const cropTypeInfo = cropTypes.find((ct) => ct.value === crop.type);
-
-                const status = getCropStatus(crop.plantingDate ?? null, crop.harvestDate ?? null);
-
-                const daysToHarvest = getDaysToHarvest(crop.harvestDate ?? null);
 
                 return (
                   <CropCard
@@ -307,21 +225,6 @@ export const CropForm: React.FC<CropFormProps> = ({
                             Cultura #{cropIndex + 1}
                             {isValid && <span>✅</span>}
                           </h4>
-                          <div
-                            style={{
-                              fontSize: '0.8rem',
-                              color: status.color,
-                              fontWeight: 'bold',
-                              marginTop: '0.2rem',
-                            }}
-                          >
-                            {status.label}
-                            {daysToHarvest !== null && daysToHarvest > 0 && (
-                              <span style={{ marginLeft: '0.5rem' }}>
-                                ({daysToHarvest} dias para colheita)
-                              </span>
-                            )}
-                          </div>
                         </div>
                       </div>
 
@@ -329,196 +232,179 @@ export const CropForm: React.FC<CropFormProps> = ({
                         isDark={isDark}
                         onClick={() => onRemoveCrop(farm.tempId, crop.id)}
                       >
-                        🗑️
+                        🗑️ Remover
                       </RemoveButton>
                     </CropHeader>
 
-                    <FormGrid
-                      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}
-                    >
-                      <InputGroup>
-                        <FloatingLabel
-                          isDark={isDark}
-                          active={!!crop.type}
-                          valid={!!cropValidation.typeValid}
-                        >
-                          Tipo de Cultura *
-                        </FloatingLabel>
-                        <StyledSelect
-                          isDark={isDark}
-                          value={crop.type || ''}
-                          valid={!!cropValidation.typeValid}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, {
-                              type:
-                                e.target.value === ''
-                                  ? undefined
-                                  : (e.target.value as Crop['type']),
-                            })
-                          }
-                        >
-                          <option value="">Selecione</option>
-                          {cropTypes.map((cropType) => (
-                            <option key={cropType.value} value={cropType.value}>
-                              {cropType.icon} {cropType.label}
-                            </option>
-                          ))}
-                        </StyledSelect>
-                      </InputGroup>
+                    {/* 📝 FORMULÁRIO COM INPUTS PADRÃO */}
+                    <FormGrid>
+                      <Input
+                        label="Tipo de Cultura *"
+                        value={crop.type || ''}
+                        onChange={(value) => onUpdateCrop(farm.tempId, crop.id, { type: value })}
+                        isDark={isDark}
+                        valid={cropValidation.typeValid}
+                        validationMessage={
+                          crop.type
+                            ? cropValidation.typeValid
+                              ? 'Tipo válido!'
+                              : 'Selecione um tipo de cultura'
+                            : undefined
+                        }
+                        validationType={crop.type && cropValidation.typeValid ? 'success' : 'error'}
+                        options={[
+                          { value: '', label: 'Selecione o tipo' },
+                          ...cropTypes.map((type) => ({
+                            value: type.value,
+                            label: `${type.icon} ${type.label}`,
+                          })),
+                        ]}
+                      />
 
-                      <InputGroup>
-                        <FloatingLabel isDark={isDark} active={!!crop.harvestYear} valid={true}>
-                          Ano da Safra *
-                        </FloatingLabel>
-                        <StyledSelect
-                          isDark={isDark}
-                          value={crop.harvestYear || ''}
-                          valid={true}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, { harvestYear: e.target.value })
-                          }
-                        >
-                          <option value="">Selecione</option>
-                          {[2024, 2025, 2026, 2027].map((year) => (
-                            <option key={year} value={year.toString()}>
-                              {year}
-                            </option>
-                          ))}
-                        </StyledSelect>
-                      </InputGroup>
+                      <Input
+                        label="Ano da Safra *"
+                        value={crop.harvestYear || ''}
+                        onChange={(value) =>
+                          onUpdateCrop(farm.tempId, crop.id, { harvestYear: value })
+                        }
+                        isDark={isDark}
+                        valid={!!crop.harvestYear}
+                        validationMessage={crop.harvestYear ? 'Ano válido!' : undefined}
+                        validationType={crop.harvestYear ? 'success' : 'error'}
+                        options={[
+                          { value: '', label: 'Selecione o ano' },
+                          ...Array.from({ length: 4 }, (_, i) => {
+                            const year = new Date().getFullYear() + i;
+                            return { value: year.toString(), label: year.toString() };
+                          }),
+                        ]}
+                      />
 
-                      <InputGroup>
-                        <FloatingLabel
-                          isDark={isDark}
-                          active={!!crop.plantedArea && crop.plantedArea > 0}
-                          valid={!!cropValidation.areaValid}
-                        >
-                          Área Plantada (hectares) *
-                        </FloatingLabel>
-                        <StyledInput
-                          isDark={isDark}
-                          type="number"
-                          value={crop.plantedArea ?? ''}
-                          valid={!!cropValidation.areaValid}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, {
-                              plantedArea:
-                                e.target.value === '' ? undefined : Number(e.target.value),
-                            })
-                          }
-                          placeholder=" "
-                          min="0"
-                          step="0.01"
-                        />
-                      </InputGroup>
+                      <Input
+                        label="Área Plantada (hectares) *"
+                        type="number"
+                        value={crop.plantedArea?.toString() || ''}
+                        onChange={(value) =>
+                          onUpdateCrop(farm.tempId, crop.id, { plantedArea: Number(value) || 0 })
+                        }
+                        isDark={isDark}
+                        valid={cropValidation.areaValid}
+                        validationMessage={
+                          crop.plantedArea
+                            ? cropValidation.areaValid
+                              ? 'Área válida!'
+                              : 'Área deve ser maior que 0'
+                            : undefined
+                        }
+                        validationType={
+                          crop.plantedArea && cropValidation.areaValid ? 'success' : 'error'
+                        }
+                        placeholder="0.00"
+                      />
 
-                      <InputGroup>
-                        <FloatingLabel
-                          isDark={isDark}
-                          active={!!crop.expectedYield && crop.expectedYield > 0}
-                          valid={true}
-                        >
-                          Produtividade (ton/ha)
-                        </FloatingLabel>
-                        <StyledInput
-                          isDark={isDark}
-                          type="number"
-                          value={crop.expectedYield ?? ''}
-                          valid={true}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, {
-                              expectedYield:
-                                e.target.value === '' ? undefined : Number(e.target.value),
-                            })
-                          }
-                          placeholder=" "
-                          min="0"
-                          step="0.1"
-                        />
-                      </InputGroup>
+                      <Input
+                        label="Produtividade Esperada (ton/ha)"
+                        type="number"
+                        value={crop.expectedYield?.toString() || ''}
+                        onChange={(value) =>
+                          onUpdateCrop(farm.tempId, crop.id, { expectedYield: Number(value) || 0 })
+                        }
+                        isDark={isDark}
+                        valid={crop.expectedYield ? crop.expectedYield > 0 : undefined}
+                        validationMessage={
+                          crop.expectedYield
+                            ? crop.expectedYield > 0
+                              ? 'Produtividade válida!'
+                              : 'Deve ser maior que 0'
+                            : undefined
+                        }
+                        validationType={
+                          crop.expectedYield && crop.expectedYield > 0 ? 'success' : 'info'
+                        }
+                        placeholder="0.0"
+                      />
 
-                      <InputGroup>
-                        <FloatingLabel
-                          isDark={isDark}
-                          active={!!crop.plantingDate}
-                          valid={!!cropValidation.datesValid}
-                        >
-                          Data de Plantio
-                        </FloatingLabel>
-                        <StyledInput
-                          isDark={isDark}
-                          type="date"
-                          value={
-                            crop.plantingDate
-                              ? new Date(crop.plantingDate).toISOString().split('T')[0]
-                              : ''
-                          }
-                          valid={!!cropValidation.datesValid}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, {
-                              plantingDate: e.target.value ? new Date(e.target.value) : undefined,
-                            })
-                          }
-                          placeholder=" "
-                        />
-                      </InputGroup>
+                      <Input
+                        label="Data de Plantio"
+                        type="date"
+                        value={formatDate(crop.plantingDate)}
+                        onChange={(value) =>
+                          onUpdateCrop(farm.tempId, crop.id, {
+                            plantingDate: value ? new Date(value) : undefined,
+                          })
+                        }
+                        isDark={isDark}
+                        valid={crop.plantingDate ? true : undefined}
+                        validationMessage={crop.plantingDate ? 'Data válida!' : undefined}
+                        validationType={crop.plantingDate ? 'success' : 'info'}
+                      />
 
-                      <InputGroup>
-                        <FloatingLabel
-                          isDark={isDark}
-                          active={!!crop.harvestDate}
-                          valid={!!cropValidation.datesValid}
-                        >
-                          Data de Colheita
-                        </FloatingLabel>
-                        <StyledInput
-                          isDark={isDark}
-                          type="date"
-                          value={
-                            crop.harvestDate
-                              ? new Date(crop.harvestDate).toISOString().split('T')[0]
-                              : ''
-                          }
-                          valid={!!cropValidation.datesValid}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, {
-                              harvestDate: e.target.value ? new Date(e.target.value) : undefined,
-                            })
-                          }
-                          placeholder=" "
-                        />
-                      </InputGroup>
+                      <Input
+                        label="Data de Colheita"
+                        type="date"
+                        value={formatDate(crop.harvestDate)}
+                        onChange={(value) =>
+                          onUpdateCrop(farm.tempId, crop.id, {
+                            harvestDate: value ? new Date(value) : undefined,
+                          })
+                        }
+                        isDark={isDark}
+                        valid={cropValidation.datesValid}
+                        validationMessage={
+                          crop.harvestDate && crop.plantingDate
+                            ? cropValidation.datesValid
+                              ? 'Data válida!'
+                              : 'Deve ser posterior ao plantio'
+                            : undefined
+                        }
+                        validationType={
+                          crop.harvestDate && crop.plantingDate && cropValidation.datesValid
+                            ? 'success'
+                            : 'error'
+                        }
+                      />
 
-                      <InputGroup style={{ gridColumn: '1 / -1' }}>
-                        <FloatingLabel isDark={isDark} active={!!crop.cropPhoto} valid={true}>
-                          URL da Foto da Cultura
-                        </FloatingLabel>
-                        <StyledInput
-                          isDark={isDark}
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <Input
+                          label="URL da Foto da Cultura"
                           value={crop.cropPhoto || ''}
-                          valid={true}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, { cropPhoto: e.target.value })
+                          onChange={(value) =>
+                            onUpdateCrop(farm.tempId, crop.id, { cropPhoto: value })
                           }
-                          placeholder=" "
-                        />
-                      </InputGroup>
-
-                      <InputGroup style={{ gridColumn: '1 / -1' }}>
-                        <FloatingLabel isDark={isDark} active={!!crop.notes} valid={true}>
-                          Observações
-                        </FloatingLabel>
-                        <StyledInput
                           isDark={isDark}
-                          value={crop.notes || ''}
-                          valid={true}
-                          onChange={(e) =>
-                            onUpdateCrop(farm.tempId, crop.id, { notes: e.target.value })
+                          valid={crop.cropPhoto ? isValidImageUrl(crop.cropPhoto) : undefined}
+                          validationMessage={
+                            crop.cropPhoto
+                              ? isValidImageUrl(crop.cropPhoto)
+                                ? 'URL válida!'
+                                : 'URL deve ser uma imagem válida'
+                              : 'Cole uma URL de imagem para preview'
                           }
-                          placeholder=" "
-                          style={{ minHeight: '60px' }}
+                          validationType={
+                            crop.cropPhoto
+                              ? isValidImageUrl(crop.cropPhoto)
+                                ? 'success'
+                                : 'error'
+                              : 'info'
+                          }
+                          placeholder="https://exemplo.com/cultura.jpg"
                         />
-                      </InputGroup>
+                      </div>
+
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <Input
+                          label="Observações"
+                          value={crop.notes || ''}
+                          onChange={(value) => onUpdateCrop(farm.tempId, crop.id, { notes: value })}
+                          isDark={isDark}
+                          valid={crop.notes ? true : undefined}
+                          validationMessage={crop.notes ? 'Observações adicionadas!' : undefined}
+                          validationType={crop.notes ? 'success' : 'info'}
+                          placeholder="Observações sobre a cultura..."
+                          multiline
+                          rows={3}
+                        />
+                      </div>
                     </FormGrid>
 
                     {/* 📊 INDICADOR DE PRODUTIVIDADE */}
@@ -526,19 +412,52 @@ export const CropForm: React.FC<CropFormProps> = ({
                       crop.plantedArea > 0 &&
                       crop.expectedYield &&
                       crop.expectedYield > 0 && (
-                        <ProductivityIndicator
-                          plantedArea={crop.plantedArea}
-                          expectedYield={crop.expectedYield}
-                          farmArea={farm.agriculturalArea || 0}
-                        />
+                        <ProductivityMeter isDark={isDark}>
+                          <div className="metric">
+                            <span className="label">Produção Estimada:</span>
+                            <span className="value">
+                              {(crop.plantedArea * crop.expectedYield).toLocaleString()} ton
+                            </span>
+                          </div>
+                          <div className="metric">
+                            <span className="label">Utilização da Fazenda:</span>
+                            <span className="value">
+                              {farm.agriculturalArea > 0
+                                ? ((crop.plantedArea / farm.agriculturalArea) * 100).toFixed(1)
+                                : 0}
+                              %
+                            </span>
+                          </div>
+                          <div className="progress-bar">
+                            <div
+                              className="progress-fill"
+                              style={{
+                                width: `${Math.min(farm.agriculturalArea > 0 ? (crop.plantedArea / farm.agriculturalArea) * 100 : 0, 100)}%`,
+                                background:
+                                  farm.agriculturalArea > 0 &&
+                                  crop.plantedArea / farm.agriculturalArea > 1
+                                    ? '#E74C3C'
+                                    : '#27AE60',
+                              }}
+                            />
+                          </div>
+                        </ProductivityMeter>
                       )}
 
                     {/* ⚠️ VALIDAÇÃO DE DATAS */}
-                    {crop.plantingDate &&
-                      crop.harvestDate &&
-                      new Date(crop.harvestDate) <= new Date(crop.plantingDate) && (
-                        <CropValidation isDark={isDark} type="error">
-                          ⚠️ Data de colheita deve ser posterior à data de plantio
+                    {crop.plantingDate && crop.harvestDate && !cropValidation.datesValid && (
+                      <CropValidation isDark={isDark} type="error">
+                        ⚠️ Data de colheita deve ser posterior à data de plantio
+                      </CropValidation>
+                    )}
+
+                    {/* ⚠️ VALIDAÇÃO DE ÁREA */}
+                    {crop.plantedArea &&
+                      farm.agriculturalArea &&
+                      crop.plantedArea > farm.agriculturalArea && (
+                        <CropValidation isDark={isDark} type="warning">
+                          ⚠️ Área plantada ({crop.plantedArea.toLocaleString()} ha) excede área
+                          agricultável da fazenda ({farm.agriculturalArea.toLocaleString()} ha)
                         </CropValidation>
                       )}
                   </CropCard>

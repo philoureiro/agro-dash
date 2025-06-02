@@ -10,6 +10,7 @@ import {
   AreaValidation,
   FarmCard,
   FarmHeader,
+  PreviewContainer,
   PreviewImage,
   PreviewInfo,
   RemoveButton,
@@ -82,6 +83,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
+            maxWidth: '180px',
             transition: 'all 0.3s ease',
           }}
         >
@@ -143,19 +145,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
             </FarmHeader>
 
             {/* 🖼️ PREVIEW DA FAZENDA */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '1rem',
-                marginBottom: '2rem',
-                padding: '1rem',
-                background: isDark ? 'rgba(45, 52, 64, 0.5)' : 'rgba(255, 255, 255, 0.5)',
-                borderRadius: '12px',
-                border: isDark
-                  ? '1px solid rgba(255, 255, 255, 0.05)'
-                  : '1px solid rgba(0, 0, 0, 0.03)',
-              }}
-            >
+            <PreviewContainer isDark={isDark}>
               <PreviewImage
                 src={farm.farmPhoto || farmImages[index % farmImages.length]}
                 alt={`Fazenda ${index + 1}`}
@@ -171,11 +161,12 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 <p>📏 {farm.totalArea?.toLocaleString() || '0'} hectares</p>
                 <p>🌱 {farm.agriculturalArea?.toLocaleString() || '0'} ha agricultável</p>
               </PreviewInfo>
-            </div>
+            </PreviewContainer>
 
             {/* 📝 FORMULÁRIO COM COMPONENTE INPUT PADRÃO */}
             <FormGrid>
               <Input
+                maxLength={50}
                 label="Nome da Fazenda *"
                 value={farm.name || ''}
                 onChange={(value) => onUpdateFarm(farm.tempId, { name: value })}

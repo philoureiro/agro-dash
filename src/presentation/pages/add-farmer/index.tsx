@@ -9,7 +9,7 @@ import { CropForm } from './components/crop-form';
 import { FarmForm } from './components/farm-form';
 import { ProducerForm } from './components/producer-form';
 import { AddFarmerContainer } from './components/producer-form/styles';
-import { FormActions } from './styles';
+import { ActionsBox, FormActions } from './styles';
 
 export const AddFarmer: React.FC = () => {
   const { themeMode: theme } = useThemeMode();
@@ -163,7 +163,7 @@ export const AddFarmer: React.FC = () => {
   };
 
   return (
-    <>
+    <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
       <LoadingOverlay
         isVisible={form.isLoading}
         isDark={isDark}
@@ -212,44 +212,49 @@ export const AddFarmer: React.FC = () => {
 
         {/* 🎯 AÇÕES DO FORMULÁRIO */}
         <FormActions>
-          {/* Botão Voltar */}
-          {form.currentStep !== 'producer' && (
+          {/* Linha para Voltar e Limpar Rascunho */}
+          <ActionsBox isDark={isDark}>
+            {/* Botão Voltar */}
+            {form.currentStep !== 'producer' && (
+              <Button
+                isDark={isDark}
+                onClick={prevStep}
+                style={{
+                  background: 'transparent',
+                  border: `2px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
+                  color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  width: '150px',
+                  height: '50px',
+                }}
+              >
+                ← Voltar
+              </Button>
+            )}
+
+            {/* 🔥 BOTÃO LIMPAR RASCUNHO */}
             <Button
               isDark={isDark}
-              onClick={prevStep}
+              onClick={clearDraft}
               style={{
-                background: 'transparent',
-                border: `2px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
-                color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+                background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
+                border: `2px solid ${isDark ? '#ef4444' : '#dc2626'}`,
+                color: isDark ? 'white' : '#5d5d5d',
                 padding: '12px 24px',
                 borderRadius: '8px',
+                width: '150px',
+                height: '50px',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
+                boxShadow: 'none',
               }}
             >
-              ← Voltar
+              🗑️ Limpar Rascunho
             </Button>
-          )}
-
-          {/* 🔥 BOTÃO LIMPAR RASCUNHO */}
-          <Button
-            isDark={isDark}
-            onClick={clearDraft}
-            style={{
-              background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
-              border: `2px solid ${isDark ? '#ef4444' : '#dc2626'}`,
-              color: isDark ? 'white' : '#5d5d5d',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              maxWidth: '200px',
-              maxHeight: '38px',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: 'none',
-            }}
-          >
-            🗑️ Limpar Rascunho
-          </Button>
+          </ActionsBox>
 
           {/* Botão Principal */}
           {form.currentStep === 'review' ? (
@@ -305,6 +310,6 @@ export const AddFarmer: React.FC = () => {
           )}
         </FormActions>
       </AddFarmerContainer>
-    </>
+    </div>
   );
 };
