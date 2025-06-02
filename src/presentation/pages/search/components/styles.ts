@@ -506,9 +506,8 @@ export const ItemStats = styled.div`
   margin-top: 1.5rem;
   animation: ${fadeInUp} 0.8s ease-out 0.6s both;
 
-  /* 🔧 CORREÇÃO: Altura máxima com scroll para evitar cortes */
-  max-height: 400px;
-  overflow-y: auto;
+  /* 🔥 PERMITIR QUE CRESÇA NATURALMENTE */
+  /* Remover TODAS as limitações de altura */
   padding-right: 0.5rem;
 
   /* 🎨 Scrollbar customizada para estatísticas - TEMA VERDE */
@@ -534,7 +533,6 @@ export const ItemStats = styled.div`
   scrollbar-width: thin;
   scrollbar-color: #37cb83 rgba(55, 203, 131, 0.08);
 `;
-
 export const StatRow = styled.div`
   display: grid;
   grid-template-columns: 1fr auto 2fr;
@@ -725,6 +723,7 @@ export const LeftPanel = styled.div<{ $isDark: boolean }>`
   height: fit-content;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
+  overflow-x: hidden;
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -742,6 +741,10 @@ export const LeftPanel = styled.div<{ $isDark: boolean }>`
 
   &::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #10b981, #37cb83);
+  }
+
+  @media (min-width: 720px) {
+    max-height: 4000px;
   }
 `;
 

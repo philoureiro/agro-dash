@@ -3,7 +3,6 @@ import { FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 import { ConfirmModal, LoadingOverlay, Text } from '@components';
-import { Crop, Farm, Producer } from '@entities';
 import { useToast } from '@hooks';
 import { CropService, FarmService, ProducerService, SearchService } from '@services';
 import { useThemeMode } from '@theme';
@@ -13,6 +12,7 @@ import { RenderMobileLayout } from './components/RenderMobile';
 import { SearchContainer } from './components/styles';
 import { SearchType, UnifiedItem } from './types';
 import {
+  getDeleteMessage,
   getItemImage,
   getTypeColor,
   getTypeIcon,
@@ -22,26 +22,6 @@ import {
   useDebounce,
   useScreenSize,
 } from './utils';
-
-// 🌾 TRADUÇÕES DAS CULTURAS PARA PT-BR
-const CROP_TRANSLATIONS: { [key: string]: string } = {
-  SOYBEAN: 'Soja',
-  CORN: 'Milho',
-  COFFEE: 'Café',
-  BEANS: 'Feijão',
-  RICE: 'Arroz',
-  WHEAT: 'Trigo',
-  COTTON: 'Algodão',
-  SUGARCANE: 'Cana-de-açúcar',
-  OTHER: 'Outros',
-};
-
-// 📸 FUNÇÃO PARA OBTER IMAGEM COM FALLBACK SUPREMO - CORRIGIDA COM TYPES
-
-// 🌾 FUNÇÃO PARA TRADUZIR TIPO DE CULTURA
-const translateCropType = (cropType: string): string => {
-  return CROP_TRANSLATIONS[cropType] || cropType;
-};
 
 export const Search = () => {
   const { themeMode: theme } = useThemeMode();
@@ -91,20 +71,11 @@ export const Search = () => {
     const { producers, farms, crops } = searchResults;
     const unifiedItems = transformToUnifiedItems(producers, farms, crops);
 
-    // 🔥 APLICAR MELHORIAS: Imagens + Traduções
-    return unifiedItems.map((item) => {
-      const enhancedItem = {
-        ...item,
-        image: getItemImage(item),
-      };
-
-      // 🌾 TRADUZIR NOMES DAS CULTURAS
-      if (item.type === 'crop') {
-        enhancedItem.displayName = translateCropType(item.displayName);
-      }
-
-      return enhancedItem;
-    });
+    // 🔥 APLICAR APENAS IMAGENS (tradução já vem do utils)
+    return unifiedItems.map((item) => ({
+      ...item,
+      image: getItemImage(item),
+    }));
   }, [searchResults]);
 
   // 🔍 FILTRO POR TIPO USANDO SERVICES
@@ -138,7 +109,7 @@ export const Search = () => {
         return unifiedItems.map((item) => ({
           ...item,
           image: getItemImage(item),
-          displayName: translateCropType(item.displayName),
+          // 🔥 NÃO PRECISA MAIS TRADUZIR AQUI!
         }));
       }
 
@@ -222,7 +193,7 @@ export const Search = () => {
     });
   }, []);
 
-  // 🔥 EXCLUSÃO COM LÓGICA DE RELACIONAMENTO + AUTO SELEÇÃO
+  // 🔥 EXCLUSÃO COM LÓGICA DE RELACIONAMENTO + AUTO SELEÇÃO INTELIGENTE
   const confirmDelete = useCallback(async () => {
     if (!deleteModalData.item) return;
 
@@ -284,20 +255,30 @@ export const Search = () => {
       // 🚀 FORÇAR REFRESH COMPLETO DOS DADOS
       setRefreshTrigger((prev) => prev + 1);
 
-      // ⭐ AUTO SELEÇÃO: Selecionar próximo item disponível do mesmo filtro
+      // ⭐ AUTO SELEÇÃO INTELIGENTE: Reset para "all" se ficar vazio
       setTimeout(() => {
-        // Aguardar o refresh completar e selecionar o primeiro item disponível
-        const currentFilteredItems =
-          searchType === 'all'
-            ? allItems.filter((i) => i.id !== item.id)
-            : filteredItems.filter((i) => i.id !== item.id);
+        // Simular os dados após exclusão
+        const currentFilteredItems = filteredItems.filter((i) => i.id !== item.id);
 
         if (currentFilteredItems.length > 0) {
+          // 🎯 SE AINDA TEM ITEMS NO FILTRO ATUAL: Seleciona o primeiro
           setSelectedItem(currentFilteredItems[0]);
         } else {
-          setSelectedItem(null);
+          // 🎯 SE NÃO TEM MAIS ITEMS NO FILTRO: Reset para "all"
+          console.log('🔄 Filtro vazio! Resetando para "all"...');
+          setSearchType('all');
+
+          // Aguardar um pouco mais para o reset completar
+          setTimeout(() => {
+            const allAvailableItems = allItems.filter((i) => i.id !== item.id);
+            if (allAvailableItems.length > 0) {
+              setSelectedItem(allAvailableItems[0]);
+            } else {
+              setSelectedItem(null);
+            }
+          }, 200);
         }
-      }, 100);
+      }, 150);
 
       // Fechar modal
       setDeleteModalData({
@@ -327,7 +308,7 @@ export const Search = () => {
         loading: false,
       });
     }
-  }, [deleteModalData.item, toast, searchType, allItems, filteredItems]);
+  }, [deleteModalData.item, toast, filteredItems, allItems]);
 
   const cancelDelete = useCallback(() => {
     setDeleteModalData({
@@ -471,20 +452,4 @@ export const Search = () => {
       </SearchContainer>
     </>
   );
-};
-
-// 🎯 FUNÇÃO HELPER PARA MENSAGEM DE EXCLUSÃO
-const getDeleteMessage = (item: UnifiedItem | null): string => {
-  if (!item) return 'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?';
-
-  switch (item.type) {
-    case 'producer':
-      return 'Esta ação excluirá o produtor e TODAS as suas fazendas e culturas associadas. Esta ação não pode ser desfeita!';
-    case 'farm':
-      return 'Esta ação excluirá a fazenda e TODAS as suas culturas plantadas. Esta ação não pode ser desfeita!';
-    case 'crop':
-      return 'Esta ação excluirá apenas esta cultura específica. Esta ação não pode ser desfeita!';
-    default:
-      return 'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?';
-  }
 };

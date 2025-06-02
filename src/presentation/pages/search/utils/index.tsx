@@ -241,6 +241,9 @@ export const transformToUnifiedItems = (
     try {
       const farm = farms.find((f) => f.id === c.farmId);
 
+      // 🔥 APLICAR TRADUÇÃO AQUI MESMO!
+      const translatedCropName = translateCropType(c.type);
+
       // 🔥 CORREÇÃO: Tratamento seguro de datas
       let harvestInfo = {};
       try {
@@ -257,7 +260,7 @@ export const transformToUnifiedItems = (
       return {
         id: c.id,
         type: 'crop' as const,
-        displayName: c.type,
+        displayName: translatedCropName, // 🔥 USAR NOME TRADUZIDO AQUI!
         displayType: 'Cultura',
         displayLocation: farm ? `${farm.city || 'N/A'}, ${farm.state || 'N/A'}` : 'N/A',
         displaySize: `${(c.plantedArea || 0).toLocaleString()} hectares`,
@@ -267,6 +270,7 @@ export const transformToUnifiedItems = (
           safra: parseInt(c.harvestYear) || new Date().getFullYear(),
           fazenda: farm?.name || 'N/A',
           'produtividade esperada': c.expectedYield || 'N/A',
+          'tipo original': c.type, // 🔥 MANTER TIPO ORIGINAL PARA REFERÊNCIA
           ...harvestInfo,
         },
         originalData: c,
@@ -276,7 +280,7 @@ export const transformToUnifiedItems = (
       return {
         id: c.id,
         type: 'crop' as const,
-        displayName: c.type || 'Cultura',
+        displayName: translateCropType(c.type || 'OTHER'), // 🔥 TRADUZIR MESMO COM ERRO
         displayType: 'Cultura',
         displayLocation: 'N/A',
         displaySize: 'N/A',
@@ -289,6 +293,7 @@ export const transformToUnifiedItems = (
 
   return [...producerItems, ...farmItems, ...cropItems];
 };
+
 export const loadDataReal = async ({
   setIsInitialLoading,
   setProgress,
@@ -404,4 +409,37 @@ export const loadDataReal = async ({
     setLoadingMessage('Inicializando...');
     setLoadedCounts({ producers: 0, farms: 0, crops: 0 });
   }
+};
+
+// 🎯 FUNÇÃO HELPER PARA MENSAGEM DE EXCLUSÃO
+export const getDeleteMessage = (item: UnifiedItem | null): string => {
+  if (!item) return 'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?';
+
+  switch (item.type) {
+    case 'producer':
+      return 'Esta ação excluirá o produtor e TODAS as suas fazendas e culturas associadas. Esta ação não pode ser desfeita!';
+    case 'farm':
+      return 'Esta ação excluirá a fazenda e TODAS as suas culturas plantadas. Esta ação não pode ser desfeita!';
+    case 'crop':
+      return 'Esta ação excluirá apenas esta cultura específica. Esta ação não pode ser desfeita!';
+    default:
+      return 'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?';
+  }
+};
+
+export const CROP_TRANSLATIONS: { [key: string]: string } = {
+  SOYBEAN: 'Soja',
+  CORN: 'Milho',
+  COFFEE: 'Café',
+  BEANS: 'Feijão',
+  RICE: 'Arroz',
+  WHEAT: 'Trigo',
+  COTTON: 'Algodão',
+  SUGARCANE: 'Cana-de-açúcar',
+  OTHER: 'Outros',
+};
+
+// 🌾 FUNÇÃO PARA TRADUZIR TIPO DE CULTURA
+export const translateCropType = (cropType: string): string => {
+  return CROP_TRANSLATIONS[cropType] || cropType;
 };
