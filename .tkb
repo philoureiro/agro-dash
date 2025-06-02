@@ -19,7 +19,7 @@
     "2WX72G-2JW-sd-TgBG5cP": {
       "id": "2WX72G-2JW-sd-TgBG5cP",
       "description": "criar: trocar componentes, conferir componente estranho que agarra quando pula em adicionar fazenda",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "MCUusjh74A5GME_se7w7z": {
       "id": "MCUusjh74A5GME_se7w7z",
@@ -29,12 +29,12 @@
     "i2mFRMSFaolBESaYqZi-j": {
       "id": "i2mFRMSFaolBESaYqZi-j",
       "description": "criar : mostrar foto do produtor ou da fazenda por link, conferir se existe a possibilidade do base64, ou  colocar imagem de não existe imagem",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "wau_DLufnQUi1gusKrnub": {
       "id": "wau_DLufnQUi1gusKrnub",
       "description": "criar: conferir se todos os dados que precisamos foram preenchidos corretamente",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "Zw0rikidvAKP-Y11Ysu0l": {
       "id": "Zw0rikidvAKP-Y11Ysu0l",
@@ -118,9 +118,6 @@
       "title": "To do",
       "tasksIds": [
         "3DIyzzMtGr7p9svdF5akL",
-        "2WX72G-2JW-sd-TgBG5cP",
-        "i2mFRMSFaolBESaYqZi-j",
-        "wau_DLufnQUi1gusKrnub",
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
         "fTO5wUNun7lNV8HZqMU-v",
@@ -146,9 +143,12 @@
         "MCUusjh74A5GME_se7w7z",
         "fTOauLq8-Vum6n1zCQKyM",
         "j985HFM-bxBbxXCQWMLyD",
+        "wau_DLufnQUi1gusKrnub",
         "i9ZNZTPHO-HBaeosyaZ0f",
         "1h0sRFYXHBqNFiz1DEVxJ",
         "EBRdnHDiiAHed8_jYlsmh",
+        "2WX72G-2JW-sd-TgBG5cP",
+        "i2mFRMSFaolBESaYqZi-j",
         "mXXDmapCHtlPlnibkNysI"
       ]
     }

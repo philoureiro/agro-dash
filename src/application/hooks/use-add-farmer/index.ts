@@ -304,7 +304,6 @@ export const useAddFarmer = () => {
       };
 
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
-      toast.success('Sucesso!', '💾 Rascunho salvo!');
 
       setForm((prev) => ({ ...prev, hasUnsavedChanges: false }));
     } catch (error) {
@@ -338,7 +337,6 @@ export const useAddFarmer = () => {
 
   const clearDraft = useCallback(() => {
     localStorage.removeItem(DRAFT_KEY);
-    toast.success('Sucesso!', '🗑️ Rascunho removido!');
 
     setForm({
       producer: {
@@ -356,7 +354,7 @@ export const useAddFarmer = () => {
       errors: {},
       hasUnsavedChanges: false,
     });
-  }, [toast]);
+  }, []);
 
   // 📤 SUBMISSÃO
   const submitForm = useCallback(async () => {

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Button, LoadingOverlay, StatsHeader } from '@components';
+import { Button, DraftBadge, LoadingOverlay, StatsHeader } from '@components';
 import { Text } from '@components';
 import { useAddFarmer } from '@hooks';
 import { useThemeMode } from '@theme';
@@ -13,6 +13,21 @@ import { ActionsBox, FormActions } from './styles';
 
 export const AddFarmer: React.FC = () => {
   const { themeMode: theme } = useThemeMode();
+
+  const [showDraftBadge, setShowDraftBadge] = useState<{
+    isVisible: boolean;
+    message: string;
+    icon: string;
+    position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+    duration: number;
+  }>({
+    isVisible: false,
+    message: '',
+    icon: '',
+    position: 'top-right',
+    duration: 3000,
+  });
+
   const isDark = theme === 'dark';
 
   const {
@@ -38,12 +53,24 @@ export const AddFarmer: React.FC = () => {
   // 🔥 AUTO-CARREGAR RASCUNHO AO ENTRAR NA PÁGINA (SEM TOAST)
   useEffect(() => {
     autoLoadDraft();
+    setShowDraftBadge((prev) => ({
+      ...prev,
+      message: 'Rascunho carregado automaticamente',
+      icon: '📂',
+      isVisible: true,
+    }));
   }, [autoLoadDraft]);
 
   // 🔥 AUTO-SALVAR RASCUNHO QUANDO HOUVER MUDANÇAS
   useEffect(() => {
     if (form.hasUnsavedChanges) {
       const timer = setTimeout(() => {
+        setShowDraftBadge((prev) => ({
+          ...prev,
+          message: 'Rascunho salvo automaticamente',
+          icon: '💾',
+          isVisible: true,
+        }));
         saveDraft();
       }, 3000); // Auto-salva após 3 segundos de inatividade
 
@@ -164,6 +191,21 @@ export const AddFarmer: React.FC = () => {
 
   return (
     <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
+      <DraftBadge
+        isVisible={showDraftBadge?.isVisible}
+        isDark={isDark}
+        message={showDraftBadge?.message}
+        icon={showDraftBadge?.icon}
+        position={showDraftBadge?.position}
+        duration={showDraftBadge?.duration}
+        onHide={() =>
+          setShowDraftBadge((prev) => ({
+            ...prev,
+            isVisible: false,
+          }))
+        }
+      />
+
       <LoadingOverlay
         isVisible={form.isLoading}
         isDark={isDark}
@@ -238,7 +280,16 @@ export const AddFarmer: React.FC = () => {
             {/* 🔥 BOTÃO LIMPAR RASCUNHO */}
             <Button
               isDark={isDark}
-              onClick={clearDraft}
+              onClick={() => {
+                clearDraft();
+
+                setShowDraftBadge((prev) => ({
+                  ...prev,
+                  message: 'Rascunho limpo automaticamente',
+                  icon: '🗑️',
+                  isVisible: true,
+                }));
+              }}
               style={{
                 background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
                 border: `2px solid ${isDark ? '#ef4444' : '#dc2626'}`,
