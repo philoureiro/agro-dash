@@ -1,17 +1,18 @@
-import { Crop, Farm, Producer } from '@entities';
-import { mockCrops, mockFarms, mockProducers } from '@mocks';
+import { AppSettings, Crop, Farm, Producer } from '@entities';
+import { mockCrops, mockFarms, mockProducers, mockSettings } from '@mocks';
 
 export interface SeedData {
   producers: Producer[];
   farms: Farm[];
   crops: Crop[];
+  settings: AppSettings; // Placeholder for settings, can be replaced with actual settings type
 }
 
 // Função que popula as fazendas com suas culturas
 const populateFarmsWithCrops = (): Farm[] => {
   return mockFarms.map((farm) => ({
     ...farm,
-    crops: mockCrops.filter((crop) => crop.farmId === farm.id),
+    crops: mockCrops.filter((crop) => crop.farmId === farm.id).map((crop) => crop.id),
   }));
 };
 
@@ -20,6 +21,7 @@ export const seedData: SeedData = {
   producers: mockProducers,
   farms: populateFarmsWithCrops(),
   crops: mockCrops,
+  settings: mockSettings,
 };
 
 // Função para obter dados iniciais
@@ -28,6 +30,7 @@ export const getInitialData = (): SeedData => {
     producers: [...mockProducers],
     farms: [...populateFarmsWithCrops()],
     crops: [...mockCrops],
+    settings: { ...mockSettings, id: `settings-${Date.now()}` }, // Garante um novo ID para cada inicialização
   };
 };
 

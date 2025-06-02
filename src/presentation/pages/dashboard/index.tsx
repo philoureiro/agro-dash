@@ -211,24 +211,17 @@ export const Dashboard = () => {
 
   // 📄 HANDLER DE EXPORTAÇÃO
   const handleExport = async () => {
-    console.log('🎯 Handle Export chamado');
-    console.log('📊 Dashboard Ref:', dashboardRef.current);
-
     if (!dashboardRef.current) {
       toast.error('Erro!', 'Elemento da dashboard não encontrado!');
-
       return;
     }
 
     setIsExporting(true);
 
     try {
-      console.log('🚀 Chamando exportToPDF...');
-
       await exportToPDF(dashboardRef.current, filteredData, selectedFilter, isDark);
-    } catch (error) {
-      console.error('💥 Erro na exportação:', error);
-      toast.error('Erro!', 'Erro ao gerar PDF.');
+    } catch {
+      toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`);
     } finally {
       setIsExporting(false);
     }

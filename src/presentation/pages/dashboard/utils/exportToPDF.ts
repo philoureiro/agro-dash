@@ -144,6 +144,6 @@ export const exportToPDF = async (
   } catch (error) {
     console.error('❌ Erro:', error);
 
-    toast.success('Erro!', `Erro ao gerar PDF.`);
+    toast.error('Erro!', `Erro ao gerar PDF.`);
   }
 };

@@ -115,13 +115,13 @@ export const Settings: React.FC = () => {
     toggleThemeMode();
   };
 
-  const handleAutoSaveToggle = () => {
-    setAutoSave((prev) => !prev);
-  };
+  // const handleAutoSaveToggle = () => {
+  //   setAutoSave((prev) => !prev);
+  // };
 
-  const handleNotificationsToggle = () => {
-    setNotifications((prev) => !prev);
-  };
+  // const handleNotificationsToggle = () => {
+  //   setNotifications((prev) => !prev);
+  // };
 
   return (
     <SettingsContainer isDark={isDark}>
@@ -175,7 +175,14 @@ export const Settings: React.FC = () => {
                 Salva alterações automaticamente conforme você trabalha
               </OptionSubtext>
             </OptionInfo>
-            <ToggleSwitch isActive={autoSave} isDark={isDark} onClick={handleAutoSaveToggle} />
+            <ToggleSwitch
+              isActive={false}
+              isDark={isDark}
+              onClick={() =>
+                toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`)
+              }
+              // onClick={handleAutoSaveToggle}
+            />
           </SettingOption>
 
           <SettingOption delay={200}>
@@ -186,9 +193,12 @@ export const Settings: React.FC = () => {
               </OptionSubtext>
             </OptionInfo>
             <ToggleSwitch
-              isActive={notifications}
+              isActive={false}
               isDark={isDark}
-              onClick={handleNotificationsToggle}
+              onClick={() =>
+                toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`)
+              }
+              // onClick={handleNotificationsToggle}
             />
           </SettingOption>
         </SettingsCard>
