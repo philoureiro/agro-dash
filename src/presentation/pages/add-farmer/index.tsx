@@ -238,13 +238,14 @@ export const AddFarmer: React.FC = () => {
             style={{
               background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
               border: `2px solid ${isDark ? '#ef4444' : '#dc2626'}`,
-              color: isDark ? '#ef4444' : '#dc2626',
+              color: isDark ? 'white' : '#5d5d5d',
               padding: '12px 24px',
               borderRadius: '8px',
               maxWidth: '200px',
               maxHeight: '38px',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
+              boxShadow: 'none',
             }}
           >
             🗑️ Limpar Rascunho
