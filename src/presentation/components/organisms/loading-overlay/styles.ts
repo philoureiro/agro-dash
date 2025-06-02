@@ -1,3 +1,4 @@
+import { Button } from '@components';
 import styled, { keyframes } from 'styled-components';
 
 // 🎨 ANIMAÇÕES DO LOADING SUPREMO
@@ -64,14 +65,7 @@ export const LoadingOverlayContainer = styled.div<{
   right: 0;
   bottom: 0;
   z-index: ${({ $zIndex }) => $zIndex};
-  background: ${({ $isDark }) =>
-    $isDark
-      ? 'linear-gradient(135deg, rgba(15, 20, 25, 0.95), rgba(26, 35, 50, 0.95))'
-      : 'linear-gradient(135deg, rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.95))'};
-  backdrop-filter: blur(
-    ${({ $blurIntensity }) =>
-      $blurIntensity === 'light' ? '10px' : $blurIntensity === 'medium' ? '20px' : '30px'}
-  );
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,11 +82,7 @@ export const LoadingBackground = styled.div<{ $isDark: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background: ${({ $isDark }) =>
-    $isDark
-      ? 'radial-gradient(circle at center, rgba(52, 152, 219, 0.1) 0%, transparent 70%)'
-      : 'radial-gradient(circle at center, rgba(52, 152, 219, 0.05) 0%, transparent 70%)'};
-  animation: ${shimmerGlow} 3s ease-in-out infinite;
+
   pointer-events: none;
 `;
 
@@ -434,4 +424,18 @@ export const LoadingStat = styled.div<{ $isDark: boolean }>`
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
+`;
+
+export const CancelButton = styled(Button)<{ $isDark: boolean }>`
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: ${({ $isDark }) =>
+    $isDark ? '1px solid rgba(255,255,255,0.3)' : '1px solid rgba(0,0,0,0.3)'};
+  border-radius: 25px;
+  color: ${({ $isDark }) => ($isDark ? '#fff' : '#2c3e50')};
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 `;

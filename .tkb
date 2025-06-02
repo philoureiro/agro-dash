@@ -110,6 +110,11 @@
       "id": "WWA8G4PGL_LB6rRn3mdQ-",
       "description": "fazer overlay subir ao inves de expandir",
       "columnId": "column-todo"
+    },
+    "eRRe5DpO7lCEAzyIzpY1E": {
+      "id": "eRRe5DpO7lCEAzyIzpY1E",
+      "description": "pegar traducao do grafico e colocar no search",
+      "columnId": "column-todo"
     }
   },
   "columns": [
@@ -130,7 +135,8 @@
         "E8pdeIFea5N3lehhw2X-W",
         "_fT4Nd66zh8QZv-i2-cci",
         "GO6JA1dNpMZH7oouAn8-d",
-        "WWA8G4PGL_LB6rRn3mdQ-"
+        "WWA8G4PGL_LB6rRn3mdQ-",
+        "eRRe5DpO7lCEAzyIzpY1E"
       ]
     },
     {
