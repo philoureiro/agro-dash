@@ -6,8 +6,44 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
+    "baseUrl": "./",
+    "paths": {
+      "@hooks": ["./src/application/hooks"],
+      "@services": ["./src/application/services"],
+      // "@usecases": ["./src/application/usecases/index.ts"],
+      "@utils": ["./src/application/utils"],
+      // "@docs": ["./src/application/docs/index.ts"],
+
+      // // ==== DOMAIN ====
+      // "@entities": ["./src/domain/entities/index.ts"],
+      // "@domain-error-handling": ["./src/domain/error-handling/index.ts"],
+      // "@exceptions": ["./src/domain/exceptions/index.ts"],
+      // "@providers": ["./src/domain/providers/index.ts"],
+
+      // // ==== INFRASTRUCTURE ====
+      // "@firebase": ["./src/infrastructure/firebase/index.ts"],
+      // "@infra-mocks": ["./src/infrastructure/mocks/index.ts"],
+      // "@repositories": ["./src/infrastructure/repositories/index.ts"],
+
+      // // ==== PRESENTATION ====
+      "@components": ["./src/presentation/components"],
+      // "@layouts": ["./src/presentation/layouts/index.ts"],
+      "@pages": ["./src/presentation/pages"],
+      // "@routes": ["./src/presentation/routes/index.ts"],
+      "@sections": ["./src/presentation/sections"],
+      "@theme": ["./src/presentation/theme"],
+      "@enums": ["./src/domain/enums"],
+      "@entities": ["./src/domain/entities"],
+
+      // // ==== TESTS ====
+      // "@tests": ["./src/tests/index.ts"],
+
+      // // ==== THIRD-PARTY ====
+      "@config": ["./src/config"],
+      "@mocks": ["./src/infrastructure/mocks"],
+      "@validations": ["./src/domain/validations"],
+      "@storage": ["./src/application/storage"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -26,3 +62,5 @@
   },
   "include": ["src"]
 }
+
+// // ==== APPLICATION ====

@@ -1,0 +1,156 @@
+{
+  "scope": "Workspace",
+  "tasks": {
+    "0srfiX6eKkurgUK60saY0": {
+      "id": "0srfiX6eKkurgUK60saY0",
+      "description": "dashboard relatorio",
+      "columnId": "column-todo"
+    },
+    "faN9OOe7M3Lk0dX3ZQBT-": {
+      "id": "faN9OOe7M3Lk0dX3ZQBT-",
+      "description": "pesquisar: integrar com store, permitir pesquisar por produtos, conferir se todos os dados estão mostrados",
+      "columnId": "column-done"
+    },
+    "3DIyzzMtGr7p9svdF5akL": {
+      "id": "3DIyzzMtGr7p9svdF5akL",
+      "description": "criar: dados do produtor, fotos",
+      "columnId": "column-todo"
+    },
+    "2WX72G-2JW-sd-TgBG5cP": {
+      "id": "2WX72G-2JW-sd-TgBG5cP",
+      "description": "criar: trocar componentes, conferir componente estranho que agarra quando pula em adicionar fazenda",
+      "columnId": "column-todo"
+    },
+    "MCUusjh74A5GME_se7w7z": {
+      "id": "MCUusjh74A5GME_se7w7z",
+      "description": "pesquiar: botao de exlcuir e editar",
+      "columnId": "column-done"
+    },
+    "i2mFRMSFaolBESaYqZi-j": {
+      "id": "i2mFRMSFaolBESaYqZi-j",
+      "description": "criar : mostrar foto do produtor ou da fazenda por link, conferir se existe a possibilidade do base64, ou  colocar imagem de não existe imagem",
+      "columnId": "column-todo"
+    },
+    "wau_DLufnQUi1gusKrnub": {
+      "id": "wau_DLufnQUi1gusKrnub",
+      "description": "criar: conferir se todos os dados que precisamos foram preenchidos corretamente",
+      "columnId": "column-todo"
+    },
+    "Zw0rikidvAKP-Y11Ysu0l": {
+      "id": "Zw0rikidvAKP-Y11Ysu0l",
+      "description": "editar: normalizar compoonentes",
+      "columnId": "column-todo"
+    },
+    "5Oszczjh2VdfTMtZAMsm3": {
+      "id": "5Oszczjh2VdfTMtZAMsm3",
+      "description": "editar: pode pesquisar por fazenda ou produtor para editar caso n tenha sido enviada nenhuma",
+      "columnId": "column-todo"
+    },
+    "fTO5wUNun7lNV8HZqMU-v": {
+      "id": "fTO5wUNun7lNV8HZqMU-v",
+      "description": "editar: conferir todos os campos de fazenda  e produtor",
+      "columnId": "column-todo"
+    },
+    "i9ZNZTPHO-HBaeosyaZ0f": {
+      "id": "i9ZNZTPHO-HBaeosyaZ0f",
+      "description": "configuração: salvar tema preferido, restaurar dados completamente, ver se tem mais coisa legal de configurar\n",
+      "columnId": "column-done"
+    },
+    "fTOauLq8-Vum6n1zCQKyM": {
+      "id": "fTOauLq8-Vum6n1zCQKyM",
+      "description": "fazer um toast decente e remover os outros que nao sao usados",
+      "columnId": "column-done"
+    },
+    "j985HFM-bxBbxXCQWMLyD": {
+      "id": "j985HFM-bxBbxXCQWMLyD",
+      "description": "bottom bar precisa ajustar layout",
+      "columnId": "column-done"
+    },
+    "mXXDmapCHtlPlnibkNysI": {
+      "id": "mXXDmapCHtlPlnibkNysI",
+      "description": "overlayer em settings",
+      "columnId": "column-done"
+    },
+    "EBRdnHDiiAHed8_jYlsmh": {
+      "id": "EBRdnHDiiAHed8_jYlsmh",
+      "description": "overlayer em dashboards",
+      "columnId": "column-done"
+    },
+    "PW8QlfxygoxRqTCvnpzhe": {
+      "id": "PW8QlfxygoxRqTCvnpzhe",
+      "description": "arrumar title dashoboards",
+      "columnId": "column-todo"
+    },
+    "NiE1YQclkwlUaNwSGUKdE": {
+      "id": "NiE1YQclkwlUaNwSGUKdE",
+      "description": "scroll to top em todas as telas mobile\n",
+      "columnId": "column-todo"
+    },
+    "E8pdeIFea5N3lehhw2X-W": {
+      "id": "E8pdeIFea5N3lehhw2X-W",
+      "description": "testes unitarios",
+      "columnId": "column-todo"
+    },
+    "_fT4Nd66zh8QZv-i2-cci": {
+      "id": "_fT4Nd66zh8QZv-i2-cci",
+      "description": "testes e2e",
+      "columnId": "column-todo"
+    },
+    "GO6JA1dNpMZH7oouAn8-d": {
+      "id": "GO6JA1dNpMZH7oouAn8-d",
+      "description": "arrumar documentação",
+      "columnId": "column-todo"
+    },
+    "1h0sRFYXHBqNFiz1DEVxJ": {
+      "id": "1h0sRFYXHBqNFiz1DEVxJ",
+      "description": "passar barra e filtros para cima da tela de pesquisar",
+      "columnId": "column-done"
+    },
+    "eRRe5DpO7lCEAzyIzpY1E": {
+      "id": "eRRe5DpO7lCEAzyIzpY1E",
+      "description": "pegar traducao do grafico e colocar no search",
+      "columnId": "column-todo"
+    }
+  },
+  "columns": [
+    {
+      "id": "column-todo",
+      "title": "To do",
+      "tasksIds": [
+        "3DIyzzMtGr7p9svdF5akL",
+        "2WX72G-2JW-sd-TgBG5cP",
+        "i2mFRMSFaolBESaYqZi-j",
+        "wau_DLufnQUi1gusKrnub",
+        "Zw0rikidvAKP-Y11Ysu0l",
+        "5Oszczjh2VdfTMtZAMsm3",
+        "fTO5wUNun7lNV8HZqMU-v",
+        "E8pdeIFea5N3lehhw2X-W",
+        "_fT4Nd66zh8QZv-i2-cci",
+        "PW8QlfxygoxRqTCvnpzhe",
+        "NiE1YQclkwlUaNwSGUKdE",
+        "GO6JA1dNpMZH7oouAn8-d",
+        "eRRe5DpO7lCEAzyIzpY1E",
+        "0srfiX6eKkurgUK60saY0"
+      ]
+    },
+    {
+      "id": "column-doing",
+      "title": "Doing",
+      "tasksIds": []
+    },
+    {
+      "id": "column-done",
+      "title": "Done",
+      "tasksIds": [
+        "faN9OOe7M3Lk0dX3ZQBT-",
+        "MCUusjh74A5GME_se7w7z",
+        "fTOauLq8-Vum6n1zCQKyM",
+        "j985HFM-bxBbxXCQWMLyD",
+        "i9ZNZTPHO-HBaeosyaZ0f",
+        "1h0sRFYXHBqNFiz1DEVxJ",
+        "EBRdnHDiiAHed8_jYlsmh",
+        "mXXDmapCHtlPlnibkNysI"
+      ]
+    }
+  ]
+}

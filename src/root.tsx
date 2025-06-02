@@ -1,11 +1,11 @@
 import { ComponentType, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-// from MUI's toolpad we only use Notifications
-import { NotificationsProvider } from '@toolpad/core/useNotifications';
+import { CustomThemeProvider } from '@theme';
+import { ThemeGate } from '@theme';
 import { Provider as JotaiProvider } from 'jotai';
 
-import ThemeProvider from '@/theme/Provider';
+// ajuste o path conforme seu projeto
 
 const container = document.getElementById('root') as HTMLElement;
 const root = createRoot(container);
@@ -14,11 +14,11 @@ function render(App: ComponentType) {
   root.render(
     <StrictMode>
       <JotaiProvider>
-        <ThemeProvider>
-          <NotificationsProvider>
+        <CustomThemeProvider>
+          <ThemeGate>
             <App />
-          </NotificationsProvider>
-        </ThemeProvider>
+          </ThemeGate>
+        </CustomThemeProvider>
       </JotaiProvider>
     </StrictMode>,
   );

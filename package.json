@@ -1,44 +1,43 @@
 {
-  "name": "react-pwa",
-  "version": "3.0.0",
+  "name": "agro-dash",
+  "version": "1.0.0",
   "type": "module",
-  "description": "Starter kit for modern web applications",
-  "homepage": "https://react-pwa.surenatoyan.com/",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/suren-atoyan/react-pwa.git"
-  },
-  "bugs": {
-    "url": "https://github.com/suren-atoyan/react-pwa/issues",
-    "email": "contact@surenatoyan.com"
-  },
-  "license": "MIT",
+  "description": "Dashboard inteligente para gestão de propriedades rurais, acompanhamento de produtores e visualização de dados agrícolas em tempo real.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "https-preview": "serve dist",
-    "prepare": "husky install",
+    "build": "vite build",
+    "heroku-postbuild": "npm run build",
+    "start": "vite preview",
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:check": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\"",
     "ts:check": "tsc --noEmit",
-    "test:unit": "vitest src",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test": "vitest run --reporter=verbose"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
-    "@toolpad/core": "^0.12.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "html2canvas": "^1.4.1",
     "jotai": "^2.12.1",
+    "jspdf": "^3.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-error-boundary": "^5.0.0",
     "react-hotkeys-hook": "^4.6.1",
+    "react-icons": "^5.5.0",
+    "react-markdown": "^10.1.0",
+    "react-pull-to-refresh": "^2.0.1",
     "react-router": "^7.2.0",
-    "usehooks-ts": "^3.1.1"
+    "react-router-dom": "^7.6.1",
+    "react-syntax-highlighter": "^15.6.1",
+    "remark-gfm": "^4.0.1",
+    "styled-components": "^6.1.18",
+    "typescript": "~5.7.2",
+    "usehooks-ts": "^3.1.1",
+    "victory": "^37.3.6",
+    "vite": "^6.2.0",
+    "vite-plugin-pwa": "^0.21.1",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -49,7 +48,7 @@
     "@types/node": "^22.13.8",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
-    "@vitejs/plugin-react": "^4.3.4",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.19",
@@ -58,29 +57,11 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "^3.5.2",
-    "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.0",
-    "vite-plugin-pwa": "^0.21.1",
     "vitest": "^3.0.7"
   },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ],
-    "src/**/*.{js,jsx,ts,tsx,json}": [
-      "eslint --max-warnings=0"
-    ]
-  },
   "author": {
-    "name": "Suren Atoyan",
-    "email": "contact@surenatoyan.com",
-    "url": "http://surenatoyan.com/"
-  },
-  "keywords": [
-    "react",
-    "pwa",
-    "starter-kit",
-    "vite"
-  ]
+    "name": "Philipe Loureiro",
+    "email": "philipeloureiro@gmail.com"
+  }
 }

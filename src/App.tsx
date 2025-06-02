@@ -1,29 +1,48 @@
 import { Fragment } from 'react';
-import { BrowserRouter } from 'react-router';
+import PullToRefresh from 'react-pull-to-refresh';
+import { BrowserRouter } from 'react-router-dom';
 
 import { CssBaseline } from '@mui/material';
 
-import { withErrorHandler } from '@/error-handling';
-import AppErrorBoundaryFallback from '@/error-handling/fallbacks/App';
+import {
+  AppErrorBoundaryFallback,
+  BottomBar,
+  InstallBanner,
+  ToastContainer,
+  WithErrorHandler,
+} from '@components';
+import { Header } from '@sections';
+import { useThemeMode } from '@theme';
 
-import Pages from './routes/Pages';
-import Header from './sections/Header';
-import HotKeys from './sections/HotKeys';
-import Sidebar from './sections/Sidebar';
+import './global.css';
+import { AppRoutes } from './presentation/routes';
 
 function App() {
+  const { themeModeString } = useThemeMode();
+
+  async function handleRefresh() {
+    if (typeof window === 'undefined') return;
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    window.location.reload();
+  }
+
   return (
     <Fragment>
-      <CssBaseline />
-      <HotKeys />
+      <PullToRefresh onRefresh={handleRefresh} resistance={2.5} distanceToRefresh={80}>
+        <Header themeMode={themeModeString} />
+        <InstallBanner />
+      </PullToRefresh>
+
       <BrowserRouter>
-        <Header />
-        <Sidebar />
-        <Pages />
+        <AppRoutes />
+        <BottomBar themeMode={themeModeString} />
       </BrowserRouter>
+
+      <CssBaseline />
+      <ToastContainer />
     </Fragment>
   );
 }
 
-const AppWithErrorHandler = withErrorHandler(App, AppErrorBoundaryFallback);
+const AppWithErrorHandler = WithErrorHandler(App, AppErrorBoundaryFallback);
 export default AppWithErrorHandler;
