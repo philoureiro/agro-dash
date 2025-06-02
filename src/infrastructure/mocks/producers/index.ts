@@ -10,11 +10,11 @@ export const mockProducers: Producer[] = [
     email: 'joao.silva@email.com',
     phone: '(11) 98765-4321',
     profilePhoto:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+      'https://media.istockphoto.com/id/1451087401/pt/foto/happy-male-farmer-using-mobile-phone-in-field.jpg?s=612x612&w=0&k=20&c=vnxCzFftOSTjEkFrpSIqi1auQZGLOZGH6AkOc2O6H1c=',
     createdAt: new Date('2023-01-15'),
-    updatedAt: new Date('2024-01-15'),
+    updatedAt: new Date('2025-01-15'),
     active: true,
-    farmsIds: ['farm-001', 'farm-002', 'farm-003'], // 3 fazendas
+    farmsIds: ['farm-001', 'farm-002', 'farm-003'],
   },
   {
     id: 'prod-002',
@@ -24,11 +24,11 @@ export const mockProducers: Producer[] = [
     email: 'contato@matoverde.com.br',
     phone: '(65) 3344-5566',
     profilePhoto:
-      'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face',
+      'https://media.istockphoto.com/id/1412751704/pt/foto/female-farmer-is-holding-a-digital-tablet-in-a-farm-field-smart-farming.jpg?s=612x612&w=0&k=20&c=VStz7Z5VHuarwiAii2Pz0ZdkALcikNbtEuIcGwFN1D0=',
     createdAt: new Date('2023-02-20'),
-    updatedAt: new Date('2024-02-20'),
+    updatedAt: new Date('2025-02-20'),
     active: true,
-    farmsIds: ['farm-004', 'farm-005', 'farm-006', 'farm-007', 'farm-008'], // 5 fazendas
+    farmsIds: ['farm-004', 'farm-005', 'farm-006', 'farm-007', 'farm-008'],
   },
   {
     id: 'prod-003',
@@ -37,12 +37,11 @@ export const mockProducers: Producer[] = [
     name: 'Maria Oliveira Costa',
     email: 'maria.costa@fazenda.com',
     phone: '(62) 99887-6655',
-    profilePhoto:
-      'https://images.unsplash.com/photo-1494790108755-2616b612b913?w=300&h=300&fit=crop&crop=face',
+    profilePhoto: 'https://cdn.pixabay.com/photo/2020/12/15/13/44/portrait-5833683_640.jpg',
     createdAt: new Date('2023-03-10'),
-    updatedAt: new Date('2024-03-10'),
+    updatedAt: new Date('2025-03-10'),
     active: true,
-    farmsIds: ['farm-009'], // 1 fazenda
+    farmsIds: ['farm-009'],
   },
   {
     id: 'prod-004',
@@ -52,11 +51,11 @@ export const mockProducers: Producer[] = [
     email: 'admin@fazendasul.com.br',
     phone: '(51) 3456-7890',
     profilePhoto:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
+      'https://st2.depositphotos.com/2454853/7822/i/450/depositphotos_78220290-stock-photo-woman-agronomist-in-wheat-field.jpg',
     createdAt: new Date('2023-04-05'),
-    updatedAt: new Date('2024-04-05'),
+    updatedAt: new Date('2025-04-05'),
     active: true,
-    farmsIds: ['farm-010', 'farm-011', 'farm-012', 'farm-013'], // 4 fazendas
+    farmsIds: ['farm-010', 'farm-011', 'farm-012', 'farm-013'],
   },
   {
     id: 'prod-005',
@@ -66,10 +65,10 @@ export const mockProducers: Producer[] = [
     email: 'carlos.ferreira@gmail.com',
     phone: '(27) 98765-1234',
     profilePhoto:
-      'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=300&h=300&fit=crop&crop=face',
+      'https://img.freepik.com/fotos-premium/agricultor-maduro-gesticulando-para-cima-em-um-campo-de-milho_251859-3720.jpg',
     createdAt: new Date('2023-05-12'),
-    updatedAt: new Date('2024-05-12'),
+    updatedAt: new Date('2025-05-12'),
     active: true,
-    farmsIds: ['farm-014', 'farm-015'], // 2 fazendas
+    farmsIds: ['farm-014', 'farm-015'],
   },
 ];

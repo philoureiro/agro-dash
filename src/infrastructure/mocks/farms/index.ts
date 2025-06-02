@@ -10,7 +10,8 @@ export const mockFarms: Farm[] = [
     city: 'Ribeirão Preto',
     state: States.SP,
     zipCode: '14000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://external-preview.redd.it/CHnUmFYnkdTcTDjiFLxad-vG2smC2Q_EWqv1FY8xskc.jpg?auto=webp&s=f787d1d5e57a925221264827db8d7fb9ce49727c',
     totalArea: 250,
     agriculturalArea: 180,
     vegetationArea: 70,
@@ -18,9 +19,9 @@ export const mockFarms: Farm[] = [
     sustainability: 78,
     technology: 72,
     createdAt: new Date('2023-01-20'),
-    updatedAt: new Date('2024-01-20'),
+    updatedAt: new Date('2025-01-20'),
     active: true,
-    crops: ['crop-001', 'crop-002'], // 🔥 CORRIGIDO!
+    crops: ['crop-001', 'crop-002'],
   },
   {
     id: 'farm-002',
@@ -29,7 +30,8 @@ export const mockFarms: Farm[] = [
     city: 'Araraquara',
     state: States.SP,
     zipCode: '14800-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://c0.wallpaperflare.com/preview/803/343/639/brazil-pedra-preta-fazenda-farm.jpg',
     totalArea: 120,
     agriculturalArea: 90,
     vegetationArea: 30,
@@ -37,9 +39,9 @@ export const mockFarms: Farm[] = [
     sustainability: 88,
     technology: 65,
     createdAt: new Date('2023-02-10'),
-    updatedAt: new Date('2024-02-10'),
+    updatedAt: new Date('2025-02-10'),
     active: true,
-    crops: ['crop-003'], // 🔥 CORRIGIDO!
+    crops: ['crop-003'],
   },
   {
     id: 'farm-003',
@@ -48,7 +50,7 @@ export const mockFarms: Farm[] = [
     city: 'São Carlos',
     state: States.SP,
     zipCode: '13560-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1464822759844-d150ad6d1a6f?w=800&h=400&fit=crop',
+    farmPhoto: 'https://wallpapers.com/images/hd/farm-desktop-bt3zi2c3bigi5qzd.jpg',
     totalArea: 80,
     agriculturalArea: 55,
     vegetationArea: 25,
@@ -56,9 +58,9 @@ export const mockFarms: Farm[] = [
     sustainability: 82,
     technology: 58,
     createdAt: new Date('2023-03-15'),
-    updatedAt: new Date('2024-03-15'),
+    updatedAt: new Date('2025-03-15'),
     active: true,
-    crops: ['crop-004', 'crop-005'], // 🔥 CORRIGIDO!
+    crops: ['crop-004', 'crop-005'],
   },
 
   // Fazendas da Agropecuária Mato Verde (prod-002)
@@ -69,7 +71,8 @@ export const mockFarms: Farm[] = [
     city: 'Sorriso',
     state: States.MT,
     zipCode: '78890-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://www.10wallpaper.com/wallpaper/1280x800/1304/farmland-creative_design_HD_wallpaper_1280x800.jpg',
     totalArea: 1200,
     agriculturalArea: 980,
     vegetationArea: 220,
@@ -77,9 +80,9 @@ export const mockFarms: Farm[] = [
     sustainability: 85,
     technology: 90,
     createdAt: new Date('2023-02-25'),
-    updatedAt: new Date('2024-02-25'),
+    updatedAt: new Date('2025-02-25'),
     active: true,
-    crops: ['crop-006', 'crop-007'], // 🔥 CORRIGIDO!
+    crops: ['crop-006', 'crop-007'],
   },
   {
     id: 'farm-005',
@@ -88,7 +91,7 @@ export const mockFarms: Farm[] = [
     city: 'Cuiabá',
     state: States.MT,
     zipCode: '78000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1566838803980-a05064f4a359?w=800&h=400&fit=crop',
+    farmPhoto: 'https://wallpapers.com/images/hd/landscape-pictures-5cls1ruxkmiwa154.jpg',
     totalArea: 800,
     agriculturalArea: 600,
     vegetationArea: 200,
@@ -96,9 +99,9 @@ export const mockFarms: Farm[] = [
     sustainability: 92,
     technology: 75,
     createdAt: new Date('2023-03-05'),
-    updatedAt: new Date('2024-03-05'),
+    updatedAt: new Date('2025-03-05'),
     active: true,
-    crops: ['crop-008', 'crop-009'], // 🔥 CORRIGIDO!
+    crops: ['crop-008', 'crop-009'],
   },
   {
     id: 'farm-006',
@@ -107,7 +110,7 @@ export const mockFarms: Farm[] = [
     city: 'Lucas do Rio Verde',
     state: States.MT,
     zipCode: '78455-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=400&fit=crop',
+    farmPhoto: 'https://cdn.pixabay.com/photo/2017/07/24/20/08/farmhouse-2535919_1280.jpg',
     totalArea: 950,
     agriculturalArea: 750,
     vegetationArea: 200,
@@ -115,9 +118,9 @@ export const mockFarms: Farm[] = [
     sustainability: 87,
     technology: 88,
     createdAt: new Date('2023-04-10'),
-    updatedAt: new Date('2024-04-10'),
+    updatedAt: new Date('2025-04-10'),
     active: true,
-    crops: ['crop-010', 'crop-011'], // 🔥 CORRIGIDO!
+    crops: ['crop-010', 'crop-011'],
   },
   {
     id: 'farm-007',
@@ -126,7 +129,7 @@ export const mockFarms: Farm[] = [
     city: 'Sinop',
     state: States.MT,
     zipCode: '78550-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?w=800&h=400&fit=crop',
+    farmPhoto: 'https://wallpapers.com/images/hd/farm-desktop-pudj3ynwp90hl697.jpg',
     totalArea: 450,
     agriculturalArea: 320,
     vegetationArea: 130,
@@ -134,9 +137,9 @@ export const mockFarms: Farm[] = [
     sustainability: 89,
     technology: 70,
     createdAt: new Date('2023-05-20'),
-    updatedAt: new Date('2024-05-20'),
+    updatedAt: new Date('2025-05-20'),
     active: true,
-    crops: ['crop-012', 'crop-013'], // 🔥 CORRIGIDO!
+    crops: ['crop-012', 'crop-013'],
   },
   {
     id: 'farm-008',
@@ -145,7 +148,7 @@ export const mockFarms: Farm[] = [
     city: 'Campo Grande',
     state: States.MS,
     zipCode: '79000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1595462062677-5b3a5c21b8dc?w=800&h=400&fit=crop',
+    farmPhoto: 'https://wallpapers.com/images/hd/farm-desktop-mfxczkefra7wv582.jpg',
     totalArea: 650,
     agriculturalArea: 500,
     vegetationArea: 150,
@@ -153,9 +156,9 @@ export const mockFarms: Farm[] = [
     sustainability: 84,
     technology: 82,
     createdAt: new Date('2023-06-15'),
-    updatedAt: new Date('2024-06-15'),
+    updatedAt: new Date('2025-06-15'),
     active: true,
-    crops: ['crop-014', 'crop-015'], // 🔥 CORRIGIDO!
+    crops: ['crop-014', 'crop-015'],
   },
 
   // Fazenda da Maria Oliveira Costa (prod-003)
@@ -166,7 +169,8 @@ export const mockFarms: Farm[] = [
     city: 'Goiânia',
     state: States.GO,
     zipCode: '74000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://w0.peakpx.com/wallpaper/697/230/HD-wallpaper-horse-showering-showring-fazenda-campo-horse.jpg',
     totalArea: 300,
     agriculturalArea: 220,
     vegetationArea: 80,
@@ -174,9 +178,9 @@ export const mockFarms: Farm[] = [
     sustainability: 95,
     technology: 68,
     createdAt: new Date('2023-03-20'),
-    updatedAt: new Date('2024-03-20'),
+    updatedAt: new Date('2025-03-20'),
     active: true,
-    crops: ['crop-016', 'crop-017'], // 🔥 CORRIGIDO!
+    crops: ['crop-016', 'crop-017'],
   },
 
   // Fazendas da Fazendas Reunidas do Sul (prod-004)
@@ -187,7 +191,7 @@ export const mockFarms: Farm[] = [
     city: 'Porto Alegre',
     state: States.RS,
     zipCode: '90000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=800&h=400&fit=crop',
+    farmPhoto: 'https://wallpaper.forfun.com/fetch/85/85d147ec4abee311a2e0281ae8fab021.jpeg',
     totalArea: 750,
     agriculturalArea: 550,
     vegetationArea: 200,
@@ -195,9 +199,9 @@ export const mockFarms: Farm[] = [
     sustainability: 81,
     technology: 87,
     createdAt: new Date('2023-04-12'),
-    updatedAt: new Date('2024-04-12'),
+    updatedAt: new Date('2025-04-12'),
     active: true,
-    crops: ['crop-018', 'crop-019'], // 🔥 CORRIGIDO!
+    crops: ['crop-018', 'crop-019'],
   },
   {
     id: 'farm-011',
@@ -206,7 +210,8 @@ export const mockFarms: Farm[] = [
     city: 'Pelotas',
     state: States.RS,
     zipCode: '96000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://www.produzindocerto.com.br/wp-content/uploads/2022/03/blog-caseprodutor-14-03.jpg',
     totalArea: 520,
     agriculturalArea: 380,
     vegetationArea: 140,
@@ -214,9 +219,9 @@ export const mockFarms: Farm[] = [
     sustainability: 86,
     technology: 75,
     createdAt: new Date('2023-05-08'),
-    updatedAt: new Date('2024-05-08'),
+    updatedAt: new Date('2025-05-08'),
     active: true,
-    crops: ['crop-020', 'crop-021'], // 🔥 CORRIGIDO!
+    crops: ['crop-020', 'crop-021'],
   },
   {
     id: 'farm-012',
@@ -225,7 +230,8 @@ export const mockFarms: Farm[] = [
     city: 'Santa Maria',
     state: States.RS,
     zipCode: '97000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1593035616977-b8a34c7b61dc?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://img.wallpapic-br.com/i8033-027-811/medium/fotos-hdr-natureza-nuvens-fazenda-imagem-de-fundo.jpg',
     totalArea: 280,
     agriculturalArea: 200,
     vegetationArea: 80,
@@ -233,9 +239,9 @@ export const mockFarms: Farm[] = [
     sustainability: 88,
     technology: 72,
     createdAt: new Date('2023-06-22'),
-    updatedAt: new Date('2024-06-22'),
+    updatedAt: new Date('2025-05-22'), // Corrigido para data futura
     active: true,
-    crops: ['crop-022', 'crop-023'], // 🔥 CORRIGIDO!
+    crops: ['crop-022', 'crop-023'],
   },
   {
     id: 'farm-013',
@@ -244,7 +250,8 @@ export const mockFarms: Farm[] = [
     city: 'Caxias do Sul',
     state: States.RS,
     zipCode: '95000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&h=400&fit=crop',
+    farmPhoto:
+      'https://p4.wallpaperbetter.com/wallpaper/500/982/389/mcdonald-had-a-farm-wallpaper-preview.jpg',
     totalArea: 410,
     agriculturalArea: 290,
     vegetationArea: 120,
@@ -252,9 +259,9 @@ export const mockFarms: Farm[] = [
     sustainability: 83,
     technology: 79,
     createdAt: new Date('2023-07-10'),
-    updatedAt: new Date('2024-07-10'),
+    updatedAt: new Date('2025-05-10'), // Corrigido para data futura
     active: true,
-    crops: ['crop-024', 'crop-025'], // 🔥 CORRIGIDO!
+    crops: ['crop-024', 'crop-025'],
   },
 
   // Fazendas do Carlos Eduardo Ferreira (prod-005)
@@ -265,7 +272,7 @@ export const mockFarms: Farm[] = [
     city: 'Vitória',
     state: States.ES,
     zipCode: '29000-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=400&fit=crop',
+    farmPhoto: 'https://blog.7mboots.com.br/wp-content/uploads/2025/02/blog-4240.jpg',
     totalArea: 180,
     agriculturalArea: 140,
     vegetationArea: 40,
@@ -273,9 +280,9 @@ export const mockFarms: Farm[] = [
     sustainability: 94,
     technology: 85,
     createdAt: new Date('2023-05-18'),
-    updatedAt: new Date('2024-05-18'),
+    updatedAt: new Date('2025-05-18'),
     active: true,
-    crops: ['crop-026'], // 🔥 CORRIGIDO!
+    crops: ['crop-026'],
   },
   {
     id: 'farm-015',
@@ -284,7 +291,7 @@ export const mockFarms: Farm[] = [
     city: 'Linhares',
     state: States.ES,
     zipCode: '29900-000',
-    farmPhoto: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=400&fit=crop',
+    farmPhoto: 'https://wallpapers.com/images/hd/farm-desktop-ct4tnwgupjq73d1r.jpg',
     totalArea: 95,
     agriculturalArea: 70,
     vegetationArea: 25,
@@ -292,8 +299,8 @@ export const mockFarms: Farm[] = [
     sustainability: 92,
     technology: 76,
     createdAt: new Date('2023-06-25'),
-    updatedAt: new Date('2024-06-25'),
+    updatedAt: new Date('2025-05-25'), // Corrigido para data futura
     active: true,
-    crops: ['crop-027', 'crop-028'], // 🔥 CORRIGIDO!
+    crops: ['crop-027', 'crop-028'],
   },
 ];

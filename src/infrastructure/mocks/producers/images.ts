@@ -1,0 +1,9 @@
+/*
+https://videocdn.cdnpk.net/videos/7ff2cb6b-8ffa-4612-9ad7-89d300372faa/horizontal/thumbnails/small.jpg
+https://img.freepik.com/fotos-gratis/homem-de-tiro-medio-que-vive-no-campo_23-2150642378.jpg?w=360
+https://img.freepik.com/fotos-premium/uma-mulher-jardineira-em-um-avental-esta-em-um-campo-de-grama-verde-ao-ar-livre-sorrindo-em-um-dia-de-verao-em-um-por-do-sol-foto-de-alta-qualidade_163305-252226.jpg?semt=ais_hybrid&w=740
+https://img.freepik.com/fotos-gratis/cena-fotorrealista-de-uma-fazenda-avicola-com-pessoas-e-galinhas_23-2151462271.jpg?semt=ais_hybrid&w=740
+https://img.freepik.com/fotos-gratis/agricultora-relaxando-ao-ar-livre_23-2149066196.jpg?semt=ais_hybrid&w=740
+https://s2-globorural.glbimg.com/vp1dHAuohL_HG916oGxr6bbeiAc=/0x183:1029x1318/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_afe5c125c3bb42f0b5ae633b58923923/internal_photos/bs/2023/m/P/e60ylJRC2AkyxQitzovA/snapinsta.app-1080-315235205-1127628794560731-3032724446634054494-n-1-.jpg
+https://s2-g1.glbimg.com/AIY-qg4yxGN334UQkZq7AUDhIu0=/0x0:6016x4016/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/r/H/vESiyFRPCcZpqdAcc4Rw/20220405-julienpereira-gm-tarcisio-franco-5982.jpgzzzzzzzz
+*/
