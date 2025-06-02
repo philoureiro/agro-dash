@@ -375,7 +375,7 @@ export const StatsContainer = styled.div<{ isDark: boolean }>`
 // Adicionar no styles.ts os componentes que faltam
 export const AddFarmerContainer = styled.div<{ $isDark: boolean }>`
   margin-top: 50px;
-  margin-bottom: 50px;
+  margin-bottom: 90px;
 
   min-height: 100vh;
   padding: 2rem 1rem;
@@ -401,6 +401,7 @@ export const ProgressHeader = styled.div<{ $isDark: boolean }>`
   }
 `;
 
+// src/components/AddFarmer/styles.ts - CORRIGIR PROGRESSBAR
 export const ProgressBar = styled.div<{ $isDark: boolean }>`
   width: 100%;
   height: 12px;
@@ -408,6 +409,7 @@ export const ProgressBar = styled.div<{ $isDark: boolean }>`
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 1rem;
+  position: relative;
 `;
 
 export const ProgressFill = styled.div<{ $progress: number; $isDark: boolean }>`
@@ -415,5 +417,17 @@ export const ProgressFill = styled.div<{ $progress: number; $isDark: boolean }>`
   background: linear-gradient(90deg, #37cb83, #27ae60);
   border-radius: 6px;
   width: ${({ $progress }) => $progress}%;
-  transition: width 1s ease;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+  }
 `;

@@ -1,18 +1,13 @@
-// src/components/AddFarmer/ProducerForm.tsx
+// src/components/AddFarmer/components/producer-form/ProducerForm.tsx
 import React from 'react';
 
+import { Input, PhotoPreview } from '@components';
 import { Producer } from '@entities';
 import { DocumentType } from '@enums';
+import { formatDocument } from '@validations';
 
-import {
-  DocumentValidation,
-  FloatingLabel,
-  FormCard,
-  FormGrid,
-  InputGroup,
-  StyledInput,
-  StyledSelect,
-} from './styles';
+import { formatPhone, validatePhone } from '../../utils';
+import { FormCard, FormGrid } from './styles';
 
 interface ProducerFormProps {
   producer: Producer;
@@ -21,7 +16,6 @@ interface ProducerFormProps {
       nameValid: boolean;
       documentValid: boolean;
       emailValid: boolean;
-      photoValid: boolean;
     };
   };
   onUpdate: (updates: Partial<Producer>) => void;
@@ -34,143 +28,152 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
   onUpdate,
   isDark,
 }) => {
-  const formatDocument = (value: string, type: DocumentType): string => {
+  // 🎯 VALIDAÇÃO EM TEMPO REAL DO DOCUMENTO
+  const handleDocumentChange = (value: string) => {
     const numbers = value.replace(/\D/g, '');
+    const maxLength = producer.documentType === DocumentType.CPF ? 11 : 14;
+    onUpdate({ document: numbers.slice(0, maxLength) });
+  };
 
-    if (type === DocumentType.CPF) {
-      return numbers
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-    }
+  // 📱 VALIDAÇÃO DO TELEFONE
+  const handlePhoneChange = (value: string) => {
+    const numbers = value.replace(/\D/g, '');
+    onUpdate({ phone: numbers.slice(0, 11) });
+  };
 
-    return numbers
-      .replace(/(\d{2})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1/$2')
-      .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+  // 🎨 VALIDAÇÃO DE FOTO
+  const isValidImageUrl = (url: string): boolean => {
+    return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(url);
   };
 
   return (
     <FormCard isDark={isDark}>
       <h2>👨‍🌾 Dados do Produtor</h2>
 
+      {/* 🖼️ PREVIEW DA FOTO */}
+      <PhotoPreview photoUrl={producer.profilePhoto} isDark={isDark} type="producer" />
+
       <FormGrid>
-        <InputGroup>
-          <FloatingLabel
-            isDark={isDark}
-            active={!!producer.name}
-            valid={validation.producer.nameValid}
-          >
-            Nome Completo *
-          </FloatingLabel>
-          <StyledInput
-            isDark={isDark}
-            value={producer.name}
-            valid={validation.producer.nameValid}
-            onChange={(e) => onUpdate({ name: e.target.value })}
-            placeholder=" "
-          />
-        </InputGroup>
+        {/* Nome */}
+        <Input
+          label="Nome Completo *"
+          value={producer.name || ''}
+          onChange={(value) => onUpdate({ name: value })}
+          isDark={isDark}
+          valid={validation.producer.nameValid}
+          validationMessage={
+            producer.name
+              ? validation.producer.nameValid
+                ? 'Nome válido!'
+                : 'Nome deve ter pelo menos 3 caracteres'
+              : undefined
+          }
+          validationType={validation.producer.nameValid ? 'success' : 'error'}
+          placeholder="Digite o nome completo"
+        />
 
-        <InputGroup>
-          <FloatingLabel isDark={isDark} active={!!producer.documentType} valid={true}>
-            Tipo de Documento
-          </FloatingLabel>
-          <StyledSelect
-            isDark={isDark}
-            value={producer.documentType}
-            valid={true}
-            onChange={(e) =>
-              onUpdate({
-                documentType: e.target.value as DocumentType,
-                document: '', // Limpa documento quando muda tipo
-              })
-            }
-          >
-            <option value={DocumentType.CPF}>CPF</option>
-            <option value={DocumentType.CNPJ}>CNPJ</option>
-          </StyledSelect>
-        </InputGroup>
+        {/* Tipo de Documento */}
+        <Input
+          label="Tipo de Documento *"
+          value={producer.documentType || DocumentType.CPF}
+          onChange={(value) =>
+            onUpdate({
+              documentType: value as DocumentType,
+              document: '', // Limpa documento ao trocar tipo
+            })
+          }
+          isDark={isDark}
+          valid={true}
+          options={[
+            { value: DocumentType.CPF, label: 'CPF - Pessoa Física' },
+            { value: DocumentType.CNPJ, label: 'CNPJ - Pessoa Jurídica' },
+          ]}
+        />
 
-        <InputGroup>
-          <FloatingLabel
-            isDark={isDark}
-            active={!!producer.document}
-            valid={validation.producer.documentValid}
-          >
-            {producer.documentType === DocumentType.CPF ? 'CPF' : 'CNPJ'} *
-          </FloatingLabel>
-          <StyledInput
-            isDark={isDark}
-            value={formatDocument(producer.document, producer.documentType)}
-            valid={validation.producer.documentValid}
-            onChange={(e) => {
-              const numbers = e.target.value.replace(/\D/g, '');
-              const maxLength = producer.documentType === DocumentType.CPF ? 11 : 14;
-              onUpdate({ document: numbers.slice(0, maxLength) });
-            }}
-            placeholder=" "
-          />
+        {/* Documento */}
+        <Input
+          label={`${producer.documentType === DocumentType.CPF ? 'CPF' : 'CNPJ'} *`}
+          value={formatDocument(producer.document || '', producer.documentType)}
+          onChange={handleDocumentChange}
+          isDark={isDark}
+          valid={producer.document ? validation.producer.documentValid : undefined}
+          validationMessage={
+            producer.document
+              ? validation.producer.documentValid
+                ? `${producer.documentType} válido!`
+                : `${producer.documentType} inválido - verifique os dígitos`
+              : `Digite um ${producer.documentType} válido`
+          }
+          validationType={
+            producer.document ? (validation.producer.documentValid ? 'success' : 'error') : 'info'
+          }
+          placeholder={
+            producer.documentType === DocumentType.CPF ? '000.000.000-00' : '00.000.000/0000-00'
+          }
+        />
 
-          {producer.document && (
-            <DocumentValidation isDark={isDark} isValid={validation.producer.documentValid}>
-              <span className="message">
-                {validation.producer.documentValid
-                  ? `${producer.documentType} válido!`
-                  : `${producer.documentType} inválido`}
-              </span>
-            </DocumentValidation>
-          )}
-        </InputGroup>
+        {/* Email */}
+        <Input
+          label="Email"
+          value={producer.email || ''}
+          onChange={(value) => onUpdate({ email: value })}
+          isDark={isDark}
+          type="email"
+          valid={producer.email ? validation.producer.emailValid : undefined}
+          validationMessage={
+            producer.email
+              ? validation.producer.emailValid
+                ? 'Email válido!'
+                : 'Email inválido'
+              : undefined
+          }
+          validationType={validation.producer.emailValid ? 'success' : 'error'}
+          placeholder="exemplo@email.com"
+        />
 
-        <InputGroup>
-          <FloatingLabel
-            isDark={isDark}
-            active={!!producer.email}
-            valid={validation.producer.emailValid}
-          >
-            Email
-          </FloatingLabel>
-          <StyledInput
-            isDark={isDark}
-            type="email"
-            value={producer.email || ''}
-            valid={validation.producer.emailValid}
-            onChange={(e) => onUpdate({ email: e.target.value })}
-            placeholder=" "
-          />
-        </InputGroup>
+        {/* Telefone */}
+        <Input
+          label="Telefone"
+          value={formatPhone(producer.phone || '')}
+          onChange={handlePhoneChange}
+          isDark={isDark}
+          valid={producer.phone ? validatePhone(producer.phone) : undefined}
+          validationMessage={
+            producer.phone
+              ? validatePhone(producer.phone)
+                ? 'Telefone válido!'
+                : 'Telefone deve ter 10 ou 11 dígitos'
+              : undefined
+          }
+          validationType={validatePhone(producer.phone || '') ? 'success' : 'error'}
+          placeholder="(11) 99999-9999"
+        />
 
-        <InputGroup>
-          <FloatingLabel isDark={isDark} active={!!producer.phone} valid={true}>
-            Telefone
-          </FloatingLabel>
-          <StyledInput
-            isDark={isDark}
-            value={producer.phone || ''}
-            valid={true}
-            onChange={(e) => onUpdate({ phone: e.target.value })}
-            placeholder=" "
-          />
-        </InputGroup>
-
-        <InputGroup>
-          <FloatingLabel
-            isDark={isDark}
-            active={!!producer.profilePhoto}
-            valid={validation.producer.photoValid}
-          >
-            URL da Foto (opcional)
-          </FloatingLabel>
-          <StyledInput
-            isDark={isDark}
+        {/* URL da Foto */}
+        <div style={{ gridColumn: '1 / -1' }}>
+          <Input
+            label="URL da Foto (opcional)"
             value={producer.profilePhoto || ''}
-            valid={validation.producer.photoValid}
-            onChange={(e) => onUpdate({ profilePhoto: e.target.value })}
-            placeholder=" "
+            onChange={(value) => onUpdate({ profilePhoto: value })}
+            isDark={isDark}
+            valid={producer.profilePhoto ? isValidImageUrl(producer.profilePhoto) : undefined}
+            validationMessage={
+              producer.profilePhoto
+                ? isValidImageUrl(producer.profilePhoto)
+                  ? 'URL válida!'
+                  : 'URL deve ser uma imagem válida (.jpg, .png, .gif, .webp)'
+                : 'Cole uma URL de imagem para ver o preview'
+            }
+            validationType={
+              producer.profilePhoto
+                ? isValidImageUrl(producer.profilePhoto)
+                  ? 'success'
+                  : 'error'
+                : 'info'
+            }
+            placeholder="https://exemplo.com/foto.jpg"
           />
-        </InputGroup>
+        </div>
       </FormGrid>
     </FormCard>
   );
