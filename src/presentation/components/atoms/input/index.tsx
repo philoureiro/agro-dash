@@ -1,15 +1,144 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useTheme } from '@mui/material/styles';
+import {
+  CompactContainer,
+  CompactInput,
+  CompactLabel,
+  CompactSelect,
+  CompactTextarea,
+  InputIcon,
+  InputWrapper,
+  ValidationMessage,
+} from './styles';
 
-import { Input } from './styles';
+interface InputProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  isDark: boolean;
+  valid?: boolean;
+  validationMessage?: string;
+  validationType?: 'success' | 'error' | 'info';
+  placeholder?: string;
+  type?: string;
+  options?: { value: string; label: string }[];
+  multiline?: boolean;
+  rows?: number;
+  disabled?: boolean;
+  icon?: string;
+  min?: string;
+  max?: string;
+  step?: string;
+  maxLength?: number;
+  required?: boolean;
+}
 
-// Certifique-se de que o caminho está correto
+export const Input: React.FC<InputProps> = ({
+  label,
+  value,
+  onChange,
+  isDark,
+  valid,
+  validationMessage,
+  validationType = 'info',
+  placeholder,
+  type = 'text',
+  options,
+  multiline = false,
+  rows = 3,
+  disabled = false,
+  icon,
+  min,
+  max,
+  step,
+  maxLength,
+  required = false,
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
 
-type CustomInputProps = React.InputHTMLAttributes<HTMLInputElement>;
+  // 🎯 DETERMINAR STATUS VISUAL
+  const getValidationStatus = () => {
+    if (valid === true) return 'success';
+    if (valid === false) return 'error';
+    return validationType;
+  };
 
-export const CustomInput: React.FC<CustomInputProps> = (props) => {
-  const theme = useTheme();
+  const validationStatus = getValidationStatus();
+  const hasValue = value && value.length > 0;
 
-  return <Input theme={theme} {...props} />;
+  // 🔥 SÓ MOSTRAR VALIDAÇÃO QUANDO ERRO OU INFO (NÃO QUANDO SUCESSO)
+  const showValidation =
+    validationMessage &&
+    (validationStatus === 'error' || validationStatus === 'info') &&
+    (hasValue || isFocused || valid !== undefined);
+
+  // 🎨 RENDERIZAR CAMPO BASEADO NO TIPO
+  const renderInput = () => {
+    const commonProps = {
+      $isDark: isDark,
+      $valid: valid,
+      $hasValue: hasValue,
+      $isFocused: isFocused,
+      value,
+      onChange: (e: any) => onChange(e.target.value),
+      onFocus: () => setIsFocused(true),
+      onBlur: () => setIsFocused(false),
+      placeholder: placeholder || '',
+      disabled,
+      maxLength,
+    };
+
+    if (options) {
+      return (
+        <CompactSelect {...commonProps}>
+          <option value="">{placeholder || 'Selecione...'}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </CompactSelect>
+      );
+    }
+
+    if (multiline) {
+      return <CompactTextarea {...commonProps} rows={rows} />;
+    }
+
+    return <CompactInput {...commonProps} type={type} min={min} max={max} step={step} />;
+  };
+
+  return (
+    <CompactContainer>
+      <CompactLabel
+        $isDark={isDark}
+        $hasValue={hasValue}
+        $isFocused={isFocused}
+        $isRequired={required}
+        $validationStatus={validationStatus}
+      >
+        {icon && <span className="label-icon">{icon}</span>}
+        {label}
+        {required && <span className="required">*</span>}
+      </CompactLabel>
+
+      <InputWrapper $isDark={isDark} $validationStatus={validationStatus} $disabled={disabled}>
+        {renderInput()}
+
+        {/* 🎯 ÍCONE DE VALIDAÇÃO COM ESPAÇAMENTO */}
+        {valid !== undefined && (
+          <InputIcon $validationStatus={validationStatus} $hasIcon={true}>
+            {valid === true ? '✅' : '❌'}
+          </InputIcon>
+        )}
+      </InputWrapper>
+
+      {/* 📝 MENSAGEM DE VALIDAÇÃO - SÓ ERRO E INFO */}
+      {showValidation && (
+        <ValidationMessage $isDark={isDark} $type={validationStatus}>
+          {validationMessage}
+        </ValidationMessage>
+      )}
+    </CompactContainer>
+  );
 };

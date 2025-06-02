@@ -34,6 +34,7 @@ export default defineConfig({
       '@validations': path.resolve(__dirname, './src/domain/validations'),
       '@storage': path.resolve(__dirname, './src/application/storage'),
       '@services': path.resolve(__dirname, './src/application/services'),
+      '@animations': path.resolve(__dirname, './src/presentation/layouts/animations'),
     },
   },
   server: {

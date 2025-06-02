@@ -1186,3 +1186,9 @@ export const DocumentValidation = styled.div.withConfig({
     }
   }
 `;
+
+export const ActionsBox = styled.div<{ isDark: boolean }>`
+  display: flex;
+  gap: 16px;
+  align-items: center;
+`;

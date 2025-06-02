@@ -34,6 +34,7 @@
       "@theme": ["./src/presentation/theme"],
       "@enums": ["./src/domain/enums"],
       "@entities": ["./src/domain/entities"],
+      "@animations": ["./src/presentation/layouts/animations"],
 
       // // ==== TESTS ====
       // "@tests": ["./src/tests/index.ts"],

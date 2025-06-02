@@ -37,7 +37,7 @@ interface ConfirmModalProps {
   subtitle?: string;
 
   /** Conteúdo do modal */
-  message: string;
+  message: string | React.ReactNode;
 
   /** Texto do botão de confirmação */
   confirmText?: string;
@@ -153,7 +153,11 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 
         {/* 🎨 CONTEÚDO */}
         <ModalContent>
-          <ModalText $isDark={isDark}>{message}</ModalText>
+          {typeof message === 'string' ? (
+            <ModalText $isDark={isDark}>{message}</ModalText>
+          ) : (
+            message
+          )}
         </ModalContent>
 
         {/* 🎨 AÇÕES */}

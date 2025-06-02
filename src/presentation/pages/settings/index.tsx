@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { LoadingOverlay } from '@components';
+import { ConfirmModal, LoadingOverlay } from '@components';
 import { useToast } from '@hooks';
 import { useAppStore } from '@storage';
 import { useThemeMode } from '@theme';
@@ -11,11 +11,6 @@ import {
   CardHeader,
   CardIcon,
   CardTitle,
-  Modal,
-  ModalActions,
-  ModalContent,
-  ModalText,
-  ModalTitle,
   OptionInfo,
   OptionLabel,
   OptionSubtext,
@@ -39,6 +34,10 @@ import {
   handleResetData,
   handleResetSystem,
 } from './utils';
+import { MODAL_CONTENT } from './utils/modalContent';
+
+// Tipos para o modal unificado
+type ModalType = 'resetSystem' | 'resetData' | 'resetConfig' | null;
 
 // 📊 COMPONENTE PRINCIPAL
 export const Settings: React.FC = () => {
@@ -68,9 +67,7 @@ export const Settings: React.FC = () => {
   });
 
   // Estados de controle
-  const [showResetSystemModal, setShowResetSystemModal] = useState(false);
-  const [showResetDataModal, setShowResetDataModal] = useState(false);
-  const [showResetConfigModal, setShowResetConfigModal] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -115,16 +112,55 @@ export const Settings: React.FC = () => {
     toggleThemeMode();
   };
 
-  // const handleAutoSaveToggle = () => {
-  //   setAutoSave((prev) => !prev);
-  // };
+  // Função para fechar modal antes de executar ação
+  const handleConfirm = async () => {
+    if (!activeModal) return;
+    setActiveModal(null);
 
-  // const handleNotificationsToggle = () => {
-  //   setNotifications((prev) => !prev);
-  // };
+    // Aguarda o modal fechar antes de mostrar o loading
+    setTimeout(async () => {
+      if (activeModal === 'resetSystem') {
+        setIsResetting(true);
+        await handleResetSystem(setIsResetting, () => {}, setAutoSave, setNotifications, setError);
+        setIsResetting(false);
+      }
+      if (activeModal === 'resetData') {
+        setIsResetting(true);
+        await handleResetData(setIsResetting, () => {}, setError);
+        setIsResetting(false);
+      }
+      if (activeModal === 'resetConfig') {
+        setIsResetting(true);
+        await handleResetConfig(
+          setIsResetting,
+          () => {},
+          setCompactMode,
+          setAnimations,
+          setAutoSave,
+          setNotifications,
+          setError,
+        );
+        setIsResetting(false);
+      }
+    }, 200); // tempo para animação do modal fechar
+  };
 
   return (
     <SettingsContainer isDark={isDark}>
+      {(isExporting || isResetting) && (
+        <LoadingOverlay
+          isVisible={isExporting || isResetting}
+          isDark={isDark}
+          type={isExporting ? 'generating' : 'deleting'}
+          variant="dots"
+          title={isExporting ? '📦 Exportando Dados do Sistema' : '🗑️ Deletando Dados do Sistema'}
+          subtitle="Sincronizando dados do campo"
+          loadingText={isResetting ? 'Processando reset...' : 'Exportando dados...'}
+          spinnerColor="#27ae60"
+          spinnerSize="large"
+        />
+      )}
+
       {/* 🏆 HEADER */}
       <SettingsHeader>
         <SettingsTitle isDark={isDark}>⚙️ Configurações</SettingsTitle>
@@ -181,7 +217,6 @@ export const Settings: React.FC = () => {
               onClick={() =>
                 toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`)
               }
-              // onClick={handleAutoSaveToggle}
             />
           </SettingOption>
 
@@ -198,7 +233,6 @@ export const Settings: React.FC = () => {
               onClick={() =>
                 toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`)
               }
-              // onClick={handleNotificationsToggle}
             />
           </SettingOption>
         </SettingsCard>
@@ -282,7 +316,6 @@ export const Settings: React.FC = () => {
               onClick={() =>
                 toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`)
               }
-              // onClick={() => handleExportData(setIsExporting, getAllData, setError)}
               disabled={isExporting}
             >
               📑 Exportar Relatório
@@ -358,7 +391,7 @@ export const Settings: React.FC = () => {
               variant="danger"
               isDark={isDark}
               size="small"
-              onClick={() => setShowResetSystemModal(true)}
+              onClick={() => setActiveModal('resetSystem')}
               disabled={isResetting}
             >
               🗑️ Restaurar tudo
@@ -376,7 +409,7 @@ export const Settings: React.FC = () => {
               variant="danger"
               isDark={isDark}
               size="small"
-              onClick={() => setShowResetDataModal(true)}
+              onClick={() => setActiveModal('resetData')}
               disabled={isResetting}
             >
               📊 Restaurar Dados
@@ -392,7 +425,7 @@ export const Settings: React.FC = () => {
               variant="danger"
               isDark={isDark}
               size="small"
-              onClick={() => setShowResetConfigModal(true)}
+              onClick={() => setActiveModal('resetConfig')}
               disabled={isResetting}
             >
               ⚙️ Restaurar config
@@ -401,159 +434,24 @@ export const Settings: React.FC = () => {
         </SettingsCard>
       </SettingsGrid>
 
-      {/* 🎯 MODAL RESET SISTEMA COMPLETO */}
-      <Modal isOpen={showResetSystemModal} data-open={showResetSystemModal}>
-        <ModalContent isDark={isDark}>
-          <ModalTitle isDark={isDark}>🗑️ Reset Completo do Sistema</ModalTitle>
-          <ModalText isDark={isDark}>
-            Esta ação irá remover <strong>ABSOLUTAMENTE TUDO</strong>:
-            <br />
-            <br />
-            • 📊 Todas as fazendas, produtores e culturas
-            <br />
-            • ⚙️ Todas as configurações e preferências
-            <br />
-            • 📈 Todas as estatísticas de uso
-            <br />
-            • 🗂️ Todo o cache e dados temporários
-            <br />
-            <br />
-            <strong>⚠️ O sistema será completamente reiniciado!</strong>
-          </ModalText>
-          <ModalActions>
-            <ActionButton
-              variant="secondary"
-              isDark={isDark}
-              onClick={() => setShowResetSystemModal(false)}
-              disabled={isResetting}
-            >
-              ❌ Cancelar
-            </ActionButton>
-            <ActionButton
-              variant="danger"
-              isDark={isDark}
-              onClick={() =>
-                handleResetSystem(
-                  setIsResetting,
-                  setShowResetSystemModal,
-                  setAutoSave,
-                  setNotifications,
-                  setError,
-                )
-              }
-              disabled={isResetting}
-            >
-              {isResetting ? '🔄 Resetando...' : ' Reset Total'}
-            </ActionButton>
-          </ModalActions>
-        </ModalContent>
-      </Modal>
-
-      {/* 📊 MODAL RESET DADOS */}
-      <Modal isOpen={showResetDataModal} data-open={showResetDataModal}>
-        <ModalContent isDark={isDark}>
-          <ModalTitle isDark={isDark}>📊 Reset dos Dados</ModalTitle>
-          <ModalText isDark={isDark}>
-            Esta ação irá remover apenas os <strong>dados do negócio</strong>:
-            <br />
-            <br />
-            • 🏡 Todas as fazendas cadastradas
-            <br />
-            • 👥 Todos os produtores
-            <br />
-            • 🌾 Todas as culturas
-            <br />
-            • 📋 Cache do dashboard
-            <br />
-            <br />
-            <strong> Suas configurações serão mantidas!</strong>
-          </ModalText>
-          <ModalActions>
-            <ActionButton
-              variant="secondary"
-              isDark={isDark}
-              onClick={() => setShowResetDataModal(false)}
-              disabled={isResetting}
-            >
-              ❌ Cancelar
-            </ActionButton>
-            <ActionButton
-              variant="danger"
-              isDark={isDark}
-              onClick={() => handleResetData(setIsResetting, setShowResetDataModal, setError)}
-              disabled={isResetting}
-            >
-              {isResetting ? '🔄 Removendo...' : ' Reset Dados'}
-            </ActionButton>
-          </ModalActions>
-        </ModalContent>
-      </Modal>
-
-      {/* ⚙️ MODAL RESET CONFIGURAÇÕES */}
-      <Modal isOpen={showResetConfigModal} data-open={showResetConfigModal}>
-        <ModalContent isDark={isDark}>
-          <ModalTitle isDark={isDark}>⚙️ Reset das Configurações</ModalTitle>
-          <ModalText isDark={isDark}>
-            Esta ação irá resetar apenas as <strong>configurações</strong>:
-            <br />
-            <br />
-            • 🎨 Tema volta para o padrão do dispositivo
-            <br />
-            • 📱 Modo compacto desativado
-            <br />
-            • ✨ Animações ativadas
-            <br />
-            • 💾 Auto-save ativado
-            <br />
-            • 🔔 Notificações ativadas
-            <br />
-            <br />
-            <strong> Seus dados serão mantidos!</strong>
-          </ModalText>
-          <ModalActions>
-            <ActionButton
-              variant="secondary"
-              isDark={isDark}
-              onClick={() => setShowResetConfigModal(false)}
-              disabled={isResetting}
-            >
-              ❌ Cancelar
-            </ActionButton>
-            <ActionButton
-              variant="danger"
-              isDark={isDark}
-              onClick={() =>
-                handleResetConfig(
-                  setIsResetting,
-                  setShowResetConfigModal,
-                  setCompactMode,
-                  setAnimations,
-                  setAutoSave,
-                  setNotifications,
-                  setError,
-                )
-              }
-              disabled={isResetting}
-            >
-              {isResetting ? '🔄 Resetando...' : ' Reset Config'}
-            </ActionButton>
-          </ModalActions>
-        </ModalContent>
-      </Modal>
-
-      {(isExporting || isResetting) && (
-        <LoadingOverlay
-          isVisible={isExporting || isResetting}
-          isDark={isDark}
-          type={isExporting ? 'generating' : 'deleting'}
-          variant="dots"
-          title={isExporting ? '📦 Exportando Dados do Sistema' : '🗑️ Deletando Dados do Sistema'}
-          subtitle="Sincronizando dados do campo"
-          loadingText={isResetting ? 'Processando reset...' : 'Exportando dados...'}
-          spinnerColor="#27ae60"
-          spinnerSize="large"
-        />
-      )}
+      {/* MODAL ÚNICO DE CONFIRMAÇÃO */}
+      <ConfirmModal
+        isVisible={!!activeModal}
+        isDark={isDark}
+        type="danger"
+        title={
+          activeModal
+            ? `${MODAL_CONTENT[activeModal].icon} ${MODAL_CONTENT[activeModal].title}`
+            : ''
+        }
+        subtitle={activeModal ? MODAL_CONTENT[activeModal].subtitle : ''}
+        message={activeModal ? MODAL_CONTENT[activeModal].message : ''}
+        confirmText={activeModal ? MODAL_CONTENT[activeModal].confirmText : ''}
+        cancelText={activeModal ? MODAL_CONTENT[activeModal].cancelText : ''}
+        onConfirm={handleConfirm}
+        onCancel={() => setActiveModal(null)}
+        loading={isResetting}
+      />
     </SettingsContainer>
   );
 };
