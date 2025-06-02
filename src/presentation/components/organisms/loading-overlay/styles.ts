@@ -7,11 +7,6 @@ const spinRings = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const fadeInScale = keyframes`
-  0% { opacity: 0; transform: scale(0.8); }
-  100% { opacity: 1; transform: scale(1); }
-`;
-
 const dotPulse = keyframes`
   0%, 20% { opacity: 0; }
   50% { opacity: 1; }
@@ -71,9 +66,11 @@ export const LoadingOverlayContainer = styled.div<{
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
-  animation: ${fadeInScale} 0.5s ease-out;
+  animation: ${shimmerGlow} 0.5s ease-out;
   padding: 2rem;
   box-sizing: border-box;
+
+  background: ${({ $isDark }) => ($isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)')};
 `;
 
 export const LoadingBackground = styled.div<{ $isDark: boolean }>`
