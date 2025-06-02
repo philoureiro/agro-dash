@@ -171,9 +171,19 @@ export class CropService {
     if (!crop) return null;
 
     const farm = useFarmStore.getState().getFarmById(crop.farmId);
-    const daysToHarvest = crop.harvestDate
-      ? Math.ceil((crop.harvestDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-      : null;
+
+    // 🔥 CORREÇÃO: Verificar se harvestDate existe e é Date válida
+    let daysToHarvest = null;
+    if (crop.harvestDate) {
+      const harvestDate =
+        crop.harvestDate instanceof Date ? crop.harvestDate : new Date(crop.harvestDate);
+
+      if (!isNaN(harvestDate.getTime())) {
+        daysToHarvest = Math.ceil(
+          (harvestDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24),
+        );
+      }
+    }
 
     return {
       ...crop,

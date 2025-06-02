@@ -7,7 +7,7 @@ import { TbPlant2 } from 'react-icons/tb';
 import { Crop, Farm, Producer } from '@entities';
 import { CropService, FarmService } from '@services';
 
-import { SearchType, UnifiedItem } from '../types';
+import { UnifiedItem } from '../types';
 
 // 🔍 HOOK PARA DEBOUNCE SUPREMO
 export const useDebounce = (value: string, delay: number) => {
@@ -69,24 +69,37 @@ export const scrollToTop = () => {
 };
 
 // 🎨 FUNÇÃO PARA PEGAR IMAGEM DO STORE OU FALLBACK
-export const getItemImage = (item: Producer | Farm | Crop, type: SearchType): string => {
-  // Verifica se o item tem propriedade de imagem
-  if ('image' in item && typeof item.image === 'string' && item.image) {
-    return item.image;
+export const getItemImage = (item: UnifiedItem): string => {
+  const { originalData, type } = item;
+
+  try {
+    // 1️⃣ TENTAR PEGAR IMAGEM REAL COM TYPE GUARDS SEGUROS
+    let imageUrl = '';
+
+    if (type === 'producer' && originalData && 'profilePhoto' in originalData) {
+      imageUrl = (originalData as Producer).profilePhoto || '';
+    } else if (type === 'farm' && originalData && 'farmPhoto' in originalData) {
+      imageUrl = (originalData as Farm).farmPhoto || '';
+    } else if (type === 'crop' && originalData && 'cropPhoto' in originalData) {
+      imageUrl = (originalData as Crop).cropPhoto || '';
+    }
+
+    // 2️⃣ SE TEM IMAGEM VÁLIDA, RETORNA ELA
+    if (imageUrl && typeof imageUrl === 'string' && imageUrl.trim()) {
+      return imageUrl;
+    }
+  } catch (error) {
+    console.warn('Erro ao obter imagem do item:', error);
   }
 
-  // Fallback para imagens padrão baseadas no tipo
-  const fallbackImages: Record<SearchType, string> = {
-    producers:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=600&fit=crop&crop=center',
-    farms:
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop&crop=center',
-    crops:
-      'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop&crop=center',
-    all: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop&crop=center',
+  // 3️⃣ FALLBACK SEMPRE FUNCIONAL
+  const fallbackImages = {
+    producer: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=600&fit=crop',
+    farm: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop',
+    crop: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop',
   };
 
-  return fallbackImages[type];
+  return fallbackImages[type] || fallbackImages.crop;
 };
 
 // 🎯 FUNÇÃO PARA PEGAR ÍCONE BASEADO NO TIPO
@@ -122,84 +135,160 @@ export const transformToUnifiedItems = (
   crops: Crop[],
 ): UnifiedItem[] => {
   const producerItems: UnifiedItem[] = producers.map((p) => {
-    // Usa service para buscar fazendas do produtor
-    const producerFarms = FarmService.searchFarms('', { producerId: p.id });
-    const totalArea = producerFarms.reduce((acc, f) => acc + (f.totalArea || 0), 0);
+    try {
+      // Usa service para buscar fazendas do produtor
+      const producerFarms = FarmService.searchFarms('', { producerId: p.id });
+      const totalArea = producerFarms.reduce((acc, f) => acc + (f.totalArea || 0), 0);
 
-    // Busca culturas das fazendas do produtor usando service
-    const producerCrops = producerFarms.flatMap((farm) =>
-      CropService.searchCrops('', { farmId: farm.id }),
-    );
+      // Busca culturas das fazendas do produtor usando service
+      const producerCrops = producerFarms.flatMap((farm) =>
+        CropService.searchCrops('', { farmId: farm.id }),
+      );
 
-    return {
-      id: p.id,
-      type: 'producer' as const,
-      displayName: p.name,
-      displayType: 'Produtor',
-      displayLocation:
-        producerFarms.length > 0
-          ? `${producerFarms[0].city || 'N/A'}, ${producerFarms[0].state || 'N/A'}`
-          : 'N/A',
-      displaySize: `${p.document || 'N/A'}`,
-      image: getItemImage(p, 'producers'),
-      stats: {
-        fazendas: producerFarms.length,
-        área: totalArea,
-        culturas: producerCrops.length,
-      },
-      originalData: p,
-    };
+      return {
+        id: p.id,
+        type: 'producer' as const,
+        displayName: p.name,
+        displayType: 'Produtor',
+        displayLocation:
+          producerFarms.length > 0
+            ? `${producerFarms[0].city || 'N/A'}, ${producerFarms[0].state || 'N/A'}`
+            : 'N/A',
+        displaySize: `${p.document || 'N/A'}`,
+        image: '', // Será preenchida depois
+        stats: {
+          fazendas: producerFarms.length,
+          área: totalArea,
+          culturas: producerCrops.length,
+          documento: p.documentType === 'CPF' ? 'CPF' : 'CNPJ',
+          telefone: p.phone || 'N/A',
+          email: p.email || 'N/A',
+        },
+        originalData: p,
+      };
+    } catch (error) {
+      console.warn('Erro ao processar producer:', p.id, error);
+      return {
+        id: p.id,
+        type: 'producer' as const,
+        displayName: p.name || 'Produtor',
+        displayType: 'Produtor',
+        displayLocation: 'N/A',
+        displaySize: 'N/A',
+        image: '',
+        stats: {
+          fazendas: 0,
+          área: 0,
+          culturas: 0,
+          documento: 'N/A',
+          telefone: 'N/A',
+          email: 'N/A',
+        },
+        originalData: p,
+      };
+    }
   });
 
   const farmItems: UnifiedItem[] = farms.map((f) => {
-    // Usa service para obter detalhes completos da fazenda
-    const farmDetails = FarmService.getFarmWithDetails(f.id);
+    try {
+      // Usa service para obter detalhes completos da fazenda
+      const farmDetails = FarmService.getFarmWithDetails(f.id);
 
-    return {
-      id: f.id,
-      type: 'farm' as const,
-      displayName: f.name,
-      displayType: 'Fazenda',
-      displayLocation: `${f.city || 'N/A'}, ${f.state || 'N/A'}`,
-      displaySize: `${(f.totalArea || 0).toLocaleString()} hectares`,
-      image: getItemImage(f, 'farms'),
-      stats: {
-        produtividade: f.productivity || 0,
-        sustentabilidade: f.sustainability || 0,
-        tecnologia: f.technology || 0,
-        utilização: farmDetails?.utilizationPercentage || 0,
-      },
-      originalData: f,
-    };
+      return {
+        id: f.id,
+        type: 'farm' as const,
+        displayName: f.name,
+        displayType: 'Fazenda',
+        displayLocation: `${f.city || 'N/A'}, ${f.state || 'N/A'}`,
+        displaySize: `${(f.totalArea || 0).toLocaleString()} hectares`,
+        image: '',
+        stats: {
+          'área total': f.totalArea || 0,
+          'área agrícola': f.agriculturalArea || 0,
+          'área vegetação': f.vegetationArea || 0,
+          produtividade: f.productivity || 0,
+          sustentabilidade: f.sustainability || 0,
+          tecnologia: f.technology || 0,
+          utilização: farmDetails?.utilizationPercentage || 0,
+        },
+        originalData: f,
+      };
+    } catch (error) {
+      console.warn('Erro ao processar farm:', f.id, error);
+      return {
+        id: f.id,
+        type: 'farm' as const,
+        displayName: f.name || 'Fazenda',
+        displayType: 'Fazenda',
+        displayLocation: 'N/A',
+        displaySize: 'N/A',
+        image: '',
+        stats: {
+          'área total': 0,
+          'área agrícola': 0,
+          'área vegetação': 0,
+          produtividade: 0,
+          sustentabilidade: 0,
+          tecnologia: 0,
+          utilização: 0,
+        },
+        originalData: f,
+      };
+    }
   });
 
   const cropItems: UnifiedItem[] = crops.map((c) => {
-    const farm = farms.find((f) => f.id === c.farmId);
-    // Usa service para obter detalhes da cultura
-    const cropDetails = CropService.getCropWithDetails(c.id);
+    try {
+      const farm = farms.find((f) => f.id === c.farmId);
 
-    return {
-      id: c.id,
-      type: 'crop' as const,
-      displayName: c.type,
-      displayType: 'Cultura',
-      displayLocation: farm ? `${farm.city || 'N/A'}, ${farm.state || 'N/A'}` : 'N/A',
-      displaySize: `${(c.plantedArea || 0).toLocaleString()} hectares`,
-      image: getItemImage(c, 'crops'),
-      stats: {
-        área: c.plantedArea || 0,
-        safra: parseInt(c.harvestYear) || new Date().getFullYear(),
-        fazenda: farm?.name || 'N/A',
-        produção: cropDetails?.expectedProduction || 0,
-        status: cropDetails?.cropStatus || 'planted',
-      },
-      originalData: c,
-    };
+      // 🔥 CORREÇÃO: Tratamento seguro de datas
+      let harvestInfo = {};
+      try {
+        const cropDetails = CropService.getCropWithDetails(c.id);
+        harvestInfo = {
+          produção: cropDetails?.expectedProduction || 0,
+          status: cropDetails?.cropStatus || 'planted',
+          'dias para colheita': cropDetails?.daysToHarvest || 'N/A',
+        };
+      } catch (detailsError) {
+        console.warn('Erro ao obter detalhes da cultura:', c.id, detailsError);
+      }
+
+      return {
+        id: c.id,
+        type: 'crop' as const,
+        displayName: c.type,
+        displayType: 'Cultura',
+        displayLocation: farm ? `${farm.city || 'N/A'}, ${farm.state || 'N/A'}` : 'N/A',
+        displaySize: `${(c.plantedArea || 0).toLocaleString()} hectares`,
+        image: '',
+        stats: {
+          'área plantada': c.plantedArea || 0,
+          safra: parseInt(c.harvestYear) || new Date().getFullYear(),
+          fazenda: farm?.name || 'N/A',
+          'produtividade esperada': c.expectedYield || 'N/A',
+          ...harvestInfo,
+        },
+        originalData: c,
+      };
+    } catch (error) {
+      console.warn('Erro ao processar crop:', c.id, error);
+      return {
+        id: c.id,
+        type: 'crop' as const,
+        displayName: c.type || 'Cultura',
+        displayType: 'Cultura',
+        displayLocation: 'N/A',
+        displaySize: 'N/A',
+        image: '',
+        stats: {},
+        originalData: c,
+      };
+    }
   });
 
   return [...producerItems, ...farmItems, ...cropItems];
 };
-
 export const loadDataReal = async ({
   setIsInitialLoading,
   setProgress,

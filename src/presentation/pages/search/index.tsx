@@ -13,6 +13,7 @@ import { RenderMobileLayout } from './components/RenderMobile';
 import { SearchContainer } from './components/styles';
 import { SearchType, UnifiedItem } from './types';
 import {
+  getItemImage,
   getTypeColor,
   getTypeIcon,
   loadDataReal,
@@ -36,37 +37,6 @@ const CROP_TRANSLATIONS: { [key: string]: string } = {
 };
 
 // 📸 FUNÇÃO PARA OBTER IMAGEM COM FALLBACK SUPREMO - CORRIGIDA COM TYPES
-const getItemImage = (item: UnifiedItem): string => {
-  const { originalData, type } = item;
-
-  // 1️⃣ TENTAR PEGAR IMAGEM REAL DO ITEM COM TYPE CASTING
-  let imageUrl = '';
-
-  if (type === 'producer') {
-    const producer = originalData as Producer;
-    imageUrl = producer.profilePhoto || '';
-  } else if (type === 'farm') {
-    const farm = originalData as Farm;
-    imageUrl = farm.farmPhoto || '';
-  } else if (type === 'crop') {
-    const crop = originalData as Crop;
-    imageUrl = crop.cropPhoto || '';
-  }
-
-  // 2️⃣ SE TEM IMAGEM, RETORNA ELA
-  if (imageUrl && imageUrl.trim()) {
-    return imageUrl;
-  }
-
-  // 3️⃣ FALLBACK SIMPLES POR TIPO
-  const fallbackImages = {
-    producer: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&h=600&fit=crop',
-    farm: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&h=600&fit=crop',
-    crop: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop',
-  };
-
-  return fallbackImages[type] || fallbackImages.crop;
-};
 
 // 🌾 FUNÇÃO PARA TRADUZIR TIPO DE CULTURA
 const translateCropType = (cropType: string): string => {
