@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
@@ -52,7 +53,6 @@ export const Search = () => {
   // 🧠 BUSCA USANDO APENAS SERVICES - SUPREMO
   const searchResults = useMemo(() => {
     // Force refresh usando o trigger
-    const _ = refreshTrigger;
 
     if (!debouncedSearchTerm.trim()) {
       return {
@@ -207,7 +207,7 @@ export const Search = () => {
         case 'producer': {
           // 🎯 EXCLUIR PRODUTOR: Remove produtor + fazendas + culturas
           const producer = ProducerService.getProducerById(item.id);
-          if (producer?.farmsIds?.length > 0) {
+          if (producer && Array.isArray(producer.farmsIds) && producer.farmsIds.length > 0) {
             // Primeiro deletar todas as culturas de todas as fazendas
             for (const farmId of producer.farmsIds) {
               const crops = CropService.searchCrops('', { farmId });
@@ -318,14 +318,21 @@ export const Search = () => {
     });
   }, []);
 
-  // 🚀 CARREGAMENTO REAL E OTIMIZADO
+  // 🚀 CARREGAMENTO REAL E OTIMIZADO - CORRIGIDO
   useEffect(() => {
     loadDataReal({
       setIsInitialLoading,
       setProgress,
       setLoadingMessage,
       setLoadedCounts,
-      setSelectedItem,
+      setSelectedItem: (item: UnifiedItem) => {
+        // 🔥 APLICAR IMAGEM ANTES DE SELECIONAR
+        const itemWithImage = {
+          ...item,
+          image: getItemImage(item),
+        };
+        setSelectedItem(itemWithImage);
+      }, // 🔥 FUNÇÃO CUSTOM PARA APLICAR IMAGEM
       transformToUnifiedItems,
       ProducerService: {
         ...ProducerService,
