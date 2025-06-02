@@ -12,6 +12,7 @@ import { RenderMobileLayout } from './components/RenderMobile';
 import { SearchContainer } from './components/styles';
 import { SearchType, UnifiedItem } from './types';
 import {
+  getItemImage, // 🔥 NOVA FUNÇÃO PARA IMAGENS
   getTypeColor,
   getTypeIcon,
   loadDataReal,
@@ -30,7 +31,6 @@ export const Search = () => {
   const { toast } = useToast();
 
   // 🎯 STATES SUPREMOS
-
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState<SearchType>('all');
   const [selectedItem, setSelectedItem] = useState<UnifiedItem | null>(null);
@@ -49,7 +49,6 @@ export const Search = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // 🧠 BUSCA USANDO APENAS SERVICES - SUPREMO
-
   const searchResults = useMemo(() => {
     // Force refresh usando o trigger
     const _ = refreshTrigger;
@@ -64,7 +63,8 @@ export const Search = () => {
     }
 
     return SearchService.globalSearch(debouncedSearchTerm);
-  }, [debouncedSearchTerm, refreshTrigger]); // 🔥 ADICIONAR refreshTrigger aqui
+  }, [debouncedSearchTerm, refreshTrigger]);
+
   // 🎯 COMBINAR RESULTADOS E CRIAR ITEMS UNIFICADOS
   const allItems = useMemo(() => {
     const { producers, farms, crops } = searchResults;
@@ -75,7 +75,6 @@ export const Search = () => {
   const filteredItems = useMemo(() => {
     if (searchType === 'all') return allItems;
 
-    // Filtro direto usando services para performance máxima
     switch (searchType) {
       case 'producers': {
         const producers = debouncedSearchTerm.trim()
@@ -141,6 +140,7 @@ export const Search = () => {
     [searchTerm, isDesktop],
   );
 
+  // ✏️ EDITAR ITEM - CORRIGIDO COM PARÂMETROS CORRETOS
   const handleEdit = useCallback(
     (item: UnifiedItem) => {
       const typeParams = {
@@ -153,7 +153,8 @@ export const Search = () => {
     },
     [navigate],
   );
-  // 🗑️ EXCLUIR ITEM USANDO SERVICES
+
+  // 🗑️ EXCLUIR ITEM COM LÓGICA DE RELACIONAMENTO
   const [deleteModalData, setDeleteModalData] = useState<{
     isVisible: boolean;
     item: UnifiedItem | null;
@@ -172,6 +173,7 @@ export const Search = () => {
     });
   }, []);
 
+  // 🔥 EXCLUSÃO COM LÓGICA DE RELACIONAMENTO SUPREMA
   const confirmDelete = useCallback(async () => {
     if (!deleteModalData.item) return;
 
@@ -179,21 +181,58 @@ export const Search = () => {
 
     try {
       const item = deleteModalData.item;
+      let success = false;
 
-      // 🔥 EXCLUSÃO
       switch (item.type) {
-        case 'producer':
-          await ProducerService.deleteProducer(item.id);
+        case 'producer': {
+          // 🎯 EXCLUIR PRODUTOR: Remove produtor + fazendas + culturas
+          const producer = ProducerService.getProducerById(item.id);
+          if (producer?.farmsIds?.length > 0) {
+            // Primeiro deletar todas as culturas de todas as fazendas
+            for (const farmId of producer.farmsIds) {
+              const crops = CropService.searchCrops('', { farmId });
+              for (const crop of crops) {
+                await CropService.deleteCrop(crop.id);
+              }
+            }
+
+            // Depois deletar todas as fazendas
+            for (const farmId of producer.farmsIds) {
+              await FarmService.deleteFarm(farmId);
+            }
+          }
+
+          // Por último deletar o produtor
+          success = await ProducerService.deleteProducer(item.id);
           break;
-        case 'farm':
-          await FarmService.deleteFarm(item.id);
+        }
+
+        case 'farm': {
+          // 🎯 EXCLUIR FAZENDA: Remove fazenda + culturas
+          const crops = CropService.searchCrops('', { farmId: item.id });
+
+          // Primeiro deletar todas as culturas da fazenda
+          for (const crop of crops) {
+            await CropService.deleteCrop(crop.id);
+          }
+
+          // Depois deletar a fazenda
+          success = await FarmService.deleteFarm(item.id);
           break;
-        case 'crop':
-          await CropService.deleteCrop(item.id);
+        }
+
+        case 'crop': {
+          // 🎯 EXCLUIR CULTURA: Remove apenas a cultura
+          success = await CropService.deleteCrop(item.id);
           break;
+        }
       }
 
-      // 🚀 FORÇAR REFRESH COMPLETO - MÉTODO NINJA!
+      if (!success) {
+        throw new Error('Falha ao excluir item');
+      }
+
+      // 🚀 FORÇAR REFRESH COMPLETO DOS DADOS
       setRefreshTrigger((prev) => prev + 1);
 
       // Limpar seleção
@@ -206,8 +245,17 @@ export const Search = () => {
         loading: false,
       });
 
-      // Toast
-      toast.success('Sucesso!', `${item.displayName} foi excluído com sucesso.`);
+      // Toast de sucesso
+      const itemTypeNames = {
+        producer: 'Produtor',
+        farm: 'Fazenda',
+        crop: 'Cultura',
+      };
+
+      toast.success(
+        'Sucesso!',
+        `${itemTypeNames[item.type]} "${item.displayName}" foi excluído com sucesso.`,
+      );
     } catch (error) {
       console.error('Erro ao excluir item:', error);
       toast.error('Erro!', 'Erro ao excluir item. Tente novamente.');
@@ -244,7 +292,7 @@ export const Search = () => {
       FarmService,
       CropService,
     });
-  }, []); // 🚀 Só executa uma vez na inicialização
+  }, []);
 
   // 🎨 OVERLAY OTIMIZADO
   if (isInitialLoading) {
@@ -352,7 +400,7 @@ export const Search = () => {
           type="danger"
           title="Confirmar Exclusão"
           subtitle={`Você está prestes a excluir ${deleteModalData.item?.displayName}`}
-          message="Esta ação não pode ser desfeita. Tem certeza que deseja continuar?"
+          message={getDeleteMessage(deleteModalData.item)}
           confirmText="Sim, Excluir"
           cancelText="Cancelar"
           onConfirm={confirmDelete}
@@ -362,4 +410,20 @@ export const Search = () => {
       </SearchContainer>
     </>
   );
+};
+
+// 🎯 FUNÇÃO HELPER PARA MENSAGEM DE EXCLUSÃO
+const getDeleteMessage = (item: UnifiedItem | null): string => {
+  if (!item) return 'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?';
+
+  switch (item.type) {
+    case 'producer':
+      return 'Esta ação excluirá o produtor e TODAS as suas fazendas e culturas. Esta ação não pode ser desfeita!';
+    case 'farm':
+      return 'Esta ação excluirá a fazenda e TODAS as suas culturas. Esta ação não pode ser desfeita!';
+    case 'crop':
+      return 'Esta ação excluirá apenas esta cultura. Esta ação não pode ser desfeita!';
+    default:
+      return 'Esta ação não pode ser desfeita. Tem certeza que deseja continuar?';
+  }
 };
