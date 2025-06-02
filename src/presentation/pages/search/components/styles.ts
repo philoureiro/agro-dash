@@ -452,8 +452,10 @@ export const ItemLocation = styled.div<{ $isDark: boolean }>`
 // 🎬 BOTÕES DE AÇÃO SUPREMOS
 export const ActionButtonsContainer = styled.div`
   display: flex;
-  gap: 0.5rem;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 `;
 
 export const ActionButton = styled.button<{ $isDark: boolean; $variant: 'edit' | 'delete' }>`
@@ -817,7 +819,8 @@ export const MiniCard = styled.div<{ $isDark: boolean; $isSelected: boolean }>`
   backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
-  min-height: 320px;
+  min-height: 380px;
+  max-height: 420px;
 
   &:before {
     content: '';
