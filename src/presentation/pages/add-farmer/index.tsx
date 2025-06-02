@@ -1,8 +1,6 @@
-// src/components/AddFarmer/AddFarmerMain.tsx - VERSÃO COMPLETA FUNCIONAL
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Button, LoadingOverlay, StatsHeader } from '@components';
-import { ProgressBar } from '@components';
 import { Text } from '@components';
 import { useAddFarmer } from '@hooks';
 import { useThemeMode } from '@theme';
@@ -30,32 +28,28 @@ export const AddFarmer: React.FC = () => {
     removeCrop,
     updateCrop,
     saveDraft,
-    loadDraft,
+    autoLoadDraft,
+    clearDraft,
     submitForm,
     nextStep,
     prevStep,
   } = useAddFarmer();
 
-  // 🎯 STEPS CONFIGURATION
-  const steps = [
-    { id: 'producer', label: 'Produtor', icon: '👨‍🌾', required: true },
-    { id: 'farms', label: 'Fazendas', icon: '🏭', required: true },
-    { id: 'crops', label: 'Culturas', icon: '🌱', required: false },
-    { id: 'review', label: 'Revisão', icon: '📋', required: false },
-  ];
+  // 🔥 AUTO-CARREGAR RASCUNHO AO ENTRAR NA PÁGINA (SEM TOAST)
+  useEffect(() => {
+    autoLoadDraft();
+  }, [autoLoadDraft]);
 
-  const getCurrentStepIndex = () => {
-    return steps.findIndex((step) => step.id === form.currentStep);
-  };
+  // 🔥 AUTO-SALVAR RASCUNHO QUANDO HOUVER MUDANÇAS
+  useEffect(() => {
+    if (form.hasUnsavedChanges) {
+      const timer = setTimeout(() => {
+        saveDraft();
+      }, 3000); // Auto-salva após 3 segundos de inatividade
 
-  const getStepStatus = (stepId: string) => {
-    const stepIndex = steps.findIndex((s) => s.id === stepId);
-    const currentIndex = getCurrentStepIndex();
-
-    if (stepIndex < currentIndex) return 'completed';
-    if (stepIndex === currentIndex) return 'active';
-    return 'pending';
-  };
+      return () => clearTimeout(timer);
+    }
+  }, [form.hasUnsavedChanges, saveDraft]);
 
   // 🎯 VERIFICAR SE PODE AVANÇAR
   const canProceedToNext = () => {
@@ -198,7 +192,13 @@ export const AddFarmer: React.FC = () => {
         <StatsHeader
           progress={progress}
           isDark={isDark}
-          backgroundImage="https://www.10wallpaper.com/wallpaper/1920x1080/1405/Farm_vast_landscape-Landscape_HD_Wallpaper_1920x1080.jpg" // Opcional
+          // 🔥 USAR IMAGEM DO FORM OU PADRÃO
+          backgroundImage={
+            form.producer.profilePhoto &&
+            /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(form.producer.profilePhoto)
+              ? form.producer.profilePhoto
+              : 'https://www.10wallpaper.com/wallpaper/1920x1080/1405/Farm_vast_landscape-Landscape_HD_Wallpaper_1920x1080.jpg'
+          }
           progressLabel="Progresso do cadastro"
           stats={[
             { label: 'Fazendas', value: stats.totalFarms },
@@ -231,23 +231,23 @@ export const AddFarmer: React.FC = () => {
             </Button>
           )}
 
-          {/* Botão Rascunho */}
+          {/* 🔥 BOTÃO LIMPAR RASCUNHO */}
           <Button
             isDark={isDark}
-            onClick={saveDraft}
-            disabled={!form.hasUnsavedChanges}
+            onClick={clearDraft}
             style={{
-              background: isDark ? 'rgba(90, 208, 255, 0.1)' : 'rgba(90, 208, 255, 0.05)',
-              border: `2px solid ${isDark ? '#5ad0ff' : '#3b82f6'}`,
-              color: isDark ? '#5ad0ff' : '#3b82f6',
-              opacity: form.hasUnsavedChanges ? 1 : 0.5,
+              background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
+              border: `2px solid ${isDark ? '#ef4444' : '#dc2626'}`,
+              color: isDark ? '#ef4444' : '#dc2626',
               padding: '12px 24px',
               borderRadius: '8px',
-              cursor: form.hasUnsavedChanges ? 'pointer' : 'not-allowed',
+              maxWidth: '200px',
+              maxHeight: '38px',
+              cursor: 'pointer',
               transition: 'all 0.3s ease',
             }}
           >
-            💾 Salvar Rascunho
+            🗑️ Limpar Rascunho
           </Button>
 
           {/* Botão Principal */}
@@ -290,6 +290,7 @@ export const AddFarmer: React.FC = () => {
                 fontSize: '1.1rem',
                 padding: '18px 48px',
                 minWidth: '200px',
+                maxWidth: '350px',
                 borderRadius: '8px',
                 opacity: canProceedToNext() ? 1 : 0.7,
                 cursor: canProceedToNext() ? 'pointer' : 'not-allowed',

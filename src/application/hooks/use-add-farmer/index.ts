@@ -1,14 +1,16 @@
-// src/hooks/useAddFarmer.ts - VERSÃO MAIS SIMPLES DO UNIVERSO
-import { useCallback, useMemo, useState } from 'react';
+// src/hooks/useAddFarmer.ts - VERSÃO CORRIGIDA SEM LOOP
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { DocumentType } from '@enums';
 import { useToast } from '@hooks';
 import { validateDocument, validatePhone } from '@validations';
 
+const DRAFT_KEY = 'addFarmer_draft_v1';
+
 export const useAddFarmer = () => {
   const { toast } = useToast();
+  const hasAutoLoaded = useRef(false); // 🔥 CONTROLAR AUTO-LOAD
 
-  // 📝 STATE BÁSICO - SEM FIRULA
   const [form, setForm] = useState({
     producer: {
       document: '',
@@ -26,7 +28,7 @@ export const useAddFarmer = () => {
     hasUnsavedChanges: false,
   });
 
-  // 🎯 VALIDAÇÕES SIMPLES
+  // 🎯 VALIDAÇÕES REAIS
   const validation = useMemo(
     () => ({
       producer: {
@@ -44,7 +46,7 @@ export const useAddFarmer = () => {
     [form.producer],
   );
 
-  // 📊 PROGRESSO SIMPLES
+  // 📊 PROGRESSO CORRETO
   const progress = useMemo(() => {
     let validFields = 0;
     const totalFields = 3;
@@ -56,7 +58,7 @@ export const useAddFarmer = () => {
     return Math.round((validFields / totalFields) * 100);
   }, [validation.producer, form.farms.length]);
 
-  // 📊 STATS SIMPLES
+  // 📊 ESTATÍSTICAS
   const stats = useMemo(
     () => ({
       totalFarms: form.farms.length,
@@ -69,7 +71,7 @@ export const useAddFarmer = () => {
     [form.farms, form.crops],
   );
 
-  // 👤 ATUALIZAR PRODUTOR - SIMPLES
+  // 👤 ATUALIZAR PRODUTOR
   const updateProducer = useCallback((updates: any) => {
     setForm((prev) => ({
       ...prev,
@@ -157,7 +159,7 @@ export const useAddFarmer = () => {
         savedAt: new Date().toISOString(),
       };
 
-      localStorage.setItem('addFarmer_draft', JSON.stringify(draftData));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
       toast.success('Sucesso!', '💾 Rascunho salvo!');
 
       setForm((prev) => ({ ...prev, hasUnsavedChanges: false }));
@@ -166,10 +168,10 @@ export const useAddFarmer = () => {
     }
   }, [form, toast]);
 
-  // 📂 CARREGAR RASCUNHO SIMPLES
+  // 📂 CARREGAR RASCUNHO MANUAL (COM TOAST)
   const loadDraft = useCallback(() => {
     try {
-      const draftData = localStorage.getItem('addFarmer_draft');
+      const draftData = localStorage.getItem(DRAFT_KEY);
       if (draftData) {
         const parsed = JSON.parse(draftData);
 
@@ -192,9 +194,58 @@ export const useAddFarmer = () => {
     }
   }, [toast]);
 
-  const clearDraft = useCallback(() => {
-    localStorage.removeItem('addFarmer_draft');
+  // 🔥 AUTO-LOAD SILENCIOSO (SEM TOAST)
+  const autoLoadDraft = useCallback(() => {
+    if (hasAutoLoaded.current) return false;
+
+    try {
+      const draftData = localStorage.getItem(DRAFT_KEY);
+      if (draftData) {
+        const parsed = JSON.parse(draftData);
+
+        setForm((prev) => ({
+          ...prev,
+          producer: parsed.producer || prev.producer,
+          farms: parsed.farms || prev.farms,
+          crops: parsed.crops || prev.crops,
+          currentStep: parsed.currentStep || prev.currentStep,
+          hasUnsavedChanges: false,
+        }));
+
+        hasAutoLoaded.current = true;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('❌ Error auto-loading draft:', error);
+      return false;
+    }
   }, []);
+
+  const clearDraft = useCallback(() => {
+    localStorage.removeItem(DRAFT_KEY);
+    toast.success('Sucesso!', '🗑️ Rascunho removido!');
+
+    // Reset completo
+    setForm({
+      producer: {
+        document: '',
+        name: '',
+        documentType: DocumentType.CPF,
+        email: '',
+        phone: '',
+        profilePhoto: '',
+      },
+      farms: [],
+      crops: {},
+      isLoading: false,
+      currentStep: 'producer',
+      errors: {},
+      hasUnsavedChanges: false,
+    });
+
+    hasAutoLoaded.current = false;
+  }, [toast]);
 
   // 📤 SUBMISSÃO SIMPLES
   const submitForm = useCallback(async () => {
@@ -204,24 +255,6 @@ export const useAddFarmer = () => {
     setTimeout(() => {
       toast.success('Sucesso!', '✅ Produtor cadastrado!');
       clearDraft();
-
-      // Reset total
-      setForm({
-        producer: {
-          document: '',
-          name: '',
-          documentType: DocumentType.CPF,
-          email: '',
-          phone: '',
-          profilePhoto: '',
-        },
-        farms: [],
-        crops: {},
-        isLoading: false,
-        currentStep: 'producer',
-        errors: {},
-        hasUnsavedChanges: false,
-      });
     }, 2000);
   }, [toast, clearDraft]);
 
@@ -240,6 +273,7 @@ export const useAddFarmer = () => {
     updateCrop,
     saveDraft,
     loadDraft,
+    autoLoadDraft, // 🔥 NOVA FUNÇÃO PARA AUTO-LOAD
     clearDraft,
     submitForm,
     nextStep,
