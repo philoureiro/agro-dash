@@ -1,4 +1,3 @@
-import { Crop } from '@entities';
 import { States } from '@enums';
 
 export interface Farm {
@@ -18,5 +17,5 @@ export interface Farm {
   createdAt: Date; // Data de cadastro da fazenda
   updatedAt: Date; // Data da última atualização
   active: boolean; // Status ativo/inativo
-  crops: Crop[]; // Array de culturas plantadas
+  crops: string[]; // Array de culturas plantadas
 }

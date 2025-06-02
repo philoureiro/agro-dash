@@ -13,6 +13,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-10-15'),
     harvestDate: new Date('2024-02-20'),
     notes: 'Variedade precoce, boa resistência',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -25,6 +26,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-05'),
     harvestDate: new Date('2024-01-15'),
     notes: 'Milho safrinha',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -39,6 +41,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2020-03-10'),
     harvestDate: new Date('2024-06-30'),
     notes: 'Café arábica premium',
+    cropPhoto: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -53,6 +56,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-11-20'),
     harvestDate: new Date('2024-03-10'),
     notes: 'Feijão carioca',
+    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -65,6 +69,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-08-15'),
     harvestDate: new Date('2025-01-20'),
     notes: 'Segunda safra',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -79,6 +84,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-20'),
     harvestDate: new Date('2024-02-15'),
     notes: 'Soja transgênica alta produtividade',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -91,6 +97,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-01-10'),
     harvestDate: new Date('2024-06-25'),
     notes: 'Milho safrinha irrigado',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -105,6 +112,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-12-05'),
     harvestDate: new Date('2024-07-20'),
     notes: 'Algodão de fibra longa',
+    cropPhoto: 'https://images.unsplash.com/photo-1615671524827-c1fe3973b648?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -117,6 +125,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-10-10'),
     harvestDate: new Date('2025-02-28'),
     notes: 'Rotação de cultura',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -131,6 +140,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-15'),
     harvestDate: new Date('2024-02-10'),
     notes: 'Variedade resistente à seca',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -143,6 +153,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-02-20'),
     harvestDate: new Date('2024-07-15'),
     notes: 'Milho verão',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -157,6 +168,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-11-10'),
     harvestDate: new Date('2024-04-20'),
     notes: 'Arroz irrigado',
+    cropPhoto: 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -169,6 +181,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-05-15'),
     harvestDate: new Date('2024-09-10'),
     notes: 'Feijão preto',
+    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -183,6 +196,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2022-08-20'),
     harvestDate: new Date('2024-08-15'),
     notes: 'Cana de açúcar para etanol',
+    cropPhoto: 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -195,6 +209,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-09-25'),
     harvestDate: new Date('2025-02-05'),
     notes: 'Renovação de área',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -209,6 +224,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-08-30'),
     harvestDate: new Date('2024-01-25'),
     notes: 'Milho para silagem',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -221,6 +237,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-03-15'),
     harvestDate: new Date('2024-08-20'),
     notes: 'Trigo de inverno',
+    cropPhoto: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -235,6 +252,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-10-05'),
     harvestDate: new Date('2024-03-15'),
     notes: 'Soja convencional',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -247,6 +265,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-04-20'),
     harvestDate: new Date('2024-10-30'),
     notes: 'Trigo para panificação',
+    cropPhoto: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -261,6 +280,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-10-20'),
     harvestDate: new Date('2024-03-25'),
     notes: 'Arroz tipo agulhinha',
+    cropPhoto: 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -273,6 +293,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-09-10'),
     harvestDate: new Date('2025-02-20'),
     notes: 'Milho para ração',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -287,6 +308,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-12-10'),
     harvestDate: new Date('2024-04-15'),
     notes: 'Feijão vermelho',
+    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -299,6 +321,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-05-08'),
     harvestDate: new Date('2024-11-12'),
     notes: 'Trigo duro',
+    cropPhoto: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -313,6 +336,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-12'),
     harvestDate: new Date('2024-02-08'),
     notes: 'Milho híbrido',
+    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -325,6 +349,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-10-15'),
     harvestDate: new Date('2025-03-05'),
     notes: 'Rotação com milho',
+    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -339,6 +364,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2019-05-20'),
     harvestDate: new Date('2024-07-10'),
     notes: 'Café conilon especial',
+    cropPhoto: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&h=400&fit=crop',
     active: true,
   },
 
@@ -353,6 +379,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-01-30'),
     harvestDate: new Date('2024-06-15'),
     notes: 'Mamão papaya',
+    cropPhoto: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop',
     active: true,
   },
   {
@@ -365,6 +392,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-02-20'),
     harvestDate: new Date('2024-07-25'),
     notes: 'Feijão fradinho',
+    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
     active: true,
   },
 ];

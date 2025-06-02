@@ -20,7 +20,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-01-20'),
     updatedAt: new Date('2024-01-20'),
     active: true,
-    crops: [],
+    crops: ['crop-001', 'crop-002'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-002',
@@ -39,7 +39,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-02-10'),
     updatedAt: new Date('2024-02-10'),
     active: true,
-    crops: [],
+    crops: ['crop-003'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-003',
@@ -58,7 +58,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-03-15'),
     updatedAt: new Date('2024-03-15'),
     active: true,
-    crops: [],
+    crops: ['crop-004', 'crop-005'], // 🔥 CORRIGIDO!
   },
 
   // Fazendas da Agropecuária Mato Verde (prod-002)
@@ -79,7 +79,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-02-25'),
     updatedAt: new Date('2024-02-25'),
     active: true,
-    crops: [],
+    crops: ['crop-006', 'crop-007'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-005',
@@ -98,7 +98,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-03-05'),
     updatedAt: new Date('2024-03-05'),
     active: true,
-    crops: [],
+    crops: ['crop-008', 'crop-009'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-006',
@@ -117,7 +117,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-04-10'),
     updatedAt: new Date('2024-04-10'),
     active: true,
-    crops: [],
+    crops: ['crop-010', 'crop-011'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-007',
@@ -136,7 +136,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-05-20'),
     updatedAt: new Date('2024-05-20'),
     active: true,
-    crops: [],
+    crops: ['crop-012', 'crop-013'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-008',
@@ -155,7 +155,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-06-15'),
     updatedAt: new Date('2024-06-15'),
     active: true,
-    crops: [],
+    crops: ['crop-014', 'crop-015'], // 🔥 CORRIGIDO!
   },
 
   // Fazenda da Maria Oliveira Costa (prod-003)
@@ -176,7 +176,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-03-20'),
     updatedAt: new Date('2024-03-20'),
     active: true,
-    crops: [],
+    crops: ['crop-016', 'crop-017'], // 🔥 CORRIGIDO!
   },
 
   // Fazendas da Fazendas Reunidas do Sul (prod-004)
@@ -197,7 +197,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-04-12'),
     updatedAt: new Date('2024-04-12'),
     active: true,
-    crops: [],
+    crops: ['crop-018', 'crop-019'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-011',
@@ -216,7 +216,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-05-08'),
     updatedAt: new Date('2024-05-08'),
     active: true,
-    crops: [],
+    crops: ['crop-020', 'crop-021'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-012',
@@ -235,7 +235,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-06-22'),
     updatedAt: new Date('2024-06-22'),
     active: true,
-    crops: [],
+    crops: ['crop-022', 'crop-023'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-013',
@@ -254,7 +254,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-07-10'),
     updatedAt: new Date('2024-07-10'),
     active: true,
-    crops: [],
+    crops: ['crop-024', 'crop-025'], // 🔥 CORRIGIDO!
   },
 
   // Fazendas do Carlos Eduardo Ferreira (prod-005)
@@ -275,7 +275,7 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-05-18'),
     updatedAt: new Date('2024-05-18'),
     active: true,
-    crops: [],
+    crops: ['crop-026'], // 🔥 CORRIGIDO!
   },
   {
     id: 'farm-015',
@@ -294,6 +294,6 @@ export const mockFarms: Farm[] = [
     createdAt: new Date('2023-06-25'),
     updatedAt: new Date('2024-06-25'),
     active: true,
-    crops: [],
+    crops: ['crop-027', 'crop-028'], // 🔥 CORRIGIDO!
   },
 ];

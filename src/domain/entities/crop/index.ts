@@ -11,4 +11,5 @@ export interface Crop {
   harvestDate?: Date; // Data da colheita (opcional)
   notes?: string; // Observações adicionais
   active: boolean; // Status ativo/inativo
+  cropPhoto?: string; // URL da foto da cultura (opcional)
 }
