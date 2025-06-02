@@ -13,7 +13,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-10-15'),
     harvestDate: new Date('2024-02-20'),
     notes: 'Variedade precoce, boa resistência',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://t4.ftcdn.net/jpg/01/97/51/95/360_F_197519511_13yz5XbqMwLm1sG7kc8X1rDkyLpGflbX.jpg',
     active: true,
   },
   {
@@ -26,7 +27,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-05'),
     harvestDate: new Date('2024-01-15'),
     notes: 'Milho safrinha',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://tecseed.com.br/wp-content/uploads/2021/09/milho-doce-hibrido-sv-9298-sn2.jpg',
     active: true,
   },
 
@@ -41,7 +43,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2020-03-10'),
     harvestDate: new Date('2024-06-30'),
     notes: 'Café arábica premium',
-    cropPhoto: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&h=400&fit=crop',
+    cropPhoto: 'https://i.pinimg.com/736x/95/66/3f/95663f10d4647758d559f2e87e9f3065.jpg',
     active: true,
   },
 
@@ -56,7 +58,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-11-20'),
     harvestDate: new Date('2024-03-10'),
     notes: 'Feijão carioca',
-    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://www.observatorioagro.sc.gov.br/wp-content/uploads/2024/03/scs204Feijao-Predileto-Chapeco-36-scaled.jpg',
     active: true,
   },
   {
@@ -69,7 +72,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-08-15'),
     harvestDate: new Date('2025-01-20'),
     notes: 'Segunda safra',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://plus.unsplash.com/premium_photo-1664299124175-e2c793325bfa?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWlsaG98ZW58MHx8MHx8fDA%3D',
     active: true,
   },
 
@@ -84,7 +88,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-20'),
     harvestDate: new Date('2024-02-15'),
     notes: 'Soja transgênica alta produtividade',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://st4.depositphotos.com/1480128/27809/i/450/depositphotos_278091096-stock-photo-soybean-field-rows.jpg',
     active: true,
   },
   {
@@ -97,7 +102,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-01-10'),
     harvestDate: new Date('2024-06-25'),
     notes: 'Milho safrinha irrigado',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    cropPhoto: 'https://sna.agr.br/wp-content/uploads/2016/02/milho-capa-708.png',
     active: true,
   },
 
@@ -112,7 +117,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-12-05'),
     harvestDate: new Date('2024-07-20'),
     notes: 'Algodão de fibra longa',
-    cropPhoto: 'https://images.unsplash.com/photo-1615671524827-c1fe3973b648?w=800&h=400&fit=crop',
+    cropPhoto: 'https://files.agro20.com.br/uploads/2019/11/%C3%93leo-de-algod%C3%A3o-2.jpg',
     active: true,
   },
   {
@@ -125,7 +130,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-10-10'),
     harvestDate: new Date('2025-02-28'),
     notes: 'Rotação de cultura',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://st2.depositphotos.com/30188930/50753/i/450/depositphotos_507534514-stock-photo-soybean-field-ripening-at-spring.jpg',
     active: true,
   },
 
@@ -140,7 +146,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-15'),
     harvestDate: new Date('2024-02-10'),
     notes: 'Variedade resistente à seca',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://blog.verde.ag/pt/wp-content/uploads/2023/12/Ciclo-da-soja.-descubra-a-duracao-as-etapas-e-as-principais-fatores-que-o-influenciam.jpg',
     active: true,
   },
   {
@@ -153,7 +160,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-02-20'),
     harvestDate: new Date('2024-07-15'),
     notes: 'Milho verão',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjbdTrLnzt-XW8EMwttWk-ON2f4e0h7iw4oLoEM2l1Yju7NHlEIvIwb9b6VTMQzBIPTgswMW2zny1IzItSTAs_6l5Vfa0HdGSk6m6YRwjJlu9BTIV0-ZPgaEf_ItTvO_3UPicYVRapiq478/s1600/DSC00164.JPG',
     active: true,
   },
 
@@ -168,7 +176,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-11-10'),
     harvestDate: new Date('2024-04-20'),
     notes: 'Arroz irrigado',
-    cropPhoto: 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://static.nationalgeographicbrasil.com/files/styles/image_3200/public/arroz-com-casca-e-arroz-branco.webp?w=1600&h=1071',
     active: true,
   },
   {
@@ -181,7 +190,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-05-15'),
     harvestDate: new Date('2024-09-10'),
     notes: 'Feijão preto',
-    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
+    cropPhoto: 'https://ecrie70.com.br/sistema/conteudos/imagem/g_66_0_1_06062023100506.jpg',
     active: true,
   },
 
@@ -196,7 +205,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2022-08-20'),
     harvestDate: new Date('2024-08-15'),
     notes: 'Cana de açúcar para etanol',
-    cropPhoto: 'https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://img.freepik.com/fotos-premium/plantas-de-cana-de-acucar-crescem-no-campo_9185-337.jpg?semt=ais_hybrid&w=740',
     active: true,
   },
   {
@@ -209,7 +219,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-09-25'),
     harvestDate: new Date('2025-02-05'),
     notes: 'Renovação de área',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://img.freepik.com/fotos-premium/soja-fresca-na-palma-da-mao_712131-2346.jpg?semt=ais_items_boosted&w=740',
     active: true,
   },
 
@@ -224,7 +235,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-08-30'),
     harvestDate: new Date('2024-01-25'),
     notes: 'Milho para silagem',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    cropPhoto: 'https://img.freepik.com/fotos-premium/grao-de-milho-cozido-em-branco_64161-28.jpg',
     active: true,
   },
   {
@@ -237,7 +248,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-03-15'),
     harvestDate: new Date('2024-08-20'),
     notes: 'Trigo de inverno',
-    cropPhoto: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://media.istockphoto.com/id/119165809/pt/foto/plano-aproximado-de-orelhas-de-trigo-maduro.jpg?b=1&s=612x612&w=0&k=20&c=GCqxd53D0o1ibYyR0bahNjaGGQDRIj2-gQqSmMEN0sQ=',
     active: true,
   },
 
@@ -252,7 +264,9 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-10-05'),
     harvestDate: new Date('2024-03-15'),
     notes: 'Soja convencional',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    // Repetindo a primeira imagem de soja, pois já usamos as 5 disponíveis
+    cropPhoto:
+      'https://t4.ftcdn.net/jpg/01/97/51/95/360_F_197519511_13yz5XbqMwLm1sG7kc8X1rDkyLpGflbX.jpg',
     active: true,
   },
   {
@@ -265,7 +279,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-04-20'),
     harvestDate: new Date('2024-10-30'),
     notes: 'Trigo para panificação',
-    cropPhoto: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://aditivosingredientes.com/upload_arquivos/202204/202204-2d81baf6c08962b7a6fb25aa7c441390.jpg',
     active: true,
   },
 
@@ -280,7 +295,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-10-20'),
     harvestDate: new Date('2024-03-25'),
     notes: 'Arroz tipo agulhinha',
-    cropPhoto: 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=800&h=400&fit=crop',
+    cropPhoto: 'https://eos.com/wp-content/uploads/2023/04/rice-field.jpg.webp',
     active: true,
   },
   {
@@ -293,7 +308,9 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-09-10'),
     harvestDate: new Date('2025-02-20'),
     notes: 'Milho para ração',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    // Repetindo a primeira imagem de milho
+    cropPhoto:
+      'https://tecseed.com.br/wp-content/uploads/2021/09/milho-doce-hibrido-sv-9298-sn2.jpg',
     active: true,
   },
 
@@ -308,7 +325,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-12-10'),
     harvestDate: new Date('2024-04-15'),
     notes: 'Feijão vermelho',
-    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
+    cropPhoto: 'https://assets.revistacultivar.com.br/d87a1aad-5cd2-4058-ab75-402ef73cb8af.jpg',
     active: true,
   },
   {
@@ -321,7 +338,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-05-08'),
     harvestDate: new Date('2024-11-12'),
     notes: 'Trigo duro',
-    cropPhoto: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=400&fit=crop',
+    cropPhoto: 'https://cdn.pixabay.com/video/2018/07/14/17285-280038627_tiny.jpg',
     active: true,
   },
 
@@ -336,7 +353,9 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2023-09-12'),
     harvestDate: new Date('2024-02-08'),
     notes: 'Milho híbrido',
-    cropPhoto: 'https://images.unsplash.com/photo-1551640836-4bb19e72ac8d?w=800&h=400&fit=crop',
+    // Repetindo a segunda imagem de milho
+    cropPhoto:
+      'https://plus.unsplash.com/premium_photo-1664299124175-e2c793325bfa?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bWlsaG98ZW58MHx8MHx8fDA%3D',
     active: true,
   },
   {
@@ -349,7 +368,9 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-10-15'),
     harvestDate: new Date('2025-03-05'),
     notes: 'Rotação com milho',
-    cropPhoto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=400&fit=crop',
+    // Repetindo a segunda imagem de soja
+    cropPhoto:
+      'https://st4.depositphotos.com/1480128/27809/i/450/depositphotos_278091096-stock-photo-soybean-field-rows.jpg',
     active: true,
   },
 
@@ -364,7 +385,7 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2019-05-20'),
     harvestDate: new Date('2024-07-10'),
     notes: 'Café conilon especial',
-    cropPhoto: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&h=400&fit=crop',
+    cropPhoto: 'https://wallpapers.com/images/hd/coffee-background-t0c3wh99fpnzgto4.jpg',
     active: true,
   },
 
@@ -379,7 +400,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-01-30'),
     harvestDate: new Date('2024-06-15'),
     notes: 'Mamão papaya',
-    cropPhoto: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://content.paodeacucar.com/wp-content/uploads/2020/06/alimentos-in-natura-capa.jpg',
     active: true,
   },
   {
@@ -392,7 +414,8 @@ export const mockCrops: Crop[] = [
     plantingDate: new Date('2024-02-20'),
     harvestDate: new Date('2024-07-25'),
     notes: 'Feijão fradinho',
-    cropPhoto: 'https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=800&h=400&fit=crop',
+    cropPhoto:
+      'https://s2-g1.glbimg.com/fy-XrJifAv1Pny2KIrLZLeR4kDY=/0x0:640x426/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/f/y/hRJd26TAACeARS5TPybw/brs-jurua.jpg',
     active: true,
   },
 ];
