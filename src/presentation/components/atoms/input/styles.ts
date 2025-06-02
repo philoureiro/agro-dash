@@ -44,17 +44,6 @@ export const CompactLabel = styled.label<{
   font-weight: 600;
   transition: all 0.3s ease;
 
-  color: ${({ $isDark, $validationStatus, $isFocused }) => {
-    if ($isFocused) {
-      if ($validationStatus === 'success') return '#27ae60';
-      if ($validationStatus === 'error') return '#e74c3c';
-      return $isDark ? '#37cb83' : '#3b82f6';
-    }
-    if ($validationStatus === 'success') return '#27ae60';
-    if ($validationStatus === 'error') return '#e74c3c';
-    return $isDark ? '#e2e8f0' : '#374151';
-  }};
-
   .label-icon {
     margin-right: 0.5rem;
     font-size: 1rem;

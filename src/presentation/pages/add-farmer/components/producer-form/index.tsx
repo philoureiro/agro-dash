@@ -111,7 +111,7 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
 
         {/* Email */}
         <Input
-          label="Email"
+          label="Email (opcional)"
           value={producer.email || ''}
           onChange={(value) => onUpdate({ email: value })}
           isDark={isDark}
@@ -130,7 +130,7 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
 
         {/* Telefone */}
         <Input
-          label="Telefone"
+          label="Telefone (opcional)"
           value={formatPhone(producer.phone || '')}
           onChange={handlePhoneChange}
           isDark={isDark}
