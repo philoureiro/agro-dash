@@ -1,18 +1,10 @@
-// src/components/AddFarmer/FarmForm.tsx
 import React from 'react';
 
-import { Button } from '@components';
+import { Button, Input, RangeSlider } from '@components';
 import { Farm } from '@entities';
 import { States } from '@enums';
 
-import {
-  FloatingLabel,
-  FormCard,
-  FormGrid,
-  InputGroup,
-  StyledInput,
-  StyledSelect,
-} from '../producer-form/styles';
+import { FormCard, FormGrid } from '../producer-form/styles';
 import { estados, farmImages } from './images';
 import {
   AreaValidation,
@@ -21,10 +13,6 @@ import {
   PreviewImage,
   PreviewInfo,
   RemoveButton,
-  SliderContainer,
-  SliderLabel,
-  SliderThumb,
-  SliderTrack,
 } from './styles';
 
 interface FarmFormProps {
@@ -59,38 +47,15 @@ export const FarmForm: React.FC<FarmFormProps> = ({
     return farm.totalArea > 0 && farm.agriculturalArea + farm.vegetationArea <= farm.totalArea;
   };
 
-  // 🎨 COMPONENTE DE SLIDER CUSTOMIZADO
-  const ScoreInput: React.FC<{
-    label: string;
-    value: number;
-    onChange: (value: number) => void;
-    color: string;
-  }> = ({ label, value, onChange, color }) => (
-    <SliderContainer isDark={isDark}>
-      <SliderLabel isDark={isDark}>
-        {label}: <strong style={{ color }}>{value}%</strong>
-      </SliderLabel>
-      <SliderTrack isDark={isDark}>
-        <SliderThumb isDark={isDark} position={(value / 100) * 100} color={color} />
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          style={{
-            width: '100%',
-            height: '100%',
-            opacity: 0,
-            cursor: 'pointer',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-          }}
-        />
-      </SliderTrack>
-    </SliderContainer>
-  );
+  // 🎯 VALIDAR CEP
+  const isValidZipCode = (zipCode: string): boolean => {
+    return /^\d{5}-?\d{3}$/.test(zipCode);
+  };
+
+  // 🎯 VALIDAR URL DE IMAGEM
+  const isValidImageUrl = (url: string): boolean => {
+    return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(url);
+  };
 
   return (
     <FormCard isDark={isDark}>
@@ -143,13 +108,14 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
       {farms.map((farm, index) => {
         const farmValidation = validation.farms[farm.tempId] || {};
-        const isValid = Object.values(farmValidation).every(Boolean);
 
         return (
           <FarmCard
             key={farm.tempId}
             isDark={isDark}
-            isValid={isValid}
+            isValid={
+              farmValidation.nameValid && farmValidation.locationValid && farmValidation.areasValid
+            }
             style={{ marginBottom: '2rem' }}
           >
             <FarmHeader>
@@ -164,7 +130,9 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 }}
               >
                 🏭 Fazenda #{index + 1}
-                {isValid && <span style={{ fontSize: '1rem' }}>✅</span>}
+                {farmValidation.nameValid &&
+                  farmValidation.locationValid &&
+                  farmValidation.areasValid && <span style={{ fontSize: '1rem' }}>✅</span>}
               </div>
 
               {farms.length > 1 && (
@@ -205,98 +173,101 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               </PreviewInfo>
             </div>
 
-            {/* 📝 FORMULÁRIO BÁSICO */}
+            {/* 📝 FORMULÁRIO COM COMPONENTE INPUT PADRÃO */}
             <FormGrid>
-              <InputGroup>
-                <FloatingLabel
-                  isDark={isDark}
-                  active={!!farm.name}
-                  valid={farmValidation.nameValid ?? false}
-                >
-                  Nome da Fazenda *
-                </FloatingLabel>
-                <StyledInput
-                  isDark={isDark}
-                  value={farm.name || ''}
-                  valid={farmValidation.nameValid ?? false}
-                  onChange={(e) => onUpdateFarm(farm.tempId, { name: e.target.value })}
-                  placeholder=" "
-                />
-              </InputGroup>
+              <Input
+                label="Nome da Fazenda *"
+                value={farm.name || ''}
+                onChange={(value) => onUpdateFarm(farm.tempId, { name: value })}
+                isDark={isDark}
+                valid={farm.name ? farm.name.trim().length >= 3 : undefined}
+                validationMessage={
+                  farm.name
+                    ? farm.name.trim().length >= 3
+                      ? 'Nome válido!'
+                      : 'Nome deve ter pelo menos 3 caracteres'
+                    : undefined
+                }
+                validationType={farm.name && farm.name.trim().length >= 3 ? 'success' : 'error'}
+                placeholder="Ex: Fazenda São João"
+              />
 
-              <InputGroup>
-                <FloatingLabel
-                  isDark={isDark}
-                  active={!!farm.city}
-                  valid={farmValidation.locationValid ?? false}
-                >
-                  Cidade *
-                </FloatingLabel>
-                <StyledInput
-                  isDark={isDark}
-                  value={farm.city || ''}
-                  valid={farmValidation.locationValid ?? false}
-                  onChange={(e) => onUpdateFarm(farm.tempId, { city: e.target.value })}
-                  placeholder=" "
-                />
-              </InputGroup>
+              <Input
+                label="Cidade *"
+                value={farm.city || ''}
+                onChange={(value) => onUpdateFarm(farm.tempId, { city: value })}
+                isDark={isDark}
+                valid={farm.city ? farm.city.trim().length >= 2 : undefined}
+                validationMessage={
+                  farm.city
+                    ? farm.city.trim().length >= 2
+                      ? 'Cidade válida!'
+                      : 'Nome da cidade muito curto'
+                    : undefined
+                }
+                validationType={farm.city && farm.city.trim().length >= 2 ? 'success' : 'error'}
+                placeholder="Ex: São Paulo"
+              />
 
-              <InputGroup>
-                <FloatingLabel
-                  isDark={isDark}
-                  active={!!farm.state}
-                  valid={farmValidation.locationValid ?? false}
-                >
-                  Estado *
-                </FloatingLabel>
-                <StyledSelect
-                  isDark={isDark}
-                  value={farm.state || ''}
-                  valid={farmValidation.locationValid ?? false}
-                  onChange={(e) => onUpdateFarm(farm.tempId, { state: e.target.value as States })}
-                >
-                  <option value="">Selecione</option>
-                  {estados.map((estado) => (
-                    <option key={estado.value} value={estado.value}>
-                      {estado.label}
-                    </option>
-                  ))}
-                </StyledSelect>
-              </InputGroup>
+              <Input
+                label="Estado *"
+                value={farm.state || ''}
+                onChange={(value) => onUpdateFarm(farm.tempId, { state: value as States })}
+                isDark={isDark}
+                valid={!!farm.state}
+                validationMessage={farm.state ? 'Estado selecionado!' : undefined}
+                validationType={farm.state ? 'success' : 'error'}
+                options={[
+                  { value: '', label: 'Selecione o estado' },
+                  ...estados.map((estado) => ({ value: estado.value, label: estado.label })),
+                ]}
+              />
 
-              <InputGroup>
-                <FloatingLabel isDark={isDark} active={!!farm.zipCode} valid={true}>
-                  CEP
-                </FloatingLabel>
-                <StyledInput
-                  isDark={isDark}
-                  value={farm.zipCode || ''}
-                  valid={true}
-                  onChange={(e) => {
-                    const zipCode = e.target.value.replace(/\D/g, '').slice(0, 8);
-                    const formatted = zipCode.replace(/(\d{5})(\d)/, '$1-$2');
-                    onUpdateFarm(farm.tempId, { zipCode: formatted });
-                  }}
-                  placeholder=" "
-                />
-              </InputGroup>
+              <Input
+                label="CEP"
+                value={farm.zipCode || ''}
+                onChange={(value) => {
+                  const zipCode = value.replace(/\D/g, '').slice(0, 8);
+                  const formatted = zipCode.replace(/(\d{5})(\d)/, '$1-$2');
+                  onUpdateFarm(farm.tempId, { zipCode: formatted });
+                }}
+                isDark={isDark}
+                valid={farm.zipCode ? isValidZipCode(farm.zipCode) : undefined}
+                validationMessage={
+                  farm.zipCode
+                    ? isValidZipCode(farm.zipCode)
+                      ? 'CEP válido!'
+                      : 'CEP deve ter 8 dígitos (12345-678)'
+                    : undefined
+                }
+                validationType={farm.zipCode && isValidZipCode(farm.zipCode) ? 'success' : 'error'}
+                placeholder="12345-678"
+              />
 
-              <InputGroup style={{ gridColumn: '1 / -1' }}>
-                <FloatingLabel
-                  isDark={isDark}
-                  active={!!farm.farmPhoto}
-                  valid={farmValidation.photoValid ?? false}
-                >
-                  URL da Foto da Fazenda
-                </FloatingLabel>
-                <StyledInput
-                  isDark={isDark}
+              <div style={{ gridColumn: '1 / -1' }}>
+                <Input
+                  label="URL da Foto da Fazenda"
                   value={farm.farmPhoto || ''}
-                  valid={farmValidation.photoValid ?? false}
-                  onChange={(e) => onUpdateFarm(farm.tempId, { farmPhoto: e.target.value })}
-                  placeholder=" "
+                  onChange={(value) => onUpdateFarm(farm.tempId, { farmPhoto: value })}
+                  isDark={isDark}
+                  valid={farm.farmPhoto ? isValidImageUrl(farm.farmPhoto) : undefined}
+                  validationMessage={
+                    farm.farmPhoto
+                      ? isValidImageUrl(farm.farmPhoto)
+                        ? 'URL de imagem válida!'
+                        : 'URL deve ser uma imagem válida (.jpg, .png, .gif, .webp)'
+                      : 'Cole uma URL de imagem para ver o preview'
+                  }
+                  validationType={
+                    farm.farmPhoto
+                      ? isValidImageUrl(farm.farmPhoto)
+                        ? 'success'
+                        : 'error'
+                      : 'info'
+                  }
+                  placeholder="https://exemplo.com/fazenda.jpg"
                 />
-              </InputGroup>
+              </div>
             </FormGrid>
 
             {/* 📏 SEÇÃO DE ÁREAS */}
@@ -314,71 +285,73 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               </h3>
 
               <FormGrid>
-                <InputGroup>
-                  <FloatingLabel
-                    isDark={isDark}
-                    active={farm.totalArea > 0}
-                    valid={farmValidation.areasValid ?? false}
-                  >
-                    Área Total (hectares) *
-                  </FloatingLabel>
-                  <StyledInput
-                    isDark={isDark}
-                    type="number"
-                    value={farm.totalArea || ''}
-                    valid={farmValidation.areasValid ?? false}
-                    onChange={(e) =>
-                      onUpdateFarm(farm.tempId, { totalArea: Number(e.target.value) })
-                    }
-                    placeholder=" "
-                    min="0"
-                    step="0.01"
-                  />
-                </InputGroup>
+                <Input
+                  label="Área Total (hectares) *"
+                  type="number"
+                  value={farm.totalArea?.toString() || ''}
+                  onChange={(value) => onUpdateFarm(farm.tempId, { totalArea: Number(value) || 0 })}
+                  isDark={isDark}
+                  valid={farm.totalArea ? farm.totalArea > 0 : undefined}
+                  validationMessage={
+                    farm.totalArea
+                      ? farm.totalArea > 0
+                        ? 'Área válida!'
+                        : 'Área deve ser maior que 0'
+                      : undefined
+                  }
+                  validationType={farm.totalArea && farm.totalArea > 0 ? 'success' : 'error'}
+                  placeholder="0.00"
+                />
 
-                <InputGroup>
-                  <FloatingLabel
-                    isDark={isDark}
-                    active={farm.agriculturalArea > 0}
-                    valid={farmValidation.areasValid ?? false}
-                  >
-                    Área Agricultável (hectares) *
-                  </FloatingLabel>
-                  <StyledInput
-                    isDark={isDark}
-                    type="number"
-                    value={farm.agriculturalArea || ''}
-                    valid={farmValidation.areasValid ?? false}
-                    onChange={(e) =>
-                      onUpdateFarm(farm.tempId, { agriculturalArea: Number(e.target.value) })
-                    }
-                    placeholder=" "
-                    min="0"
-                    step="0.01"
-                  />
-                </InputGroup>
+                <Input
+                  label="Área Agricultável (hectares) *"
+                  type="number"
+                  value={farm.agriculturalArea?.toString() || ''}
+                  onChange={(value) =>
+                    onUpdateFarm(farm.tempId, { agriculturalArea: Number(value) || 0 })
+                  }
+                  isDark={isDark}
+                  valid={
+                    farm.agriculturalArea !== undefined ? farm.agriculturalArea >= 0 : undefined
+                  }
+                  validationMessage={
+                    farm.agriculturalArea !== undefined
+                      ? farm.agriculturalArea >= 0
+                        ? 'Área válida!'
+                        : 'Área não pode ser negativa'
+                      : undefined
+                  }
+                  validationType={
+                    farm.agriculturalArea !== undefined && farm.agriculturalArea >= 0
+                      ? 'success'
+                      : 'error'
+                  }
+                  placeholder="0.00"
+                />
 
-                <InputGroup>
-                  <FloatingLabel
-                    isDark={isDark}
-                    active={farm.vegetationArea > 0}
-                    valid={farmValidation.areasValid ?? false}
-                  >
-                    Área de Vegetação (hectares) *
-                  </FloatingLabel>
-                  <StyledInput
-                    isDark={isDark}
-                    type="number"
-                    value={farm.vegetationArea || ''}
-                    valid={farmValidation.areasValid ?? false}
-                    onChange={(e) =>
-                      onUpdateFarm(farm.tempId, { vegetationArea: Number(e.target.value) })
-                    }
-                    placeholder=" "
-                    min="0"
-                    step="0.01"
-                  />
-                </InputGroup>
+                <Input
+                  label="Área de Vegetação (hectares) *"
+                  type="number"
+                  value={farm.vegetationArea?.toString() || ''}
+                  onChange={(value) =>
+                    onUpdateFarm(farm.tempId, { vegetationArea: Number(value) || 0 })
+                  }
+                  isDark={isDark}
+                  valid={farm.vegetationArea !== undefined ? farm.vegetationArea >= 0 : undefined}
+                  validationMessage={
+                    farm.vegetationArea !== undefined
+                      ? farm.vegetationArea >= 0
+                        ? 'Área válida!'
+                        : 'Área não pode ser negativa'
+                      : undefined
+                  }
+                  validationType={
+                    farm.vegetationArea !== undefined && farm.vegetationArea >= 0
+                      ? 'success'
+                      : 'error'
+                  }
+                  placeholder="0.00"
+                />
               </FormGrid>
 
               {/* ⚠️ VALIDAÇÃO DE ÁREAS */}
@@ -391,7 +364,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               )}
             </div>
 
-            {/* 📊 SCORES DE PERFORMANCE */}
+            {/* 📊 SCORES DE PERFORMANCE COM NOVO SLIDER */}
             <div style={{ marginTop: '2rem' }}>
               <h3
                 style={{
@@ -406,25 +379,31 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               </h3>
 
               <div style={{ display: 'grid', gap: '1.5rem' }}>
-                <ScoreInput
-                  label="🚜 Produtividade"
+                <RangeSlider
+                  label="Produtividade"
+                  icon="🚜"
                   value={farm.productivity || 50}
                   onChange={(value) => onUpdateFarm(farm.tempId, { productivity: value })}
                   color="#37cb83"
+                  isDark={isDark}
                 />
 
-                <ScoreInput
-                  label="🌱 Sustentabilidade"
+                <RangeSlider
+                  label="Sustentabilidade"
+                  icon="🌱"
                   value={farm.sustainability || 50}
                   onChange={(value) => onUpdateFarm(farm.tempId, { sustainability: value })}
                   color="#27ae60"
+                  isDark={isDark}
                 />
 
-                <ScoreInput
-                  label="🔬 Tecnologia"
+                <RangeSlider
+                  label="Tecnologia"
+                  icon="🔬"
                   value={farm.technology || 50}
                   onChange={(value) => onUpdateFarm(farm.tempId, { technology: value })}
                   color="#3498db"
+                  isDark={isDark}
                 />
               </div>
             </div>
