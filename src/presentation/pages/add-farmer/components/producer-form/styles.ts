@@ -33,133 +33,6 @@ const glowPulse = keyframes`
   }
 `;
 
-const shimmer = keyframes`
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-`;
-
-// 🏗️ CONTAINER PRINCIPAL
-export const AddFarmerContainer = styled.div<{ isDark: boolean }>`
-  min-height: 100vh;
-  padding: 2rem 1rem;
-  background: ${({ isDark }) =>
-    isDark
-      ? 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #26435f 100%)'
-      : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e0 100%)'};
-
-  position: relative;
-
-  &:before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: ${({ isDark }) =>
-      isDark
-        ? 'radial-gradient(circle at 20% 50%, rgba(55, 203, 131, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(90, 208, 255, 0.05) 0%, transparent 50%)'
-        : 'radial-gradient(circle at 20% 50%, rgba(55, 203, 131, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(90, 208, 255, 0.03) 0%, transparent 50%)'};
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  @media (max-width: 768px) {
-    padding: 1rem 0.5rem;
-  }
-`;
-
-// 📊 HEADER COM PROGRESSO
-export const ProgressHeader = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(35, 39, 47, 0.95)' : 'rgba(255, 255, 255, 0.95)')};
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  border: ${({ isDark }) =>
-    isDark ? '1px solid rgba(55, 203, 131, 0.2)' : '1px solid rgba(55, 203, 131, 0.1)'};
-  box-shadow: ${({ isDark }) =>
-    isDark ? '0 20px 40px rgba(0, 0, 0, 0.4)' : '0 20px 40px rgba(0, 0, 0, 0.08)'};
-  animation: ${fadeInUp} 0.8s ease-out;
-  position: sticky;
-  top: 20px;
-  z-index: 100;
-
-  h1 {
-    color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-
-    @media (max-width: 768px) {
-      font-size: 1.5rem;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 1.5rem;
-    position: relative;
-    top: 0;
-  }
-`;
-
-// 📈 BARRA DE PROGRESSO SUPREMA
-export const ProgressBar = styled.div<{ isDark: boolean }>`
-  width: 100%;
-  height: 12px;
-  background: ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
-  border-radius: 6px;
-  overflow: hidden;
-  position: relative;
-  margin-bottom: 1rem;
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: ${shimmer} 2s infinite;
-  }
-`;
-
-export const ProgressFill = styled.div<{ progress: number; isDark: boolean }>`
-  height: 100%;
-  background: linear-gradient(90deg, #37cb83, #27ae60, #37cb83);
-  background-size: 200% 100%;
-  border-radius: 6px;
-  width: ${({ progress }) => progress}%;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: ${shimmer} 3s infinite;
-  position: relative;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 4px;
-    height: calc(100% + 4px);
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 2px;
-    box-shadow: 0 0 10px rgba(55, 203, 131, 0.6);
-  }
-`;
-
 export const ProgressText = styled.span<{ isDark: boolean }>`
   color: ${({ isDark }) => (isDark ? '#37cb83' : '#27ae60')};
   font-weight: bold;
@@ -497,4 +370,50 @@ export const StatsContainer = styled.div<{ isDark: boolean }>`
       padding: 0.4rem 0.8rem;
     }
   }
+`;
+
+// Adicionar no styles.ts os componentes que faltam
+export const AddFarmerContainer = styled.div<{ $isDark: boolean }>`
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+  min-height: 100vh;
+  padding: 2rem 1rem;
+
+  position: relative;
+`;
+
+export const ProgressHeader = styled.div<{ $isDark: boolean }>`
+  background: ${({ $isDark }) =>
+    $isDark ? 'rgba(35, 39, 47, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: ${({ $isDark }) =>
+    $isDark ? '1px solid rgba(55, 203, 131, 0.2)' : '1px solid rgba(55, 203, 131, 0.1)'};
+
+  h1 {
+    color: ${({ $isDark }) => ($isDark ? '#fff' : '#2c3e50')};
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+`;
+
+export const ProgressBar = styled.div<{ $isDark: boolean }>`
+  width: 100%;
+  height: 12px;
+  background: ${({ $isDark }) => ($isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+`;
+
+export const ProgressFill = styled.div<{ $progress: number; $isDark: boolean }>`
+  height: 100%;
+  background: linear-gradient(90deg, #37cb83, #27ae60);
+  border-radius: 6px;
+  width: ${({ $progress }) => $progress}%;
+  transition: width 1s ease;
 `;
