@@ -1,15 +1,14 @@
-// src/hooks/useAddFarmer.ts - VERSÃO COM RASCUNHO FUNCIONAL
-import { useCallback, useEffect, useMemo, useState } from 'react';
+// src/hooks/useAddFarmer.ts - VERSÃO MAIS SIMPLES DO UNIVERSO
+import { useCallback, useMemo, useState } from 'react';
 
 import { DocumentType } from '@enums';
 import { useToast } from '@hooks';
 import { validateDocument, validatePhone } from '@validations';
 
-const DRAFT_KEY = 'addFarmer_draft_v1';
-
 export const useAddFarmer = () => {
   const { toast } = useToast();
 
+  // 📝 STATE BÁSICO - SEM FIRULA
   const [form, setForm] = useState({
     producer: {
       document: '',
@@ -27,7 +26,7 @@ export const useAddFarmer = () => {
     hasUnsavedChanges: false,
   });
 
-  // 🎯 VALIDAÇÕES REAIS
+  // 🎯 VALIDAÇÕES SIMPLES
   const validation = useMemo(
     () => ({
       producer: {
@@ -45,26 +44,19 @@ export const useAddFarmer = () => {
     [form.producer],
   );
 
-  // 📊 PROGRESSO CORRETO
+  // 📊 PROGRESSO SIMPLES
   const progress = useMemo(() => {
     let validFields = 0;
-    let totalFields = 0;
+    const totalFields = 3;
 
-    // Campos obrigatórios do produtor
-    totalFields += 2; // nome + documento
     if (validation.producer.nameValid) validFields++;
     if (validation.producer.documentValid) validFields++;
-
-    // Fazendas (pelo menos 1)
-    totalFields += 1;
     if (form.farms.length > 0) validFields++;
 
-    const calculated = Math.round((validFields / totalFields) * 100);
-    console.log('📊 Progress calculated:', { validFields, totalFields, calculated });
-    return calculated;
+    return Math.round((validFields / totalFields) * 100);
   }, [validation.producer, form.farms.length]);
 
-  // 📊 ESTATÍSTICAS
+  // 📊 STATS SIMPLES
   const stats = useMemo(
     () => ({
       totalFarms: form.farms.length,
@@ -77,40 +69,28 @@ export const useAddFarmer = () => {
     [form.farms, form.crops],
   );
 
-  // 👤 ATUALIZAR PRODUTOR
+  // 👤 ATUALIZAR PRODUTOR - SIMPLES
   const updateProducer = useCallback((updates: any) => {
-    console.log('📝 Updating producer:', updates);
-    setForm((prev) => {
-      const newForm = {
-        ...prev,
-        producer: { ...prev.producer, ...updates },
-        hasUnsavedChanges: true,
-      };
-      console.log('📝 New producer state:', newForm.producer);
-      return newForm;
-    });
+    setForm((prev) => ({
+      ...prev,
+      producer: { ...prev.producer, ...updates },
+      hasUnsavedChanges: true,
+    }));
   }, []);
 
-  // 🎯 NAVEGAÇÃO COM LOGS
+  // 🎯 NAVEGAÇÃO SIMPLES
   const nextStep = useCallback(() => {
-    console.log('➡️ Next step called, current:', form.currentStep);
-    console.log('📋 Current form data:', form);
-
     const steps = ['producer', 'farms', 'crops', 'review'];
     const currentIndex = steps.indexOf(form.currentStep);
 
     if (currentIndex < steps.length - 1) {
       const nextStepName = steps[currentIndex + 1];
-      console.log('➡️ Moving to step:', nextStepName);
-
       setForm((prev) => ({
         ...prev,
         currentStep: nextStepName as any,
       }));
-
-      toast.success('Sucesso!', `✅ Avançando para: ${nextStepName}`);
     }
-  }, [form, toast]);
+  }, [form.currentStep]);
 
   const prevStep = useCallback(() => {
     const steps = ['producer', 'farms', 'crops', 'review'];
@@ -123,7 +103,7 @@ export const useAddFarmer = () => {
     }
   }, [form.currentStep]);
 
-  // 🏭 FAZENDAS
+  // 🏭 FAZENDAS SIMPLES
   const addFarm = useCallback(() => {
     const newFarm = {
       tempId: `temp_${Date.now()}`,
@@ -143,9 +123,7 @@ export const useAddFarmer = () => {
       farms: [...prev.farms, newFarm],
       hasUnsavedChanges: true,
     }));
-
-    toast.success('Sucesso!', '🏭 Nova fazenda adicionada!');
-  }, [toast]);
+  }, []);
 
   const removeFarm = useCallback((tempId: string) => {
     setForm((prev) => ({
@@ -163,84 +141,71 @@ export const useAddFarmer = () => {
     }));
   }, []);
 
-  // 🌱 CULTURAS (stubs)
+  // 🌱 CULTURAS VAZIAS (para não dar erro)
   const addCrop = useCallback(() => {}, []);
   const removeCrop = useCallback(() => {}, []);
   const updateCrop = useCallback(() => {}, []);
 
-  // 💾 RASCUNHO COM FUNCIONALIDADE REAL
+  // 💾 RASCUNHO SIMPLES - SEM LOOP
   const saveDraft = useCallback(() => {
     try {
       const draftData = {
-        ...form,
+        producer: form.producer,
+        farms: form.farms,
+        crops: form.crops,
+        currentStep: form.currentStep,
         savedAt: new Date().toISOString(),
       };
 
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
-      console.log('💾 Draft saved:', draftData);
-
+      localStorage.setItem('addFarmer_draft', JSON.stringify(draftData));
       toast.success('Sucesso!', '💾 Rascunho salvo!');
+
       setForm((prev) => ({ ...prev, hasUnsavedChanges: false }));
     } catch (error) {
-      console.error('❌ Error saving draft:', error);
       toast.error('Erro!', 'Falha ao salvar rascunho');
     }
   }, [form, toast]);
 
+  // 📂 CARREGAR RASCUNHO SIMPLES
   const loadDraft = useCallback(() => {
     try {
-      const draftData = localStorage.getItem(DRAFT_KEY);
+      const draftData = localStorage.getItem('addFarmer_draft');
       if (draftData) {
         const parsed = JSON.parse(draftData);
-        console.log('📂 Loading draft:', parsed);
-
-        // Remover dados de controle antes de aplicar
-        const { savedAt, hasUnsavedChanges, isLoading, errors, ...formData } = parsed;
 
         setForm((prev) => ({
           ...prev,
-          ...formData,
+          producer: parsed.producer || prev.producer,
+          farms: parsed.farms || prev.farms,
+          crops: parsed.crops || prev.crops,
+          currentStep: parsed.currentStep || prev.currentStep,
           hasUnsavedChanges: false,
         }));
 
-        toast.success(
-          'Sucesso!',
-          `📂 Rascunho carregado! (Salvo em: ${new Date(savedAt).toLocaleString()})`,
-        );
+        toast.success('Sucesso!', '📂 Rascunho carregado!');
         return true;
       }
       return false;
     } catch (error) {
-      console.error('❌ Error loading draft:', error);
       toast.error('Erro!', 'Falha ao carregar rascunho');
       return false;
     }
   }, [toast]);
 
   const clearDraft = useCallback(() => {
-    localStorage.removeItem(DRAFT_KEY);
-    console.log('🗑️ Draft cleared');
+    localStorage.removeItem('addFarmer_draft');
   }, []);
 
-  // 📂 CARREGAR RASCUNHO AO INICIALIZAR
-  useEffect(() => {
-    const hasLoaded = loadDraft();
-    if (hasLoaded) {
-      console.log('🚀 Draft loaded on mount');
-    }
-  }, [loadDraft]);
-
-  // 📤 SUBMISSÃO
+  // 📤 SUBMISSÃO SIMPLES
   const submitForm = useCallback(async () => {
-    console.log('📤 Submitting form:', form);
-
     setForm((prev) => ({ ...prev, isLoading: true }));
 
+    // Simular API
     setTimeout(() => {
-      toast.success('Sucesso!', '✅ Produtor cadastrado com sucesso!');
+      toast.success('Sucesso!', '✅ Produtor cadastrado!');
       clearDraft();
 
-      // Reset completo
+      // Reset total
       setForm({
         producer: {
           document: '',
@@ -258,7 +223,7 @@ export const useAddFarmer = () => {
         hasUnsavedChanges: false,
       });
     }, 2000);
-  }, [form, toast, clearDraft]);
+  }, [toast, clearDraft]);
 
   return {
     form,
