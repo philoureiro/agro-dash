@@ -1,7 +1,7 @@
 // src/components/AddFarmer/components/producer-form/ProducerForm.tsx
 import React from 'react';
 
-import { Input, PhotoPreview } from '@components';
+import { Input } from '@components';
 import { Producer } from '@entities';
 import { DocumentType } from '@enums';
 import { formatDocument } from '@validations';
@@ -49,9 +49,6 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
   return (
     <FormCard isDark={isDark}>
       <h2>👨‍🌾 Dados do Produtor</h2>
-
-      {/* 🖼️ PREVIEW DA FOTO */}
-      <PhotoPreview photoUrl={producer.profilePhoto} isDark={isDark} type="producer" />
 
       <FormGrid>
         {/* Nome */}
