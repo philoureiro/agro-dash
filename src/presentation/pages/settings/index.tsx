@@ -267,6 +267,27 @@ export const Settings: React.FC = () => {
               📦 Exportar Dados
             </ActionButton>
           </SettingOption>
+
+          <SettingOption delay={100}>
+            <OptionInfo>
+              <OptionLabel isDark={isDark}>Gerar relatório completo do sistema</OptionLabel>
+              <OptionSubtext isDark={isDark}>
+                Relatório completo para tomada de decisões
+              </OptionSubtext>
+            </OptionInfo>
+            <ActionButton
+              variant="secondary"
+              isDark={isDark}
+              size="small"
+              onClick={() =>
+                toast.info('Guentaê!', `Ainda estamos trabalhando nessa funcionalidade.`)
+              }
+              // onClick={() => handleExportData(setIsExporting, getAllData, setError)}
+              disabled={isExporting}
+            >
+              📑 Exportar Relatório
+            </ActionButton>
+          </SettingOption>
         </SettingsCard>
 
         {/* ⚙️ BACKUP DE CONFIGURAÇÕES */}
@@ -321,14 +342,14 @@ export const Settings: React.FC = () => {
             <div>
               <CardTitle isDark={isDark}>Restaurar Sistema</CardTitle>
               <CardDescription isDark={isDark}>
-                Opções de reset individuais ou completo
+                Opções de restaurações individuais ou completas
               </CardDescription>
             </div>
           </CardHeader>
 
           <SettingOption delay={100}>
             <OptionInfo>
-              <OptionLabel isDark={isDark}>Reset Completo</OptionLabel>
+              <OptionLabel isDark={isDark}>Restaurar tudo</OptionLabel>
               <OptionSubtext isDark={isDark}>
                 Remove TUDO: dados + configurações + cache
               </OptionSubtext>
@@ -340,13 +361,13 @@ export const Settings: React.FC = () => {
               onClick={() => setShowResetSystemModal(true)}
               disabled={isResetting}
             >
-              🗑️ Reset Total
+              🗑️ Restaurar tudo
             </ActionButton>
           </SettingOption>
 
           <SettingOption delay={200}>
             <OptionInfo>
-              <OptionLabel isDark={isDark}>Reset dos Dados</OptionLabel>
+              <OptionLabel isDark={isDark}>Restaurar dos Dados</OptionLabel>
               <OptionSubtext isDark={isDark}>
                 Remove apenas fazendas, produtores e culturas
               </OptionSubtext>
@@ -358,13 +379,13 @@ export const Settings: React.FC = () => {
               onClick={() => setShowResetDataModal(true)}
               disabled={isResetting}
             >
-              📊 Reset Dados
+              📊 Restaurar Dados
             </ActionButton>
           </SettingOption>
 
           <SettingOption delay={300}>
             <OptionInfo>
-              <OptionLabel isDark={isDark}>Reset das Configurações</OptionLabel>
+              <OptionLabel isDark={isDark}>Resetar as configurações iniciais</OptionLabel>
               <OptionSubtext isDark={isDark}>Volta apenas as preferências ao padrão</OptionSubtext>
             </OptionInfo>
             <ActionButton
@@ -374,7 +395,7 @@ export const Settings: React.FC = () => {
               onClick={() => setShowResetConfigModal(true)}
               disabled={isResetting}
             >
-              ⚙️ Reset Config
+              ⚙️ Restaurar config
             </ActionButton>
           </SettingOption>
         </SettingsCard>
