@@ -5,6 +5,14 @@ import { Button, LoadingOverlay } from '@components';
 import { useAddFarmer } from '@hooks';
 import { useThemeMode } from '@theme';
 
+import {
+  FormActions,
+  ProgressBar,
+  ProgressFill,
+  StepDot,
+  StepIndicator,
+  StepLine,
+} from '../../../../styles';
 import { CropForm } from './components/crop-form';
 import { FarmForm } from './components/farm-form';
 import { ProducerForm } from './components/producer-form';
@@ -14,7 +22,6 @@ import {
   ProgressText,
   StatsContainer,
 } from './components/producer-form/styles';
-import { FormActions, ProgressBar, ProgressFill, StepDot, StepIndicator, StepLine } from './styles';
 
 export const AddFarmer: React.FC = () => {
   const { themeMode: theme } = useThemeMode();

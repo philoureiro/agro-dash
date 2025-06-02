@@ -61,7 +61,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "styles.ts"]
 }
 
 // // ==== APPLICATION ====

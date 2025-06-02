@@ -12,7 +12,7 @@ import {
   InputGroup,
   StyledInput,
   StyledSelect,
-} from '../../styles';
+} from '../../../../../../styles';
 import {
   AreaValidation,
   FarmCard,

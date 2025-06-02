@@ -12,7 +12,7 @@ import {
   RemoveButton,
   StyledInput,
   StyledSelect,
-} from '../../styles';
+} from '../../../../../../styles';
 import { CropCard, CropHeader, CropTypeIcon, CropValidation, ProductivityMeter } from './styles';
 
 // Define a type for tempId
