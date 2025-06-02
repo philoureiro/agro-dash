@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IoIosCheckmarkCircle, IoIosCloseCircle } from 'react-icons/io';
 
 import {
   CompactContainer,
@@ -128,7 +129,13 @@ export const Input: React.FC<InputProps> = ({
         {/* 🎯 ÍCONE DE VALIDAÇÃO COM ESPAÇAMENTO */}
         {valid !== undefined && (
           <InputIcon $validationStatus={validationStatus} $hasIcon={true}>
-            {valid === true ? '✅' : '❌'}
+            <div style={{ marginTop: '5px' }}>
+              {valid === true ? (
+                <IoIosCheckmarkCircle color="#2ecc71" size={20} />
+              ) : (
+                <IoIosCloseCircle color="#e74c3c" size={20} />
+              )}
+            </div>
           </InputIcon>
         )}
       </InputWrapper>

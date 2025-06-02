@@ -364,6 +364,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
+                  fontSize: '19px',
                 }}
               >
                 📊 Scores de Performance

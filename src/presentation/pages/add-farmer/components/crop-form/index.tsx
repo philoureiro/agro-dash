@@ -88,7 +88,7 @@ export const CropForm: React.FC<CropFormProps> = ({
             {/* 🏭 HEADER DA FAZENDA */}
             <div
               style={{
-                background: isDark ? 'rgba(55, 203, 131, 0.1)' : 'rgba(55, 203, 131, 0.05)',
+                background: isDark ? 'rgba(28, 98, 64, 0.1)' : 'rgba(40, 141, 92, 0.05)',
                 border: isDark
                   ? '1px solid rgba(55, 203, 131, 0.3)'
                   : '1px solid rgba(55, 203, 131, 0.2)',
@@ -447,7 +447,7 @@ export const CropForm: React.FC<CropFormProps> = ({
                     {/* ⚠️ VALIDAÇÃO DE DATAS */}
                     {crop.plantingDate && crop.harvestDate && !cropValidation.datesValid && (
                       <CropValidation isDark={isDark} type="error">
-                        ⚠️ Data de colheita deve ser posterior à data de plantio
+                        Data de colheita deve ser posterior à data de plantio
                       </CropValidation>
                     )}
 

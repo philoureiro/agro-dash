@@ -10,7 +10,7 @@ interface RangeSliderProps {
   max?: number;
   step?: number;
   color?: string;
-  icon?: string;
+  icon?: string | React.ReactNode;
   isDark: boolean;
   disabled?: boolean;
   showValue?: boolean;
@@ -39,8 +39,12 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   return (
     <SliderContainer $isDark={isDark}>
       <SliderLabel $isDark={isDark}>
-        <span>
-          {icon && <span style={{ marginRight: '0.5rem' }}>{icon}</span>}
+        <span
+          style={{
+            fontSize: 20,
+          }}
+        >
+          {icon && <span style={{ marginRight: '0.5rem', width: 20 }}>{icon}</span>}
           {label}
         </span>
         {showValue && (

@@ -104,7 +104,7 @@ const inputStyles = css<{
   /* 🔥 ESPAÇAMENTO PARA ÍCONE QUANDO PRESENTE */
   padding-right: ${({ $valid }) => ($valid !== undefined ? '48px' : '16px')};
 
-  border: 2px solid
+  border: 1px solid
     ${({ $isDark, $valid, $isFocused }) => {
       if ($isFocused) {
         if ($valid === true) return '#27ae60';
@@ -142,19 +142,19 @@ const inputStyles = css<{
 
     &::-webkit-calendar-picker-indicator {
       background-image: none;
-      background: ${({ $isDark }) => ($isDark ? '#37cb83' : '#27ae60')};
+      background: ${({ $isDark, $valid }) => ($valid ? '#37cb83' : '#e74c3c')};
       border-radius: 4px;
       cursor: pointer;
       opacity: 0.8;
       transition: all 0.3s ease;
-      width: 20px;
-      height: 20px;
+      width: 15px;
+      height: 15px;
       padding: 2px;
 
       &:hover {
         opacity: 1;
         transform: scale(1.1);
-        background: ${({ $isDark }) => ($isDark ? '#27ae60' : '#37cb83')};
+        background: ${({ $valid }) => ($valid ? '#27ae60' : '#e74c3c')};
       }
     }
 
@@ -211,11 +211,11 @@ const inputStyles = css<{
     `}
 
   /* 🌟 ANIMAÇÃO DE SUCESSO */
-  ${({ $valid }) =>
+  /* ${({ $valid }) =>
     $valid === true &&
     css`
       animation: ${glow} 2s infinite;
-    `}
+    `} */
 
   @media (max-width: 768px) {
     padding: 10px 14px;
@@ -270,13 +270,6 @@ export const InputIcon = styled.div<{
   /* 🔥 POSIÇÃO FIXA - SEM ANIMAÇÃO DE MOVIMENTO */
   transition: opacity 0.3s ease;
 
-  ${({ $validationStatus }) =>
-    $validationStatus === 'success' &&
-    css`
-      animation: ${glow} 2s infinite;
-    `}
-
-  /* 🔥 REMOVER ANIMAÇÃO DE SHAKE DO ÍCONE */
   ${({ $validationStatus }) =>
     $validationStatus === 'error' &&
     css`

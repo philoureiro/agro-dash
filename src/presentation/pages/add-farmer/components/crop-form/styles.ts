@@ -136,7 +136,7 @@ export const CropValidation = styled.div<{ isDark: boolean; type: 'error' | 'war
       return `
         background: ${isDark ? 'rgba(231, 76, 60, 0.15)' : 'rgba(231, 76, 60, 0.1)'};
         border: 1px solid rgba(231, 76, 60, 0.4);
-        color: ${isDark ? '#E74C3C' : '#C0392B'};
+      
         
         &:before {
           content: '❌';
@@ -147,7 +147,7 @@ export const CropValidation = styled.div<{ isDark: boolean; type: 'error' | 'war
       return `
         background: ${isDark ? 'rgba(255, 193, 7, 0.15)' : 'rgba(255, 193, 7, 0.1)'};
         border: 1px solid rgba(255, 193, 7, 0.4);
-        color: ${isDark ? '#F1C40F' : '#D68910'};
+     
         
         &:before {
           content: '⚠️';
@@ -158,7 +158,7 @@ export const CropValidation = styled.div<{ isDark: boolean; type: 'error' | 'war
       return `
         background: ${isDark ? 'rgba(52, 152, 219, 0.15)' : 'rgba(52, 152, 219, 0.1)'};
         border: 1px solid rgba(52, 152, 219, 0.4);
-        color: ${isDark ? '#3498DB' : '#2980B9'};
+        
         
         &:before {
           content: 'ℹ️';
