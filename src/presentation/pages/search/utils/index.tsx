@@ -47,6 +47,16 @@ export const useScreenSize = () => {
 // 🚀 FUNÇÃO PARA SCROLL SUAVE ÉPICO
 export const scrollToTop = () => {
   try {
+    const heroSection = document.getElementById('button-random-item');
+    if (heroSection) {
+      heroSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+      return; // Se encontrou o elemento, para aqui
+    }
+
+    // ⬆️ FALLBACK: Scroll normal para o topo
     window.scrollTo({
       top: 0,
       left: 0,
@@ -67,7 +77,6 @@ export const scrollToTop = () => {
     }
   });
 };
-
 // 🎨 FUNÇÃO PARA PEGAR IMAGEM DO STORE OU FALLBACK
 export const getItemImage = (item: UnifiedItem): string => {
   const { originalData, type } = item;

@@ -9,7 +9,7 @@
     "faN9OOe7M3Lk0dX3ZQBT-": {
       "id": "faN9OOe7M3Lk0dX3ZQBT-",
       "description": "pesquisar: integrar com store, permitir pesquisar por produtos, conferir se todos os dados estão mostrados",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "3DIyzzMtGr7p9svdF5akL": {
       "id": "3DIyzzMtGr7p9svdF5akL",
@@ -24,7 +24,7 @@
     "MCUusjh74A5GME_se7w7z": {
       "id": "MCUusjh74A5GME_se7w7z",
       "description": "pesquiar: botao de exlcuir e editar",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "i2mFRMSFaolBESaYqZi-j": {
       "id": "i2mFRMSFaolBESaYqZi-j",
@@ -65,6 +65,51 @@
       "id": "j985HFM-bxBbxXCQWMLyD",
       "description": "bottom bar precisa ajustar layout",
       "columnId": "column-done"
+    },
+    "mXXDmapCHtlPlnibkNysI": {
+      "id": "mXXDmapCHtlPlnibkNysI",
+      "description": "overlayer em settings",
+      "columnId": "column-todo"
+    },
+    "EBRdnHDiiAHed8_jYlsmh": {
+      "id": "EBRdnHDiiAHed8_jYlsmh",
+      "description": "overlayer em dashboards",
+      "columnId": "column-todo"
+    },
+    "PW8QlfxygoxRqTCvnpzhe": {
+      "id": "PW8QlfxygoxRqTCvnpzhe",
+      "description": "arrumar title dashoboards",
+      "columnId": "column-todo"
+    },
+    "NiE1YQclkwlUaNwSGUKdE": {
+      "id": "NiE1YQclkwlUaNwSGUKdE",
+      "description": "scroll to top em todas as telas mobile\n",
+      "columnId": "column-todo"
+    },
+    "E8pdeIFea5N3lehhw2X-W": {
+      "id": "E8pdeIFea5N3lehhw2X-W",
+      "description": "testes unitarios",
+      "columnId": "column-todo"
+    },
+    "_fT4Nd66zh8QZv-i2-cci": {
+      "id": "_fT4Nd66zh8QZv-i2-cci",
+      "description": "testes e2e",
+      "columnId": "column-todo"
+    },
+    "GO6JA1dNpMZH7oouAn8-d": {
+      "id": "GO6JA1dNpMZH7oouAn8-d",
+      "description": "arrumar documentação",
+      "columnId": "column-todo"
+    },
+    "1h0sRFYXHBqNFiz1DEVxJ": {
+      "id": "1h0sRFYXHBqNFiz1DEVxJ",
+      "description": "passar barra e filtros para cima da tela de pesquisar",
+      "columnId": "column-todo"
+    },
+    "WWA8G4PGL_LB6rRn3mdQ-": {
+      "id": "WWA8G4PGL_LB6rRn3mdQ-",
+      "description": "fazer overlay subir ao inves de expandir",
+      "columnId": "column-todo"
     }
   },
   "columns": [
@@ -73,15 +118,22 @@
       "title": "To do",
       "tasksIds": [
         "0srfiX6eKkurgUK60saY0",
-        "faN9OOe7M3Lk0dX3ZQBT-",
-        "MCUusjh74A5GME_se7w7z",
         "3DIyzzMtGr7p9svdF5akL",
         "2WX72G-2JW-sd-TgBG5cP",
         "i2mFRMSFaolBESaYqZi-j",
         "wau_DLufnQUi1gusKrnub",
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
-        "fTO5wUNun7lNV8HZqMU-v"
+        "fTO5wUNun7lNV8HZqMU-v",
+        "mXXDmapCHtlPlnibkNysI",
+        "EBRdnHDiiAHed8_jYlsmh",
+        "PW8QlfxygoxRqTCvnpzhe",
+        "NiE1YQclkwlUaNwSGUKdE",
+        "E8pdeIFea5N3lehhw2X-W",
+        "_fT4Nd66zh8QZv-i2-cci",
+        "GO6JA1dNpMZH7oouAn8-d",
+        "1h0sRFYXHBqNFiz1DEVxJ",
+        "WWA8G4PGL_LB6rRn3mdQ-"
       ]
     },
     {
@@ -93,6 +145,8 @@
       "id": "column-done",
       "title": "Done",
       "tasksIds": [
+        "faN9OOe7M3Lk0dX3ZQBT-",
+        "MCUusjh74A5GME_se7w7z",
         "fTOauLq8-Vum6n1zCQKyM",
         "j985HFM-bxBbxXCQWMLyD",
         "i9ZNZTPHO-HBaeosyaZ0f"

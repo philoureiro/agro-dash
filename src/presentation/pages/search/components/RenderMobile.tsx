@@ -16,7 +16,6 @@ import {
   HeroImage,
   HeroImageOverlay,
   HeroSection,
-  IconWrapper,
   ItemCard,
   ItemDetails,
   ItemHeader,
@@ -31,12 +30,6 @@ import {
   ItemTypeIcon,
   NoResultsContainer,
   ResultsCount,
-  SearchButton,
-  SearchInput,
-  SearchInputContainer,
-  SearchSection,
-  SearchTypeButton,
-  SearchTypeSelector,
   ShimmerEffect,
   StatBar,
   StatFill,
@@ -68,12 +61,6 @@ export const RenderMobileLayout: React.FC<RenderMobileLayoutProps> = ({
   isDark,
   selectedItem,
   isLoading,
-  searchType,
-  searchTerm,
-  setSearchType,
-  setSearchTerm,
-  handleKeyPress,
-  handleSearch,
   handleRandomItem,
   handleSelectItem,
   handleEdit,
@@ -85,62 +72,12 @@ export const RenderMobileLayout: React.FC<RenderMobileLayoutProps> = ({
   <>
     {/* 🌄 SEÇÃO HERO ÉPICA */}
     {selectedItem && (
-      <HeroSection $isDark={isDark}>
+      <HeroSection $isDark={isDark} id="hero-section">
         <HeroImage src={selectedItem.image} alt={selectedItem.displayName} loading="lazy" />
         <HeroImageOverlay $isDark={isDark} />
         {isLoading && <ShimmerEffect />}
       </HeroSection>
     )}
-
-    {/* 🔍 SEÇÃO DE PESQUISA SUPREMA */}
-    <SearchSection>
-      <SearchTypeSelector>
-        {(['all', 'producers', 'farms', 'crops'] as SearchType[]).map((type) => (
-          <SearchTypeButton
-            key={type}
-            $isDark={isDark}
-            $isActive={searchType === type}
-            onClick={() => setSearchType(type)}
-          >
-            <IconWrapper>{getTypeIcon(type)}</IconWrapper>
-            {type === 'all'
-              ? 'Todos'
-              : type === 'producers'
-                ? 'Produtores'
-                : type === 'farms'
-                  ? 'Fazendas'
-                  : 'Culturas'}
-          </SearchTypeButton>
-        ))}
-      </SearchTypeSelector>
-
-      <SearchInputContainer $isDark={isDark}>
-        <SearchInput
-          $isDark={isDark}
-          type="text"
-          placeholder={`Buscar ${
-            searchType === 'all'
-              ? 'tudo'
-              : searchType === 'producers'
-                ? 'produtores'
-                : searchType === 'farms'
-                  ? 'fazendas'
-                  : 'culturas'
-          }...`}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyPress={handleKeyPress}
-        />
-        <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoading}>
-          <FiSearch size={18} />
-        </SearchButton>
-      </SearchInputContainer>
-
-      <Button isDark={isDark} onClick={handleRandomItem} disabled={isLoading}>
-        <FiShuffle size={16} />
-        Item Aleatório
-      </Button>
-    </SearchSection>
 
     {/* 📊 CARD DO ITEM SELECIONADO */}
     {selectedItem && (

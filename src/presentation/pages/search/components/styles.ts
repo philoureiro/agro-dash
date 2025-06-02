@@ -1,3 +1,4 @@
+import { Button } from '@components';
 import styled, { keyframes } from 'styled-components';
 
 const fadeInUp = keyframes`
@@ -85,6 +86,19 @@ const bounce = keyframes`
  }
 `;
 
+export const SearchBox = styled.div<{ $isDark: boolean }>`
+  margin-top: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 30px;
+  color: ${({ $isDark }) => ($isDark ? '#f8fafc' : '#1e293b')};
+  gap: 20px;
+  animation: ${pulse} 0.8s ease-out;
+`;
+
 // 🌄 SEÇÃO HERO SUPREMA
 export const HeroSection = styled.div<{ $isDark: boolean; $isDesktop?: boolean }>`
   width: 100%;
@@ -147,7 +161,7 @@ export const ShimmerEffect = styled.div`
 
 // 🔍 SEÇÃO DE PESQUISA SUPREMA
 export const SearchSection = styled.div`
-  width: 100%;
+  width: 50%;
   max-width: 500px;
   display: flex;
   flex-direction: column;
@@ -158,6 +172,10 @@ export const SearchSection = styled.div`
   @media (min-width: 1024px) {
     max-width: none;
     margin-bottom: 0;
+  }
+
+  @media (max-width: 540px) {
+    width: 100%;
   }
 `;
 
@@ -228,6 +246,7 @@ export const IconWrapper = styled.div`
 
 export const SearchInputContainer = styled.div<{ $isDark: boolean }>`
   display: flex;
+  width: 50%;
   background: ${({ $isDark }) => ($isDark ? 'rgba(35, 39, 47, 0.9)' : 'rgba(255, 255, 255, 0.9)')};
   border-radius: 50px;
   padding: 4px;
@@ -246,6 +265,10 @@ export const SearchInputContainer = styled.div<{ $isDark: boolean }>`
       $isDark
         ? '0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(55, 203, 131, 0.2)'
         : '0 15px 40px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(55, 203, 131, 0.1)'};
+  }
+
+  @media (max-width: 540px) {
+    width: 100%;
   }
 `;
 
@@ -676,10 +699,16 @@ export const EmptyStateIcon = styled.div`
   animation: ${bounce} 2s infinite;
 `;
 
+export const StyledButton = styled(Button)`
+  width: 270px;
+  justify-content: center;
+  align-items: center;
+`;
+
 // 🏗️ CONTAINER PRINCIPAL
 export const SearchContainer = styled.div<{ $isDark: boolean }>`
   min-height: 100vh;
-  margin-top: 50px;
+
   margin-bottom: 100px;
   padding: 16px;
   display: flex;

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { FiSearch } from 'react-icons/fi';
+import { FiSearch, FiShuffle } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 import { ConfirmModal, LoadingOverlay, Text } from '@components';
@@ -10,7 +10,18 @@ import { useThemeMode } from '@theme';
 
 import { RenderDesktop } from './components/RenderDesktop';
 import { RenderMobileLayout } from './components/RenderMobile';
-import { SearchContainer } from './components/styles';
+import {
+  IconWrapper,
+  SearchBox,
+  SearchButton,
+  SearchContainer,
+  SearchInput,
+  SearchInputContainer,
+  SearchSection,
+  SearchTypeButton,
+  SearchTypeSelector,
+  StyledButton,
+} from './components/styles';
 import { SearchType, UnifiedItem } from './types';
 import {
   getDeleteMessage,
@@ -387,20 +398,58 @@ export const Search = () => {
   return (
     <>
       <meta name="title" content="Explorador Supremo" />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          marginBottom: 30,
-          marginTop: 100,
-        }}
-      >
+
+      <SearchBox $isDark={isDark}>
         <Text variant="h3" style={{ fontWeight: 'bold', textAlign: 'center' }}>
           🔍 Pesquisar
         </Text>
-      </div>
+
+        <SearchInputContainer $isDark={isDark}>
+          <SearchInput
+            $isDark={isDark}
+            type="text"
+            placeholder="Busca profunda..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={handleKeyPress}
+          />
+          <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoading}>
+            <FiSearch size={18} />
+          </SearchButton>
+        </SearchInputContainer>
+
+        <SearchSection>
+          <SearchTypeSelector>
+            {(['all', 'producers', 'farms', 'crops'] as SearchType[]).map((type) => (
+              <SearchTypeButton
+                key={type}
+                $isDark={isDark}
+                $isActive={searchType === type}
+                onClick={() => setSearchType(type)}
+              >
+                <IconWrapper>{getTypeIcon(type)}</IconWrapper>
+                {type === 'all'
+                  ? 'Todos'
+                  : type === 'producers'
+                    ? 'Produtores'
+                    : type === 'farms'
+                      ? 'Fazendas'
+                      : 'Culturas'}
+              </SearchTypeButton>
+            ))}
+          </SearchTypeSelector>
+        </SearchSection>
+
+        <StyledButton
+          isDark={isDark}
+          onClick={handleRandomItem}
+          disabled={isLoading}
+          id="button-random-item"
+        >
+          <FiShuffle size={16} />
+          Buscar item aleatoriamente
+        </StyledButton>
+      </SearchBox>
 
       <SearchContainer $isDark={isDark} data-scroll-container>
         {isDesktop ? (

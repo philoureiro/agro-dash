@@ -1,10 +1,8 @@
 import { JSX } from 'react';
-import { FiEdit3, FiMapPin, FiSearch, FiShuffle, FiTrash2, FiTrendingUp } from 'react-icons/fi';
+import { FiEdit3, FiMapPin, FiSearch, FiTrash2, FiTrendingUp } from 'react-icons/fi';
 import { HiOutlineChartBar, HiOutlineSparkles } from 'react-icons/hi';
 
 import { Typography } from '@mui/material';
-
-import { Button } from '@components';
 
 import { SearchType, UnifiedItem } from '../types';
 import {
@@ -15,7 +13,6 @@ import {
   HeroImage,
   HeroImageOverlay,
   HeroSection,
-  IconWrapper,
   ItemCard,
   ItemDetails,
   ItemGrid,
@@ -36,12 +33,6 @@ import {
   NoResultsContainer,
   ResultsCount,
   RightPanel,
-  SearchButton,
-  SearchInput,
-  SearchInputContainer,
-  SearchSection,
-  SearchTypeButton,
-  SearchTypeSelector,
   ShimmerEffect,
   StatBar,
   StatFill,
@@ -74,13 +65,7 @@ export const RenderDesktop: React.FC<RenderDesktopProps> = ({
   isLoading,
   selectedItem,
   filteredItems,
-  searchType,
-  setSearchType,
-  searchTerm,
-  setSearchTerm,
-  handleKeyPress,
-  handleSearch,
-  handleRandomItem,
+
   handleEdit,
   handleDelete,
   handleSelectItem,
@@ -97,47 +82,6 @@ export const RenderDesktop: React.FC<RenderDesktopProps> = ({
             <HeroImageOverlay $isDark={isDark} />
             {isLoading && <ShimmerEffect />}
           </HeroSection>
-
-          <SearchSection>
-            <SearchTypeSelector>
-              {(['all', 'producers', 'farms', 'crops'] as SearchType[]).map((type) => (
-                <SearchTypeButton
-                  key={type}
-                  $isDark={isDark}
-                  $isActive={searchType === type}
-                  onClick={() => setSearchType(type)}
-                >
-                  <IconWrapper>{getTypeIcon(type)}</IconWrapper>
-                  {type === 'all'
-                    ? 'Todos'
-                    : type === 'producers'
-                      ? 'Produtores'
-                      : type === 'farms'
-                        ? 'Fazendas'
-                        : 'Culturas'}
-                </SearchTypeButton>
-              ))}
-            </SearchTypeSelector>
-
-            <SearchInputContainer $isDark={isDark}>
-              <SearchInput
-                $isDark={isDark}
-                type="text"
-                placeholder="Buscar..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyPress={handleKeyPress}
-              />
-              <SearchButton $isDark={isDark} onClick={handleSearch} disabled={isLoading}>
-                <FiSearch size={18} />
-              </SearchButton>
-            </SearchInputContainer>
-
-            <Button isDark={isDark} onClick={handleRandomItem} disabled={isLoading}>
-              <FiShuffle size={16} />
-              Item Aleatório
-            </Button>
-          </SearchSection>
 
           <ItemCard $isDark={isDark} $isDesktop>
             <ItemHeader>
