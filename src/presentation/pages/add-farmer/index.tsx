@@ -1,20 +1,17 @@
 // src/components/AddFarmer/AddFarmerMain.tsx - VERSÃO COMPLETA FUNCIONAL
 import React from 'react';
 
-import { Button, LoadingOverlay } from '@components';
+import { Button, LoadingOverlay, StatsHeader } from '@components';
 import { ProgressBar } from '@components';
+import { Text } from '@components';
 import { useAddFarmer } from '@hooks';
 import { useThemeMode } from '@theme';
 
 import { CropForm } from './components/crop-form';
 import { FarmForm } from './components/farm-form';
 import { ProducerForm } from './components/producer-form';
-import {
-  AddFarmerContainer,
-  ProgressHeader,
-  StatsContainer,
-} from './components/producer-form/styles';
-import { FormActions, StepDot, StepIndicator, StepLine } from './styles';
+import { AddFarmerContainer } from './components/producer-form/styles';
+import { FormActions } from './styles';
 
 export const AddFarmer: React.FC = () => {
   const { themeMode: theme } = useThemeMode();
@@ -191,76 +188,24 @@ export const AddFarmer: React.FC = () => {
       />
 
       <AddFarmerContainer $isDark={isDark}>
-        {/* 📊 HEADER COM PROGRESSO */}
-        <ProgressHeader $isDark={isDark}>
-          <h1>
-            🌾 Cadastrar Novo Produtor
-            <span
-              style={{
-                fontSize: '0.7em',
-                opacity: 0.7,
-                marginLeft: '1rem',
-                fontWeight: 'normal',
-              }}
-            >
-              ({progress}% completo)
-            </span>
-          </h1>
+        <Text
+          variant="h3"
+          style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: 20, marginTop: 30 }}
+        >
+          📝 Cadastrar
+        </Text>
 
-          {/* 📈 BARRA DE PROGRESSO FUNCIONAL */}
-          <ProgressBar
-            progress={progress}
-            isDark={isDark}
-            label="Progresso do cadastro"
-            color={
-              isDark
-                ? 'linear-gradient(90deg, #37cb83, #27ae60)'
-                : 'linear-gradient(90deg, #27ae60, #219a52)'
-            }
-          />
-
-          {/* 📊 ESTATÍSTICAS */}
-          <StatsContainer $isDark={isDark}>
-            <div className="stat">
-              <span className="value">{stats.totalFarms}</span> Fazenda
-              {stats.totalFarms !== 1 ? 's' : ''}
-            </div>
-            <div className="stat">
-              <span className="value">{stats.totalArea.toLocaleString()}</span> Hectares
-            </div>
-            <div className="stat">
-              <span className="value">{stats.totalCrops}</span> Cultura
-              {stats.totalCrops !== 1 ? 's' : ''}
-            </div>
-            {stats.totalArea > 0 && (
-              <div className="stat">
-                <span className="value">{stats.utilizationRate.toFixed(1)}%</span> Utilização
-              </div>
-            )}
-          </StatsContainer>
-
-          {/* 🎯 INDICADOR DE ETAPAS */}
-          <StepIndicator>
-            {steps.map((step, index) => (
-              <React.Fragment key={step.id}>
-                <StepDot
-                  $isDark={isDark}
-                  $active={getStepStatus(step.id) === 'active'}
-                  $completed={getStepStatus(step.id) === 'completed'}
-                  title={step.label}
-                >
-                  <span style={{ fontSize: '1.2rem' }}>{step.icon}</span>
-                </StepDot>
-                {index < steps.length - 1 && (
-                  <StepLine
-                    $isDark={isDark}
-                    $completed={getStepStatus(steps[index + 1].id) !== 'pending'}
-                  />
-                )}
-              </React.Fragment>
-            ))}
-          </StepIndicator>
-        </ProgressHeader>
+        <StatsHeader
+          progress={progress}
+          isDark={isDark}
+          backgroundImage="https://www.10wallpaper.com/wallpaper/1920x1080/1405/Farm_vast_landscape-Landscape_HD_Wallpaper_1920x1080.jpg" // Opcional
+          progressLabel="Progresso do cadastro"
+          stats={[
+            { label: 'Fazendas', value: stats.totalFarms },
+            { label: 'Hectares', value: stats.totalArea.toLocaleString() },
+            { label: 'Culturas', value: stats.totalCrops },
+          ]}
+        />
 
         {/* 📝 CONTEÚDO DO FORMULÁRIO */}
         {renderStepContent()}

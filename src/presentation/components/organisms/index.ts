@@ -5,3 +5,4 @@ export * from './toast';
 export * from './loading-overlay';
 export * from './confirm-modal';
 export * from './hero-picture';
+export * from './stats-header';
