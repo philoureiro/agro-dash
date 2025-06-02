@@ -106,11 +106,6 @@
       "description": "passar barra e filtros para cima da tela de pesquisar",
       "columnId": "column-done"
     },
-    "WWA8G4PGL_LB6rRn3mdQ-": {
-      "id": "WWA8G4PGL_LB6rRn3mdQ-",
-      "description": "fazer overlay subir ao inves de expandir",
-      "columnId": "column-todo"
-    },
     "eRRe5DpO7lCEAzyIzpY1E": {
       "id": "eRRe5DpO7lCEAzyIzpY1E",
       "description": "pegar traducao do grafico e colocar no search",
@@ -122,7 +117,6 @@
       "id": "column-todo",
       "title": "To do",
       "tasksIds": [
-        "0srfiX6eKkurgUK60saY0",
         "3DIyzzMtGr7p9svdF5akL",
         "2WX72G-2JW-sd-TgBG5cP",
         "i2mFRMSFaolBESaYqZi-j",
@@ -130,13 +124,13 @@
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
         "fTO5wUNun7lNV8HZqMU-v",
-        "PW8QlfxygoxRqTCvnpzhe",
-        "NiE1YQclkwlUaNwSGUKdE",
         "E8pdeIFea5N3lehhw2X-W",
         "_fT4Nd66zh8QZv-i2-cci",
+        "PW8QlfxygoxRqTCvnpzhe",
+        "NiE1YQclkwlUaNwSGUKdE",
         "GO6JA1dNpMZH7oouAn8-d",
-        "WWA8G4PGL_LB6rRn3mdQ-",
-        "eRRe5DpO7lCEAzyIzpY1E"
+        "eRRe5DpO7lCEAzyIzpY1E",
+        "0srfiX6eKkurgUK60saY0"
       ]
     },
     {

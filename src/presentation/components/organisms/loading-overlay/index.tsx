@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Spinner } from './components/spinner';
+import { Spinner } from './components/CustomSpinner';
 import {
   CancelButton,
   LoadingBackground,
