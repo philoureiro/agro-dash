@@ -3,12 +3,14 @@ import React from 'react';
 
 import { ProgressBarContainer, ProgressContainer, ProgressFillBar, ProgressText } from './styles';
 
+// src/components/ui/ProgressBar/ProgressBar.tsx
 interface ProgressBarProps {
   progress: number;
   isDark: boolean;
   color?: string;
   showPercentage?: boolean;
   label?: string;
+  textColor?: string; // 🔥 NOVA PROP
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -17,6 +19,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   color,
   showPercentage = true,
   label = 'Progresso',
+  textColor, // 🔥 NOVA PROP
 }) => {
   const safeProgress = Math.min(Math.max(progress || 0, 0), 100);
 
@@ -27,7 +30,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       </ProgressBarContainer>
 
       {showPercentage && (
-        <ProgressText $isDark={isDark}>
+        <ProgressText $isDark={isDark} $textColor={textColor}>
           <span>{label}</span>
           <span>{Math.round(safeProgress)}% completo</span>
         </ProgressText>

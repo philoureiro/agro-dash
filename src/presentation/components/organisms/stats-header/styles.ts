@@ -67,22 +67,52 @@ export const BackgroundImageContainer = styled.div`
 `;
 
 // 📄 OVERLAY DE CONTEÚDO - MAIS ESCURO
+
 export const ContentOverlay = styled.div<{ $isDark: boolean; $hasBackground: boolean }>`
   position: relative;
   z-index: 2;
   padding: 2rem;
-
   min-height: 320px;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  /* 🔥 ESCURECIMENTO SUTIL E PROGRESSIVO */
+  background: ${({ $isDark, $hasBackground }) => {
+    if ($hasBackground) {
+      return `linear-gradient(
+        180deg, 
+        rgba(0, 0, 0, 0.2) 0%, 
+        rgba(0, 0, 0, 0.4) 50%, 
+        rgba(0, 0, 0, 0.75) 100%
+      )`;
+    }
+    return 'none';
+  }};
+
+  /* 🎯 REFORÇO NO BOTTOM PARA A BARRA */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  > * {
+    position: relative;
+    z-index: 2;
+  }
 
   @media (max-width: 768px) {
     padding: 1.5rem;
     gap: 1rem;
   }
 `;
-
 // 📊 GRID DE ESTATÍSTICAS
 export const StatsGrid = styled.div`
   display: flex;
@@ -166,11 +196,30 @@ export const StatLabel = styled.span<{ $isDark: boolean }>`
 `;
 
 // 📈 SEÇÃO DE PROGRESSO
-export const ProgressSection = styled.div`
+export const ProgressSection = styled.div<{ $hasBackground?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-top: auto; /* 🎯 SEMPRE NO FINAL */
+  margin-top: auto;
+
+  /* 🔥 SOBRESCREVER COR DO TEXTO QUANDO TEM IMAGEM */
+  ${({ $hasBackground }) =>
+    $hasBackground &&
+    `
+    & > div > div:last-child {
+      color: #ffffff !important;
+      
+      span {
+        color: #ffffff !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+      
+      span:last-child {
+        color: #ffffff !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+    }
+  `}
 `;
 
 // src/components/StatsHeader/styles.ts

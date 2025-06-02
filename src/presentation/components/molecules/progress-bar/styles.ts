@@ -20,24 +20,6 @@ export const floatUp = keyframes`
   }
 `;
 
-export const ProgressText = styled.div<{ $isDark: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-
-  /* 🔥 CORES INVERTIDAS: ESCURO NO LIGHT, CLARO NO DARK */
-  color: ${({ $isDark }) => ($isDark ? '#e2e8f0' : '#1e293b')};
-
-  span:last-child {
-    font-weight: 700;
-    /* 🔥 PORCENTAGEM COM CORES INVERTIDAS */
-    color: ${({ $isDark }) => ($isDark ? '#f1f5f9' : '#0f172a')};
-  }
-`;
-
 export const ProgressFillBar = styled.div<{
   $progress: number;
   $isDark: boolean;
@@ -112,6 +94,35 @@ export const ProgressLabel = styled.div<{ $isDark: boolean; $hasBackground?: boo
     color: ${({ $hasBackground, $isDark }) => {
       if ($hasBackground) return '#f1f5f9'; // BRANCO SUAVE COM IMAGEM
       return $isDark ? '#f1f5f9' : '#0f172a'; // CLARO NO DARK, ESCURO NO LIGHT
+    }};
+  }
+`;
+
+// src/components/ui/ProgressBar/styles.ts
+
+export const ProgressText = styled.div<{
+  $isDark: boolean;
+  $textColor?: string;
+}>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+
+  /* 🔥 USAR COR PERSONALIZADA OU CORES PADRÃO */
+  color: ${({ $textColor, $isDark }) => {
+    if ($textColor) return $textColor;
+    return $isDark ? '#e2e8f0' : '#1e293b';
+  }};
+
+  span:last-child {
+    font-weight: 700;
+    /* 🔥 PORCENTAGEM COM COR PERSONALIZADA */
+    color: ${({ $textColor, $isDark }) => {
+      if ($textColor) return $textColor;
+      return $isDark ? '#f1f5f9' : '#0f172a';
     }};
   }
 `;

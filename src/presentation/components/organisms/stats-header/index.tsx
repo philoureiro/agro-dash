@@ -61,12 +61,13 @@ export const StatsHeader: React.FC<StatsHeaderProps> = ({
             progress={progress}
             isDark={isDark}
             label={progressLabel}
+            textColor={backgroundImage ? '#ffffff' : undefined} // 🔥 BRANCO COM IMAGEM
             color={
               backgroundImage
-                ? 'linear-gradient(90deg, #166534, #4ade80)' // VERDE FLORESTA ESCURO
+                ? 'linear-gradient(90deg, #166534, #4ade80)'
                 : isDark
-                  ? 'linear-gradient(90deg, #4ade80, #22c55e)' // VERDE CLARO DARK THEME
-                  : 'linear-gradient(90deg, #0e4222, #146a32)' // VERDE ESCURO LIGHT THEME
+                  ? 'linear-gradient(90deg, #4ade80, #22c55e)'
+                  : 'linear-gradient(90deg, #0e4222, #146a32)'
             }
           />
         </ProgressSection>
