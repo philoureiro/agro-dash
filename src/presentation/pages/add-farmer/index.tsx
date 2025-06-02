@@ -1,27 +1,20 @@
 // src/components/AddFarmer/AddFarmerMain.tsx - VERSÃO COMPLETA FUNCIONAL
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Button, LoadingOverlay } from '@components';
+import { ProgressBar } from '@components';
 import { useAddFarmer } from '@hooks';
 import { useThemeMode } from '@theme';
 
-import {
-  FormActions,
-  ProgressBar,
-  ProgressFill,
-  StepDot,
-  StepIndicator,
-  StepLine,
-} from '../../../../styles';
 import { CropForm } from './components/crop-form';
 import { FarmForm } from './components/farm-form';
 import { ProducerForm } from './components/producer-form';
 import {
   AddFarmerContainer,
   ProgressHeader,
-  ProgressText,
   StatsContainer,
 } from './components/producer-form/styles';
+import { FormActions, StepDot, StepIndicator, StepLine } from './styles';
 
 export const AddFarmer: React.FC = () => {
   const { themeMode: theme } = useThemeMode();
@@ -45,14 +38,6 @@ export const AddFarmer: React.FC = () => {
     nextStep,
     prevStep,
   } = useAddFarmer();
-
-  // 📂 Carregar rascunho ao montar
-  useEffect(() => {
-    const draft = localStorage.getItem('addFarmer_draft');
-    if (draft) {
-      loadDraft();
-    }
-  }, [loadDraft]);
 
   // 🎯 STEPS CONFIGURATION
   const steps = [
@@ -138,6 +123,49 @@ export const AddFarmer: React.FC = () => {
           >
             <h2>📋 Revisão Final</h2>
             <p>Revise todos os dados antes de finalizar o cadastro.</p>
+            <div
+              style={{
+                marginTop: '2rem',
+                background: isDark ? 'rgba(55, 203, 131, 0.1)' : 'rgba(55, 203, 131, 0.05)',
+                padding: '1.5rem',
+                borderRadius: '12px',
+                border: isDark
+                  ? '1px solid rgba(55, 203, 131, 0.3)'
+                  : '1px solid rgba(55, 203, 131, 0.2)',
+              }}
+            >
+              <h3>📊 Resumo do Cadastro</h3>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '2rem',
+                  justifyContent: 'center',
+                  flexWrap: 'wrap',
+                  marginTop: '1rem',
+                }}
+              >
+                <div>
+                  <strong>👨‍🌾 Produtor:</strong>
+                  <br />
+                  {form.producer.name || 'Não informado'}
+                </div>
+                <div>
+                  <strong>🏭 Fazendas:</strong>
+                  <br />
+                  {stats.totalFarms} fazenda{stats.totalFarms !== 1 ? 's' : ''}
+                </div>
+                <div>
+                  <strong>📏 Área Total:</strong>
+                  <br />
+                  {stats.totalArea.toLocaleString()} ha
+                </div>
+                <div>
+                  <strong>🌱 Culturas:</strong>
+                  <br />
+                  {stats.totalCrops} cultura{stats.totalCrops !== 1 ? 's' : ''}
+                </div>
+              </div>
+            </div>
           </div>
         );
     }
@@ -179,15 +207,17 @@ export const AddFarmer: React.FC = () => {
             </span>
           </h1>
 
-          {/* 📈 BARRA DE PROGRESSO */}
-          <ProgressBar $isDark={isDark}>
-            <ProgressFill $progress={progress} $isDark={isDark} />
-          </ProgressBar>
-
-          <ProgressText $isDark={isDark}>
-            <span>Progresso do cadastro</span>
-            <span>{progress}% completo</span>
-          </ProgressText>
+          {/* 📈 BARRA DE PROGRESSO FUNCIONAL */}
+          <ProgressBar
+            progress={progress}
+            isDark={isDark}
+            label="Progresso do cadastro"
+            color={
+              isDark
+                ? 'linear-gradient(90deg, #37cb83, #27ae60)'
+                : 'linear-gradient(90deg, #27ae60, #219a52)'
+            }
+          />
 
           {/* 📊 ESTATÍSTICAS */}
           <StatsContainer $isDark={isDark}>
@@ -246,6 +276,10 @@ export const AddFarmer: React.FC = () => {
                 background: 'transparent',
                 border: `2px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
                 color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
               }}
             >
               ← Voltar
@@ -262,6 +296,10 @@ export const AddFarmer: React.FC = () => {
               border: `2px solid ${isDark ? '#5ad0ff' : '#3b82f6'}`,
               color: isDark ? '#5ad0ff' : '#3b82f6',
               opacity: form.hasUnsavedChanges ? 1 : 0.5,
+              padding: '12px 24px',
+              borderRadius: '8px',
+              cursor: form.hasUnsavedChanges ? 'pointer' : 'not-allowed',
+              transition: 'all 0.3s ease',
             }}
           >
             💾 Salvar Rascunho
@@ -283,8 +321,10 @@ export const AddFarmer: React.FC = () => {
                 fontSize: '1.1rem',
                 padding: '18px 48px',
                 minWidth: '250px',
+                borderRadius: '8px',
                 opacity: progress === 100 ? 1 : 0.7,
                 cursor: progress === 100 ? 'pointer' : 'not-allowed',
+                transition: 'all 0.3s ease',
               }}
             >
               {progress === 100
@@ -305,8 +345,10 @@ export const AddFarmer: React.FC = () => {
                 fontSize: '1.1rem',
                 padding: '18px 48px',
                 minWidth: '200px',
+                borderRadius: '8px',
                 opacity: canProceedToNext() ? 1 : 0.7,
                 cursor: canProceedToNext() ? 'pointer' : 'not-allowed',
+                transition: 'all 0.3s ease',
               }}
             >
               {form.currentStep === 'producer' && 'Próximo: Fazendas →'}

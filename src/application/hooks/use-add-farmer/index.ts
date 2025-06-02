@@ -1,8 +1,11 @@
-// src/hooks/useAddFarmer.ts - VERSÃO FUNCIONAL MÍNIMA
-import { useCallback, useMemo, useState } from 'react';
+// src/hooks/useAddFarmer.ts - VERSÃO COM RASCUNHO FUNCIONAL
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { DocumentType } from '@enums';
 import { useToast } from '@hooks';
+import { validateDocument, validatePhone } from '@validations';
+
+const DRAFT_KEY = 'addFarmer_draft_v1';
 
 export const useAddFarmer = () => {
   const { toast } = useToast();
@@ -16,24 +19,25 @@ export const useAddFarmer = () => {
       phone: '',
       profilePhoto: '',
     },
-    farms: [],
-    crops: {},
+    farms: [] as any[],
+    crops: {} as Record<string, any[]>,
     isLoading: false,
     currentStep: 'producer' as 'producer' | 'farms' | 'crops' | 'review',
     errors: {},
     hasUnsavedChanges: false,
   });
 
-  // 🎯 VALIDAÇÕES BÁSICAS
+  // 🎯 VALIDAÇÕES REAIS
   const validation = useMemo(
     () => ({
       producer: {
         nameValid: form.producer.name.trim().length >= 3,
-        documentValid: form.producer.document.replace(/\D/g, '').length >= 11,
+        documentValid: validateDocument(form.producer.document, form.producer.documentType),
         emailValid: !form.producer.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.producer.email),
-        phoneValid: true,
+        phoneValid: !form.producer.phone || validatePhone(form.producer.phone),
         photoValid:
-          !form.producer.profilePhoto || /^https?:\/\/.+/.test(form.producer.profilePhoto),
+          !form.producer.profilePhoto ||
+          /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(form.producer.profilePhoto),
       },
       farms: {},
       crops: {},
@@ -41,85 +45,202 @@ export const useAddFarmer = () => {
     [form.producer],
   );
 
-  // 📊 PROGRESSO SIMPLES
+  // 📊 PROGRESSO CORRETO
   const progress = useMemo(() => {
-    const { nameValid, documentValid } = validation.producer;
     let validFields = 0;
-    const totalFields = 2;
+    let totalFields = 0;
 
-    if (nameValid) validFields++;
-    if (documentValid) validFields++;
+    // Campos obrigatórios do produtor
+    totalFields += 2; // nome + documento
+    if (validation.producer.nameValid) validFields++;
+    if (validation.producer.documentValid) validFields++;
 
-    return Math.round((validFields / totalFields) * 100);
-  }, [validation.producer]);
+    // Fazendas (pelo menos 1)
+    totalFields += 1;
+    if (form.farms.length > 0) validFields++;
 
-  // 📊 ESTATÍSTICAS BÁSICAS
+    const calculated = Math.round((validFields / totalFields) * 100);
+    console.log('📊 Progress calculated:', { validFields, totalFields, calculated });
+    return calculated;
+  }, [validation.producer, form.farms.length]);
+
+  // 📊 ESTATÍSTICAS
   const stats = useMemo(
     () => ({
       totalFarms: form.farms.length,
-      totalArea: 0,
-      totalCrops: 0,
+      totalArea: form.farms.reduce((sum: number, f: any) => sum + (f.totalArea || 0), 0),
+      totalCrops: Object.values(form.crops).reduce((sum, crops) => sum + crops.length, 0),
       totalPlantedArea: 0,
       averageFarmSize: 0,
       utilizationRate: 0,
     }),
-    [form.farms],
+    [form.farms, form.crops],
   );
 
   // 👤 ATUALIZAR PRODUTOR
-  type ProducerUpdates = Partial<{
-    document: string;
-    name: string;
-    documentType: DocumentType;
-    email: string;
-    phone: string;
-    profilePhoto: string;
-  }>;
+  const updateProducer = useCallback((updates: any) => {
+    console.log('📝 Updating producer:', updates);
+    setForm((prev) => {
+      const newForm = {
+        ...prev,
+        producer: { ...prev.producer, ...updates },
+        hasUnsavedChanges: true,
+      };
+      console.log('📝 New producer state:', newForm.producer);
+      return newForm;
+    });
+  }, []);
 
-  const updateProducer = useCallback((updates: ProducerUpdates) => {
+  // 🎯 NAVEGAÇÃO COM LOGS
+  const nextStep = useCallback(() => {
+    console.log('➡️ Next step called, current:', form.currentStep);
+    console.log('📋 Current form data:', form);
+
+    const steps = ['producer', 'farms', 'crops', 'review'];
+    const currentIndex = steps.indexOf(form.currentStep);
+
+    if (currentIndex < steps.length - 1) {
+      const nextStepName = steps[currentIndex + 1];
+      console.log('➡️ Moving to step:', nextStepName);
+
+      setForm((prev) => ({
+        ...prev,
+        currentStep: nextStepName as any,
+      }));
+
+      toast.success('Sucesso!', `✅ Avançando para: ${nextStepName}`);
+    }
+  }, [form, toast]);
+
+  const prevStep = useCallback(() => {
+    const steps = ['producer', 'farms', 'crops', 'review'];
+    const currentIndex = steps.indexOf(form.currentStep);
+    if (currentIndex > 0) {
+      setForm((prev) => ({
+        ...prev,
+        currentStep: steps[currentIndex - 1] as any,
+      }));
+    }
+  }, [form.currentStep]);
+
+  // 🏭 FAZENDAS
+  const addFarm = useCallback(() => {
+    const newFarm = {
+      tempId: `temp_${Date.now()}`,
+      name: '',
+      city: '',
+      state: '',
+      totalArea: 0,
+      agriculturalArea: 0,
+      vegetationArea: 0,
+      productivity: 50,
+      sustainability: 50,
+      technology: 50,
+    };
+
     setForm((prev) => ({
       ...prev,
-      producer: { ...prev.producer, ...updates },
+      farms: [...prev.farms, newFarm],
+      hasUnsavedChanges: true,
+    }));
+
+    toast.success('Sucesso!', '🏭 Nova fazenda adicionada!');
+  }, [toast]);
+
+  const removeFarm = useCallback((tempId: string) => {
+    setForm((prev) => ({
+      ...prev,
+      farms: prev.farms.filter((f: any) => f.tempId !== tempId),
       hasUnsavedChanges: true,
     }));
   }, []);
 
-  // 🏭 FUNÇÕES BÁSICAS (STUBS)
-  const addFarm = useCallback(() => {
-    console.log('addFarm chamado');
-    setForm((prev) => ({ ...prev, currentStep: 'farms' }));
+  const updateFarm = useCallback((tempId: string, updates: any) => {
+    setForm((prev) => ({
+      ...prev,
+      farms: prev.farms.map((f: any) => (f.tempId === tempId ? { ...f, ...updates } : f)),
+      hasUnsavedChanges: true,
+    }));
   }, []);
 
-  const removeFarm = useCallback(() => {}, []);
-  const updateFarm = useCallback(() => {}, []);
+  // 🌱 CULTURAS (stubs)
   const addCrop = useCallback(() => {}, []);
   const removeCrop = useCallback(() => {}, []);
   const updateCrop = useCallback(() => {}, []);
 
-  // 💾 RASCUNHO
+  // 💾 RASCUNHO COM FUNCIONALIDADE REAL
   const saveDraft = useCallback(() => {
-    toast.success('Sucesso!', '💾 Rascunho salvo!');
-  }, [toast]);
+    try {
+      const draftData = {
+        ...form,
+        savedAt: new Date().toISOString(),
+      };
+
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
+      console.log('💾 Draft saved:', draftData);
+
+      toast.success('Sucesso!', '💾 Rascunho salvo!');
+      setForm((prev) => ({ ...prev, hasUnsavedChanges: false }));
+    } catch (error) {
+      console.error('❌ Error saving draft:', error);
+      toast.error('Erro!', 'Falha ao salvar rascunho');
+    }
+  }, [form, toast]);
 
   const loadDraft = useCallback(() => {
-    console.log('Carregando rascunho...');
+    try {
+      const draftData = localStorage.getItem(DRAFT_KEY);
+      if (draftData) {
+        const parsed = JSON.parse(draftData);
+        console.log('📂 Loading draft:', parsed);
+
+        // Remover dados de controle antes de aplicar
+        const { savedAt, hasUnsavedChanges, isLoading, errors, ...formData } = parsed;
+
+        setForm((prev) => ({
+          ...prev,
+          ...formData,
+          hasUnsavedChanges: false,
+        }));
+
+        toast.success(
+          'Sucesso!',
+          `📂 Rascunho carregado! (Salvo em: ${new Date(savedAt).toLocaleString()})`,
+        );
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('❌ Error loading draft:', error);
+      toast.error('Erro!', 'Falha ao carregar rascunho');
+      return false;
+    }
+  }, [toast]);
+
+  const clearDraft = useCallback(() => {
+    localStorage.removeItem(DRAFT_KEY);
+    console.log('🗑️ Draft cleared');
   }, []);
+
+  // 📂 CARREGAR RASCUNHO AO INICIALIZAR
+  useEffect(() => {
+    const hasLoaded = loadDraft();
+    if (hasLoaded) {
+      console.log('🚀 Draft loaded on mount');
+    }
+  }, [loadDraft]);
 
   // 📤 SUBMISSÃO
   const submitForm = useCallback(async () => {
-    if (progress < 100) {
-      toast.error('Erro!', 'Complete todos os campos obrigatórios');
-      return;
-    }
+    console.log('📤 Submitting form:', form);
 
     setForm((prev) => ({ ...prev, isLoading: true }));
 
-    // Simular API
     setTimeout(() => {
-      toast.success('Sucesso!', '✅ Produtor cadastrado!');
-      setForm((prev) => ({ ...prev, isLoading: false }));
+      toast.success('Sucesso!', '✅ Produtor cadastrado com sucesso!');
+      clearDraft();
 
-      // Resetar form
+      // Reset completo
       setForm({
         producer: {
           document: '',
@@ -137,7 +258,7 @@ export const useAddFarmer = () => {
         hasUnsavedChanges: false,
       });
     }, 2000);
-  }, [progress, toast]);
+  }, [form, toast, clearDraft]);
 
   return {
     form,
@@ -154,6 +275,9 @@ export const useAddFarmer = () => {
     updateCrop,
     saveDraft,
     loadDraft,
+    clearDraft,
     submitForm,
+    nextStep,
+    prevStep,
   };
 };

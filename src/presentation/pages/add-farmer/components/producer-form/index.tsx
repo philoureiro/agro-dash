@@ -5,8 +5,8 @@ import { Input, PhotoPreview } from '@components';
 import { Producer } from '@entities';
 import { DocumentType } from '@enums';
 import { formatDocument } from '@validations';
+import { formatPhone, validatePhone } from '@validations';
 
-import { formatPhone, validatePhone } from '../../utils';
 import { FormCard, FormGrid } from './styles';
 
 interface ProducerFormProps {

@@ -4,15 +4,15 @@ import React from 'react';
 import { Button } from '@components';
 import { Crop, Farm } from '@entities';
 
+import { RemoveButton } from '../farm-form/styles';
 import {
   FloatingLabel,
   FormCard,
   FormGrid,
   InputGroup,
-  RemoveButton,
   StyledInput,
   StyledSelect,
-} from '../../../../../../styles';
+} from '../producer-form/styles';
 import { CropCard, CropHeader, CropTypeIcon, CropValidation, ProductivityMeter } from './styles';
 
 // Define a type for tempId
