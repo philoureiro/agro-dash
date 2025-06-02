@@ -10,7 +10,8 @@
     "start": "vite preview",
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:check": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\"",
-    "ts:check": "tsc --noEmit"
+    "ts:check": "tsc --noEmit",
+    "test": "vitest run --reporter=verbose"
   },
   "dependencies": {
     "@mui/icons-material": "^6.4.6",

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { Button, Text } from '@components';
+import { Button, LoadingOverlay, Text } from '@components';
 import { useToast } from '@hooks';
 import { DashboardService } from '@services';
 import { useThemeMode } from '@theme';
@@ -41,8 +41,6 @@ import {
   InsightIcon,
   InsightTitle,
   InsightsSection,
-  LoadingOverlay,
-  LoadingSpinner,
   MetricCard,
   MetricContent,
   MetricIcon,
@@ -235,21 +233,29 @@ export const Dashboard = () => {
       setIsExporting(false);
     }
   };
-  // ⚡ LOADING STATE
+
   if (isLoading) {
     return (
-      <LoadingOverlay>
-        <LoadingSpinner>
-          <div />
-          <div />
-          <div />
-        </LoadingSpinner>
-        <Text>
-          {selectedFilter !== 'all'
+      <LoadingOverlay
+        isVisible={isLoading}
+        isDark={isDark}
+        type="farms"
+        variant="wave"
+        title="🚜 Carregando Dashboard"
+        subtitle="Sincronizando dados do campo"
+        loadingText={
+          selectedFilter !== 'all'
             ? `Filtrando por ${getFilterLabel(selectedFilter)}...`
-            : 'Carregando dashboard...'}
-        </Text>
-      </LoadingOverlay>
+            : 'Carregando dashboard...'
+        }
+        stats={[
+          { label: 'Total de Fazendas', value: '2.235 ha' },
+          { label: 'Total de Hectares', value: '2' },
+          { label: 'Tecnologia Média', value: '79,0%' },
+        ]}
+        spinnerColor="#27ae60"
+        spinnerSize="large"
+      />
     );
   }
 

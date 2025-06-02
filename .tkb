@@ -69,12 +69,12 @@
     "mXXDmapCHtlPlnibkNysI": {
       "id": "mXXDmapCHtlPlnibkNysI",
       "description": "overlayer em settings",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "EBRdnHDiiAHed8_jYlsmh": {
       "id": "EBRdnHDiiAHed8_jYlsmh",
       "description": "overlayer em dashboards",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "PW8QlfxygoxRqTCvnpzhe": {
       "id": "PW8QlfxygoxRqTCvnpzhe",
@@ -104,7 +104,7 @@
     "1h0sRFYXHBqNFiz1DEVxJ": {
       "id": "1h0sRFYXHBqNFiz1DEVxJ",
       "description": "passar barra e filtros para cima da tela de pesquisar",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "WWA8G4PGL_LB6rRn3mdQ-": {
       "id": "WWA8G4PGL_LB6rRn3mdQ-",
@@ -125,14 +125,11 @@
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
         "fTO5wUNun7lNV8HZqMU-v",
-        "mXXDmapCHtlPlnibkNysI",
-        "EBRdnHDiiAHed8_jYlsmh",
         "PW8QlfxygoxRqTCvnpzhe",
         "NiE1YQclkwlUaNwSGUKdE",
         "E8pdeIFea5N3lehhw2X-W",
         "_fT4Nd66zh8QZv-i2-cci",
         "GO6JA1dNpMZH7oouAn8-d",
-        "1h0sRFYXHBqNFiz1DEVxJ",
         "WWA8G4PGL_LB6rRn3mdQ-"
       ]
     },
@@ -149,7 +146,10 @@
         "MCUusjh74A5GME_se7w7z",
         "fTOauLq8-Vum6n1zCQKyM",
         "j985HFM-bxBbxXCQWMLyD",
-        "i9ZNZTPHO-HBaeosyaZ0f"
+        "i9ZNZTPHO-HBaeosyaZ0f",
+        "1h0sRFYXHBqNFiz1DEVxJ",
+        "EBRdnHDiiAHed8_jYlsmh",
+        "mXXDmapCHtlPlnibkNysI"
       ]
     }
   ]

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { LoadingOverlay } from '@components';
 import { useToast } from '@hooks';
 import { useAppStore } from '@storage';
 import { useThemeMode } from '@theme';
@@ -509,32 +510,18 @@ export const Settings: React.FC = () => {
         </ModalContent>
       </Modal>
 
-      {/* 🔄 OVERLAY DE LOADING */}
       {(isExporting || isResetting) && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-            color: 'white',
-            fontSize: '18px',
-            fontWeight: 'bold',
-          }}
-        >
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '48px', marginBottom: '20px' }}>
-              {isResetting ? '🔄' : '📤'}
-            </div>
-            <div>{isResetting ? 'Processando reset...' : 'Exportando dados...'}</div>
-          </div>
-        </div>
+        <LoadingOverlay
+          isVisible={isExporting || isResetting}
+          isDark={isDark}
+          type={isExporting ? 'generating' : 'deleting'}
+          variant="dots"
+          title={isExporting ? '📦 Exportando Dados do Sistema' : '🗑️ Deletando Dados do Sistema'}
+          subtitle="Sincronizando dados do campo"
+          loadingText={isResetting ? 'Processando reset...' : 'Exportando dados...'}
+          spinnerColor="#27ae60"
+          spinnerSize="large"
+        />
       )}
     </SettingsContainer>
   );
