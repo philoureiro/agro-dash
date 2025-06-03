@@ -124,7 +124,7 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
           value={producer.name || ''}
           onChange={(value) => onUpdate({ name: value })}
           isDark={isDark}
-          valid={validation.producer.nameValid}
+          valid={validation.producer.nameValid || undefined}
           validationMessage={
             producer.name
               ? validation.producer.nameValid
