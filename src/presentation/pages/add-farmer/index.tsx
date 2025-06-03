@@ -3,8 +3,9 @@ import { FcOpenedFolder } from 'react-icons/fc';
 import { IoIosCheckmarkCircle } from 'react-icons/io';
 import { IoArrowBackOutline, IoArrowForwardOutline } from 'react-icons/io5';
 import { TbTrashXFilled } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
-import { Button, DraftBadge, LoadingOverlay, StatsHeader } from '@components';
+import { Button, ConfirmModal, DraftBadge, LoadingOverlay, StatsHeader } from '@components';
 import { Text } from '@components';
 import { useAddFarmer } from '@hooks';
 import { useThemeMode } from '@theme';
@@ -16,6 +17,7 @@ import { AddFarmerContainer } from './components/producer-form/styles';
 import { ActionsBox, FormActions } from './styles';
 
 export const AddFarmer: React.FC = () => {
+  const navigate = useNavigate();
   const { themeMode: theme } = useThemeMode();
 
   const [showDraftBadge, setShowDraftBadge] = useState<{
@@ -31,6 +33,14 @@ export const AddFarmer: React.FC = () => {
     position: 'top-right',
     duration: 3000,
   });
+
+  // 🗑️ ESTADO DO MODAL DE CONFIRMAÇÃO
+  const [confirmModal, setConfirmModal] = useState<{
+    isVisible: boolean;
+    type: 'clearDraft' | 'submit';
+  } | null>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isDark = theme === 'dark';
 
@@ -98,6 +108,109 @@ export const AddFarmer: React.FC = () => {
         return false;
     }
   };
+
+  // 🚀 FUNÇÃO PARA FINALIZAR E NAVEGAR
+  const handleSubmitForm = async () => {
+    if (progress < 100) {
+      return; // Não permite submeter se não estiver 100%
+    }
+
+    setConfirmModal({
+      isVisible: true,
+      type: 'submit',
+    });
+  };
+
+  // 🗑️ FUNÇÃO PARA LIMPAR RASCUNHO COM CONFIRMAÇÃO
+  const handleClearDraft = () => {
+    setConfirmModal({
+      isVisible: true,
+      type: 'clearDraft',
+    });
+  };
+
+  // 🎯 CONFIRMAR AÇÕES DO MODAL
+  const handleConfirmAction = async () => {
+    if (!confirmModal) return;
+
+    if (confirmModal.type === 'submit') {
+      setIsSubmitting(true);
+
+      try {
+        await submitForm();
+
+        setShowDraftBadge({
+          isVisible: true,
+          message: 'Cadastro finalizado com sucesso!',
+          icon: '🎉',
+          position: 'top-right',
+          duration: 2000,
+        });
+
+        // 🎯 NAVEGAR APÓS SUCESSO COM DELAY PARA UX
+        setTimeout(() => {
+          navigate('/pesquisar');
+        }, 2500);
+      } catch (error) {
+        console.error('Erro ao finalizar cadastro:', error);
+
+        setShowDraftBadge({
+          isVisible: true,
+          message: 'Erro ao finalizar cadastro. Tente novamente.',
+          icon: '❌',
+          position: 'top-right',
+          duration: 4000,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else if (confirmModal.type === 'clearDraft') {
+      clearDraft();
+
+      setShowDraftBadge({
+        isVisible: true,
+        message: 'Rascunho limpo com sucesso',
+        icon: '🗑️',
+        position: 'top-right',
+        duration: 3000,
+      });
+    }
+
+    setConfirmModal(null);
+  };
+
+  // 🎯 CONTEÚDO DOS MODAIS
+  const getModalContent = () => {
+    if (!confirmModal) return {};
+
+    switch (confirmModal.type) {
+      case 'submit':
+        return {
+          icon: '🚀',
+          title: 'Finalizar Cadastro',
+          subtitle: 'Confirmar dados e finalizar',
+          message: `Você está prestes a finalizar o cadastro do produtor "${form.producer.name}" com ${stats.totalFarms} fazenda(s) e ${stats.totalCrops} cultura(s). Todos os dados serão salvos permanentemente.`,
+          confirmText: 'Sim, Finalizar Cadastro',
+          cancelText: 'Cancelar',
+        };
+
+      case 'clearDraft':
+        return {
+          icon: '🗑️',
+          title: 'Limpar Rascunho',
+          subtitle: 'Remover dados salvos temporariamente',
+          message:
+            'Tem certeza que deseja limpar o rascunho? Todos os dados não salvos permanentemente serão perdidos.',
+          confirmText: 'Sim, Limpar Rascunho',
+          cancelText: 'Cancelar',
+        };
+
+      default:
+        return {};
+    }
+  };
+
+  const modalContent = getModalContent();
 
   // 🎨 RENDERIZAR CONTEÚDO BASEADO NO STEP
   const renderStepContent = () => {
@@ -214,13 +327,13 @@ export const AddFarmer: React.FC = () => {
       />
 
       <LoadingOverlay
-        isVisible={form.isLoading}
+        isVisible={form.isLoading || isSubmitting}
         isDark={isDark}
         type="farms"
         variant="wave"
-        title="🚜 Cadastrando Produtor"
-        subtitle="Sincronizando dados do campo"
-        loadingText="Salvando informações..."
+        title={isSubmitting ? '🚀 Finalizando Cadastro' : '🚜 Cadastrando Produtor'}
+        subtitle={isSubmitting ? 'Salvando dados permanentemente' : 'Sincronizando dados do campo'}
+        loadingText={isSubmitting ? 'Processando cadastro...' : 'Salvando informações...'}
         stats={[
           { label: 'Total de Fazendas', value: stats.totalFarms.toString() },
           { label: 'Total de Hectares', value: `${stats.totalArea.toLocaleString()} ha` },
@@ -268,13 +381,14 @@ export const AddFarmer: React.FC = () => {
               <Button
                 isDark={isDark}
                 onClick={prevStep}
+                disabled={isSubmitting}
                 style={{
                   background: 'transparent',
                   border: `2px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
                   color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
                   padding: '12px 24px',
                   borderRadius: '8px',
-                  cursor: 'pointer',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s ease',
                   width: '150px',
                   height: '50px',
@@ -282,6 +396,7 @@ export const AddFarmer: React.FC = () => {
                   justifyContent: 'center',
                   display: 'flex',
                   alignItems: 'center',
+                  opacity: isSubmitting ? 0.5 : 1,
                 }}
               >
                 <IoArrowBackOutline size={20} /> Voltar
@@ -291,16 +406,8 @@ export const AddFarmer: React.FC = () => {
             {/* 🔥 BOTÃO LIMPAR RASCUNHO */}
             <Button
               isDark={isDark}
-              onClick={() => {
-                clearDraft();
-
-                setShowDraftBadge((prev) => ({
-                  ...prev,
-                  message: 'Rascunho limpo automaticamente',
-                  icon: '🗑️',
-                  isVisible: true,
-                }));
-              }}
+              onClick={handleClearDraft}
+              disabled={isSubmitting}
               style={{
                 background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
                 border: `1px solid ${isDark ? '#ef4444' : '#dc2626'}`,
@@ -309,12 +416,13 @@ export const AddFarmer: React.FC = () => {
                 borderRadius: '8px',
                 width: '210px',
                 height: '50px',
-                cursor: 'pointer',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 boxShadow: 'none',
                 justifyContent: 'center',
                 display: 'flex',
                 alignItems: 'center',
+                opacity: isSubmitting ? 0.5 : 1,
               }}
             >
               <TbTrashXFilled size={20} /> Limpar Rascunho
@@ -325,11 +433,11 @@ export const AddFarmer: React.FC = () => {
           {form.currentStep === 'review' ? (
             <Button
               isDark={isDark}
-              onClick={submitForm}
-              disabled={form.isLoading || progress < 100}
+              onClick={handleSubmitForm}
+              disabled={form.isLoading || progress < 100 || isSubmitting}
               style={{
                 background:
-                  progress === 100
+                  progress === 100 && !isSubmitting
                     ? 'linear-gradient(135deg, #37cb83, #27ae60)'
                     : 'rgba(149, 165, 166, 0.5)',
                 border: 'none',
@@ -341,24 +449,48 @@ export const AddFarmer: React.FC = () => {
                 justifyContent: 'center',
                 display: 'flex',
                 alignItems: 'center',
-                opacity: progress === 100 ? 1 : 0.7,
-                cursor: progress === 100 ? 'pointer' : 'not-allowed',
+                gap: '0.5rem',
+                opacity: progress === 100 && !isSubmitting ? 1 : 0.7,
+                cursor: progress === 100 && !isSubmitting ? 'pointer' : 'not-allowed',
                 transition: 'all 0.3s ease',
               }}
             >
-              {progress === 100
-                ? <IoIosCheckmarkCircle size={20} color={'#27ae60'} /> + ' Finalizar Cadastro'
-                : <FcOpenedFolder size={20} /> + ` Complete o formulário (${progress}%)`}
+              {isSubmitting ? (
+                <>
+                  <div
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      border: '2px solid transparent',
+                      borderTop: '2px solid white',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite',
+                    }}
+                  />
+                  Finalizando...
+                </>
+              ) : progress === 100 ? (
+                <>
+                  <IoIosCheckmarkCircle size={20} />
+                  Finalizar Cadastro
+                </>
+              ) : (
+                <>
+                  <FcOpenedFolder size={20} />
+                  Complete o formulário ({progress}%)
+                </>
+              )}
             </Button>
           ) : (
             <Button
               isDark={isDark}
               onClick={nextStep}
-              disabled={!canProceedToNext()}
+              disabled={!canProceedToNext() || isSubmitting}
               style={{
-                background: canProceedToNext()
-                  ? 'linear-gradient(135deg, #37cb83, #27ae60)'
-                  : 'rgba(149, 165, 166, 0.5)',
+                background:
+                  canProceedToNext() && !isSubmitting
+                    ? 'linear-gradient(135deg, #37cb83, #27ae60)'
+                    : 'rgba(149, 165, 166, 0.5)',
                 border: 'none',
                 color: 'white',
                 fontSize: '1.1rem',
@@ -369,8 +501,9 @@ export const AddFarmer: React.FC = () => {
                 justifyContent: 'center',
                 display: 'flex',
                 alignItems: 'center',
-                opacity: canProceedToNext() ? 1 : 0.7,
-                cursor: canProceedToNext() ? 'pointer' : 'not-allowed',
+                gap: '0.5rem',
+                opacity: canProceedToNext() && !isSubmitting ? 1 : 0.7,
+                cursor: canProceedToNext() && !isSubmitting ? 'pointer' : 'not-allowed',
                 transition: 'all 0.3s ease',
               }}
             >
@@ -382,6 +515,31 @@ export const AddFarmer: React.FC = () => {
           )}
         </FormActions>
       </AddFarmerContainer>
+
+      {/* 🚀 MODAL DE CONFIRMAÇÃO SUPREMO */}
+      <ConfirmModal
+        isVisible={!!confirmModal?.isVisible}
+        isDark={isDark}
+        type="confirm"
+        title={modalContent.icon ? `${modalContent.icon} ${modalContent.title}` : ''}
+        subtitle={modalContent.subtitle || ''}
+        message={modalContent.message || ''}
+        confirmText={modalContent.confirmText || 'Confirmar'}
+        cancelText={modalContent.cancelText || 'Cancelar'}
+        onConfirm={handleConfirmAction}
+        onCancel={() => setConfirmModal(null)}
+        loading={isSubmitting && confirmModal?.type === 'submit'}
+      />
+
+      {/* 🎨 ESTILOS PARA ANIMAÇÃO DE LOADING */}
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
     </div>
   );
 };

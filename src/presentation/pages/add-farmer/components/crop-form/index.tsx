@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { BsFillClipboard2PlusFill } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa6';
+import { MdDeleteOutline } from 'react-icons/md';
 import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
+import { useNavigate } from 'react-router-dom';
 
-import { Button, Input, ProgressBar } from '@components';
+import {
+  AutoFillButton,
+  Button,
+  ConfirmModal,
+  Input,
+  PhotoPreview,
+  ProgressBar,
+} from '@components';
 import { Crop, Farm } from '@entities';
 import { useAutoFill } from '@hooks';
 
@@ -17,6 +26,7 @@ import {
   CropStatusBadge,
   CropTypeIcon,
   CropValidation,
+  DeleteCropButton,
   FarmSelector,
   HeaderBox,
   ProductivityMeter,
@@ -46,10 +56,18 @@ export const CropForm: React.FC<CropFormProps> = ({
   onUpdateCrop,
   isDark,
 }) => {
+  const navigate = useNavigate();
+
   // 🎯 ESTADOS SUPREMOS
   const [expandedFarms, setExpandedFarms] = useState<Record<string, boolean>>({});
   const [expandedCrops, setExpandedCrops] = useState<Record<string, boolean>>({});
   const [loadingFills, setLoadingFills] = useState<Record<string, boolean>>({});
+  const [confirmModal, setConfirmModal] = useState<{
+    isVisible: boolean;
+    farmId: string;
+    cropId: string;
+    cropName: string;
+  } | null>(null);
 
   // 🔥 AUTO-FILL SUPREMO
   const { autoFill } = useAutoFill();
@@ -95,143 +113,96 @@ export const CropForm: React.FC<CropFormProps> = ({
     }));
   };
 
-  // 🔥 AUTO-FILL SUPREMO PARA CULTURA
-  const handleAutoFillCrop = async (farmId: string, cropId: string, crop: Crop) => {
-    const fillKey = `${farmId}-${cropId}`;
-    setLoadingFills((prev) => ({ ...prev, [fillKey]: true }));
+  // 🎯 SCHEMA PARA AUTO-FILL
+  const getAutoFillSchema = (availableArea: number, isFirstCrop: boolean) => ({
+    type: {
+      type: 'select' as const,
+      options: cropTypes.map((ct) => ct.value),
+    },
+    harvestYear: {
+      type: 'year' as const,
+      min: 2025,
+      max: 2028,
+    },
+    plantedArea: {
+      type: 'number' as const,
+      min: 1,
+      max: Math.max(availableArea, 50),
+    },
+    expectedYield: {
+      type: 'smartYield' as const,
+    },
+    plantingDate: {
+      type: 'smartPlantingDate' as const,
+    },
+    harvestDate: {
+      type: 'smartHarvestDate' as const,
+    },
+    cropPhoto: {
+      type: 'url' as const,
+    },
+    notes: {
+      type: 'smartCropNotes' as const,
+    },
+  });
 
-    try {
-      // 🎯 SCHEMA SUPREMO PARA CULTURAS
-      const cropSchema = {
-        type: {
-          type: 'select' as const,
-          options: cropTypes.map((ct) => ct.value),
-        },
-        harvestYear: {
-          type: 'year' as const,
-          min: 2025,
-          max: 2028,
-        },
-        plantedArea: {
-          type: 'number' as const,
-          min: 1,
-          max: 500,
-        },
-        expectedYield: {
-          type: 'number' as const,
-          min: 1,
-          max: 20,
-        },
-        plantingDate: {
-          type: 'date' as const,
-        },
-        harvestDate: {
-          type: 'date' as const,
-        },
-        cropPhoto: {
-          type: 'url' as const,
-        },
-        notes: {
-          type: 'textarea' as const,
-        },
-      };
+  // 🔥 HANDLER PARA AUTO-FILL UPDATE
+  const handleAutoFillUpdate =
+    (farmId: string, cropId: string, availableArea: number, isFirstCrop: boolean) =>
+    (path: string, value: string | number | Date) => {
+      const updates: Partial<Crop> = {};
 
-      // 🎯 DADOS ATUAIS DA CULTURA
-      const currentCropData = {
-        type: crop.type,
-        harvestYear: crop.harvestYear,
-        plantedArea: crop.plantedArea,
-        expectedYield: crop.expectedYield,
-        plantingDate: crop.plantingDate,
-        harvestDate: crop.harvestDate,
-        cropPhoto: crop.cropPhoto,
-        notes: crop.notes,
-      };
+      switch (path) {
+        case 'type':
+          updates.type = value as string;
+          break;
+        case 'harvestYear':
+          updates.harvestYear = value as string;
+          break;
+        case 'plantedArea':
+          updates.plantedArea = value as number;
+          break;
+        case 'expectedYield':
+          updates.expectedYield = value as number;
+          break;
+        case 'plantingDate':
+          updates.plantingDate = value instanceof Date ? value : new Date(value as string);
+          break;
+        case 'harvestDate':
+          updates.harvestDate = value instanceof Date ? value : new Date(value as string);
+          break;
+        case 'cropPhoto':
+          updates.cropPhoto = value as string;
+          break;
+        case 'notes':
+          updates.notes = value as string;
+          break;
+      }
 
-      // 🚀 EXECUTA AUTO-FILL SUPREMO
-      autoFill(
-        cropSchema,
-        (path: string, value: string | number) => {
-          const updates: Partial<Crop> = {};
-
-          switch (path) {
-            case 'type':
-              updates.type = value as string;
-              break;
-            case 'harvestYear':
-              updates.harvestYear = value as string;
-              break;
-            case 'plantedArea':
-              updates.plantedArea = value as number;
-              break;
-            case 'expectedYield':
-              updates.expectedYield = value as number;
-              break;
-            case 'plantingDate':
-              updates.plantingDate = new Date(value as string);
-              break;
-            case 'harvestDate':
-              // 🎯 GERA DATA DE COLHEITA 3-6 MESES APÓS PLANTIO
-              if (crop.plantingDate || updates.plantingDate) {
-                const plantDate = updates.plantingDate || crop.plantingDate!;
-                const harvestDate = new Date(plantDate);
-                harvestDate.setMonth(harvestDate.getMonth() + Math.floor(Math.random() * 4) + 3);
-                updates.harvestDate = harvestDate;
-              } else {
-                updates.harvestDate = new Date(value as string);
-              }
-              break;
-            case 'cropPhoto':
-              updates.cropPhoto = value as string;
-              break;
-            case 'notes':
-              updates.notes = value as string;
-              break;
-          }
-
-          onUpdateCrop(farmId, cropId, updates);
-        },
-        {
-          currentData: currentCropData,
-          fillOnlyEmpty: true,
-          imageContext: 'crop',
-          cropType: crop.type,
-        },
-      );
-
-      // 🎉 EXPANDE AUTOMATICAMENTE APÓS PREENCHER
-      setExpandedCrops((prev) => ({ ...prev, [cropId]: true }));
-    } catch (error) {
-      console.error('Erro no auto-fill:', error);
-    } finally {
-      // ⏱️ DELAY PARA UX
-      setTimeout(() => {
-        setLoadingFills((prev) => ({ ...prev, [fillKey]: false }));
-      }, 1000);
-    }
-  };
-
-  // 🎯 CALCULA STATUS DA CULTURA
-  const getCropStatus = (crop: Crop): 'planned' | 'growing' | 'ready' | 'harvested' => {
-    const now = new Date();
-
-    if (!crop.plantingDate) return 'planned';
-    if (!crop.harvestDate) return 'growing';
-
-    const plantDate = new Date(crop.plantingDate);
-    const harvestDate = new Date(crop.harvestDate);
-
-    if (now < plantDate) return 'planned';
-    if (now >= plantDate && now < harvestDate) return 'growing';
-    if (now >= harvestDate) return 'harvested';
-
-    return 'ready';
-  };
+      onUpdateCrop(farmId, cropId, updates);
+    };
 
   // 🎯 VERIFICA SE CULTURA ESTÁ VÁLIDA
   const isCropValid = (farmId: string, cropId: string): boolean => {
     const cropValidation = validation.crops[farmId]?.[cropId];
     return cropValidation?.typeValid && cropValidation?.areaValid && cropValidation?.datesValid;
+  };
+
+  // 🗑️ HANDLER PARA DELETAR CULTURA
+  const handleDeleteCrop = (farmId: string, cropId: string, cropName: string) => {
+    setConfirmModal({
+      isVisible: true,
+      farmId,
+      cropId,
+      cropName,
+    });
+  };
+
+  const confirmDeleteCrop = () => {
+    if (confirmModal) {
+      onRemoveCrop(confirmModal.farmId, confirmModal.cropId);
+      setConfirmModal(null);
+    }
   };
 
   // 🎯 SE NÃO HÁ FAZENDAS
@@ -281,7 +252,7 @@ export const CropForm: React.FC<CropFormProps> = ({
               borderRadius: '12px',
               border: isDark
                 ? '1px solid rgba(55, 203, 131, 0.3)'
-                : '1px solid rgba(55, 203, 131, 0.946)',
+                : '1px solid rgba(55, 203, 131, 0.2)',
             }}
           >
             {Object.values(crops).flat().length} cultura
@@ -456,9 +427,19 @@ export const CropForm: React.FC<CropFormProps> = ({
                     const isValid = isCropValid(farm.tempId, crop.id);
                     const cropTypeInfo = cropTypes.find((ct) => ct.value === crop.type);
                     const isCropExpanded = expandedCrops[crop.id] ?? false;
-                    const cropStatus = getCropStatus(crop);
-                    const fillKey = `${farm.tempId}-${crop.id}`;
-                    const isAutoFilling = loadingFills[fillKey];
+                    const isFirstCrop = cropIndex === 0;
+
+                    // 🎯 DADOS ATUAIS PARA AUTO-FILL
+                    const currentCropData = {
+                      type: crop.type,
+                      harvestYear: crop.harvestYear,
+                      plantedArea: crop.plantedArea,
+                      expectedYield: crop.expectedYield,
+                      plantingDate: crop.plantingDate,
+                      harvestDate: crop.harvestDate,
+                      cropPhoto: crop.cropPhoto,
+                      notes: crop.notes,
+                    };
 
                     return (
                       <CropCard
@@ -494,17 +475,10 @@ export const CropForm: React.FC<CropFormProps> = ({
                                 }}
                               >
                                 {cropTypeInfo?.label || `Cultura #${cropIndex + 1}`}
-                                <CropStatusBadge status={cropStatus} isDark={isDark}>
-                                  {cropStatus}
-                                </CropStatusBadge>
-                                {isValid && <BsFillClipboard2PlusFill size={16} color="#27ae60" />}
-                                {!isValid && crop.type && (
-                                  <BsFillClipboard2PlusFill size={16} color="#E74C3C" />
-                                )}
                                 {isCropExpanded ? (
-                                  <BsFillClipboard2PlusFill size={16} />
+                                  <TiArrowUpThick size={16} />
                                 ) : (
-                                  <BsFillClipboard2PlusFill size={16} />
+                                  <TiArrowDownThick size={16} />
                                 )}
                               </h4>
 
@@ -534,40 +508,37 @@ export const CropForm: React.FC<CropFormProps> = ({
 
                           {/* 🎯 BOTÕES DE AÇÃO */}
                           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                            <Button
+                            <AutoFillButton
+                              schema={getAutoFillSchema(availableArea, isFirstCrop)}
+                              onUpdate={handleAutoFillUpdate(
+                                farm.tempId,
+                                crop.id,
+                                availableArea,
+                                isFirstCrop,
+                              )}
+                              currentData={currentCropData}
                               isDark={isDark}
-                              onClick={() => handleAutoFillCrop(farm.tempId, crop.id, crop)}
-                              disabled={isAutoFilling}
-                              style={{
-                                background: isAutoFilling
-                                  ? 'rgba(52, 152, 219, 0.3)'
-                                  : 'linear-gradient(135deg, #3498db, #2980b9)',
-                                border: 'none',
-                                borderRadius: '6px',
-                                padding: '8px 12px',
-                                color: 'white',
-                                fontSize: '0.8rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.3rem',
-                                cursor: isAutoFilling ? 'not-allowed' : 'pointer',
-                                opacity: isAutoFilling ? 0.7 : 1,
-                              }}
-                            >
-                              <BsFillClipboard2PlusFill
-                                size={12}
-                                className={isAutoFilling ? 'animate-spin' : ''}
-                              />
-                              {isAutoFilling ? 'Preenchendo...' : 'Auto-Fill'}
-                            </Button>
+                              tooltipPosition="left"
+                              size="small"
+                              fillOnlyEmpty={true}
+                              imageContext="crop"
+                              cropType={crop.type}
+                              availableArea={availableArea}
+                              isFirstCrop={isFirstCrop}
+                            />
 
-                            <RemoveButton
+                            <DeleteCropButton
                               isDark={isDark}
-                              onClick={() => onRemoveCrop(farm.tempId, crop.id)}
-                              style={{ padding: '8px 12px', fontSize: '0.8rem' }}
+                              onClick={() =>
+                                handleDeleteCrop(
+                                  farm.tempId,
+                                  crop.id,
+                                  cropTypeInfo?.label || 'Cultura',
+                                )
+                              }
                             >
-                              <BsFillClipboard2PlusFill size={12} /> Remover
-                            </RemoveButton>
+                              <MdDeleteOutline size={16} />
+                            </DeleteCropButton>
                           </div>
                         </CropHeader>
 
@@ -760,46 +731,6 @@ export const CropForm: React.FC<CropFormProps> = ({
                               </div>
                             </FormGrid>
 
-                            {/* 📊 MÉTRICAS DE PRODUTIVIDADE */}
-                            {crop.plantedArea &&
-                              crop.plantedArea > 0 &&
-                              crop.expectedYield &&
-                              crop.expectedYield > 0 && (
-                                <ProductivityMeter isDark={isDark}>
-                                  <div className="metric">
-                                    <span className="label">Produção Estimada:</span>
-                                    <span className="value">
-                                      {(crop.plantedArea * crop.expectedYield).toLocaleString()} ton
-                                    </span>
-                                  </div>
-                                  <div className="metric">
-                                    <span className="label">Utilização da Fazenda:</span>
-                                    <span className="value">
-                                      {farm.agriculturalArea > 0
-                                        ? (
-                                            (crop.plantedArea / farm.agriculturalArea) *
-                                            100
-                                          ).toFixed(1)
-                                        : 0}
-                                      %
-                                    </span>
-                                  </div>
-                                  <div className="progress-bar">
-                                    <div
-                                      className="progress-fill"
-                                      style={{
-                                        width: `${Math.min(farm.agriculturalArea > 0 ? (crop.plantedArea / farm.agriculturalArea) * 100 : 0, 100)}%`,
-                                        background:
-                                          farm.agriculturalArea > 0 &&
-                                          crop.plantedArea / farm.agriculturalArea > 1
-                                            ? '#E74C3C'
-                                            : '#27AE60',
-                                      }}
-                                    />
-                                  </div>
-                                </ProductivityMeter>
-                              )}
-
                             {/* ⚠️ VALIDAÇÕES VISUAIS */}
                             {crop.plantingDate &&
                               crop.harvestDate &&
@@ -819,43 +750,14 @@ export const CropForm: React.FC<CropFormProps> = ({
                                 </CropValidation>
                               )}
 
-                            {/* 🎯 PREVIEW DA IMAGEM */}
-                            {crop.cropPhoto && isValidImageUrl(crop.cropPhoto) && (
-                              <div
-                                style={{
-                                  marginTop: '1rem',
-                                  textAlign: 'center',
-                                  background: isDark
-                                    ? 'rgba(45, 52, 64, 0.3)'
-                                    : 'rgba(248, 250, 252, 0.5)',
-                                  borderRadius: '8px',
-                                  padding: '1rem',
-                                  border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                                }}
-                              >
-                                <img
-                                  src={crop.cropPhoto}
-                                  alt={`Preview de ${cropTypeInfo?.label || 'cultura'}`}
-                                  style={{
-                                    maxWidth: '200px',
-                                    maxHeight: '150px',
-                                    borderRadius: '8px',
-                                    objectFit: 'cover',
-                                    border: `2px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                                  }}
-                                  onError={(e) => {
-                                    e.currentTarget.style.display = 'none';
-                                  }}
+                            {/* 🎯 PREVIEW DA IMAGEM COM COMPONENTE PhotoPreview */}
+                            {crop.cropPhoto && (
+                              <div style={{ marginTop: '1rem' }}>
+                                <PhotoPreview
+                                  photoUrl={crop.cropPhoto}
+                                  isDark={isDark}
+                                  type="crop"
                                 />
-                                <p
-                                  style={{
-                                    fontSize: '0.8rem',
-                                    color: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
-                                    margin: '0.5rem 0 0 0',
-                                  }}
-                                >
-                                  📸 Preview da cultura
-                                </p>
                               </div>
                             )}
                           </>
@@ -1053,6 +955,21 @@ export const CropForm: React.FC<CropFormProps> = ({
           )}
         </div>
       )}
+
+      {/* 🗑️ MODAL DE CONFIRMAÇÃO PARA DELETAR */}
+      <ConfirmModal
+        isVisible={!!confirmModal?.isVisible}
+        isDark={isDark}
+        type="danger"
+        title="🗑️ Remover Cultura"
+        subtitle={`Tem certeza que deseja remover a cultura "${confirmModal?.cropName}"?`}
+        message="Esta ação não pode ser desfeita. Todos os dados desta cultura serão perdidos permanentemente."
+        confirmText="Sim, Remover"
+        cancelText="Cancelar"
+        onConfirm={confirmDeleteCrop}
+        onCancel={() => setConfirmModal(null)}
+        loading={false}
+      />
     </FormCard>
   );
 };
