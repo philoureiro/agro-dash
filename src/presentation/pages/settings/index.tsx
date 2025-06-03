@@ -190,7 +190,12 @@ export const Settings: React.FC = () => {
                 {`Voltar para o modo ${isDark ? 'Claro' : 'Escuro'} para facilitar leitura`}
               </OptionSubtext>
             </OptionInfo>
-            <ToggleSwitch isActive={isDark} isDark={isDark} onClick={handleThemeToggle} />
+            <ToggleSwitch
+              id="theme-toggle"
+              isActive={isDark}
+              isDark={isDark}
+              onClick={handleThemeToggle}
+            />
           </SettingOption>
         </SettingsCard>
 
