@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from 'react';
 
-import { useToast } from '@hooks';
-
 import { brazilianData } from './mocks';
 
 // 🎲 TIPOS DE CAMPO
@@ -35,8 +33,6 @@ interface CurrentFormData {
 }
 
 export const useAutoFill = () => {
-  const { toast } = useToast();
-
   // 🎲 GERADORES SUPREMOS - CORRIGIDOS
   const generators = useMemo(
     () => ({
@@ -129,7 +125,7 @@ export const useAutoFill = () => {
 
       // 📊 NÚMEROS - CORRIGIDOS
       number: (min = 1, max = 1000) => getRandomNumber(min, max),
-      percentage: (min = 30, max = 100) => getRandomNumber(min, max), // 🎯 Mínimo 30%
+      percentage: (min = 30, max = 100) => getRandomNumber(min, max),
       year: () => getRandomNumber(2024, 2028),
 
       // 📅 DATAS
@@ -179,11 +175,11 @@ export const useAutoFill = () => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  // 🔍 VERIFICA SE CAMPO ESTÁ VAZIO
+  // 🔍 VERIFICA SE CAMPO ESTÁ VAZIO - CORRIGIDO
   const isFieldEmpty = useCallback((value: string | number | undefined | null): boolean => {
     if (value === undefined || value === null) return true;
     if (typeof value === 'string') return value.trim() === '';
-    if (typeof value === 'number') return false;
+    if (typeof value === 'number') return value === 0; // 🎯 CORREÇÃO: 0 também é considerado vazio
     return true;
   }, []);
 
@@ -237,11 +233,11 @@ export const useAutoFill = () => {
         if (customData[fieldPath] !== undefined) {
           value = customData[fieldPath];
         }
-        // 🎯 Usar gerador customizado se fornecido
-        else if (config.custom) {
-          value = config.custom();
-        }
-        // 🎯 Usar geradores padrão
+        // 🎯 REMOVE a verificação de custom que estava retornando string vazia
+        // else if (config.custom) {
+        //   value = config.custom();
+        // }
+        // 🎯 Usar geradores padrão SEMPRE
         else {
           switch (config.type) {
             case 'select':
@@ -318,20 +314,8 @@ export const useAutoFill = () => {
           console.log(`✨ Campo '${fieldPath}' preenchido com: '${value}'`);
         }
       });
-
-      // 🎉 FEEDBACK
-      if (filledCount > 0) {
-        toast.success(
-          '✨ Sucesso!',
-          `${filledCount} campo(s) preenchido(s)${skippedCount > 0 ? ` • ${skippedCount} mantido(s)` : ''}!`,
-        );
-      } else if (skippedCount > 0) {
-        toast.info('🔒 Nenhum campo preenchido', 'Todos os campos já possuem valores!');
-      } else {
-        toast.warning('⚠️ Atenção', 'Nenhum campo foi processado');
-      }
     },
-    [toast, generators, isFieldEmpty],
+    [generators, isFieldEmpty],
   );
 
   return { autoFill };

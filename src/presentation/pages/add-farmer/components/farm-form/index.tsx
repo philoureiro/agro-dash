@@ -45,18 +45,18 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 }) => {
   // 🎯 SCHEMA PARA AUTO-FILL DA FAZENDA - CORRIGIDO
   const createFarmAutoFillSchema = () => ({
-    name: { type: 'text' as const, custom: () => '' }, // Remove valor atual para forçar geração
-    city: { type: 'text' as const, custom: () => '' },
+    name: { type: 'text' as const }, // 🎯 REMOVE custom completamente
+    city: { type: 'text' as const }, // 🎯 REMOVE custom completamente
     state: {
       type: 'select' as const,
       options: estados.map((e) => e.value).filter((v) => v !== ''),
     },
     zipCode: { type: 'cep' as const },
     farmPhoto: { type: 'url' as const },
-    totalArea: { type: 'number' as const, min: 50, max: 1000 }, // Área realista
+    totalArea: { type: 'number' as const, min: 50, max: 1000 },
     agriculturalArea: { type: 'number' as const, min: 20, max: 800 },
     vegetationArea: { type: 'number' as const, min: 10, max: 300 },
-    productivity: { type: 'percentage' as const, min: 30, max: 100 }, // Mínimo 30%
+    productivity: { type: 'percentage' as const, min: 30, max: 100 },
     sustainability: { type: 'percentage' as const, min: 30, max: 100 },
     technology: { type: 'percentage' as const, min: 30, max: 100 },
   });
@@ -105,17 +105,17 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
   // 🎯 DADOS ATUAIS DO FORMULÁRIO DE FAZENDA
   const getCurrentFarmData = (farm: Farm) => ({
-    name: farm.name,
-    city: farm.city,
-    state: farm.state,
-    zipCode: farm.zipCode,
-    farmPhoto: farm.farmPhoto,
-    totalArea: farm.totalArea,
-    agriculturalArea: farm.agriculturalArea,
-    vegetationArea: farm.vegetationArea,
-    productivity: farm.productivity,
-    sustainability: farm.sustainability,
-    technology: farm.technology,
+    name: farm.name || '', // String vazia para campos de texto
+    city: farm.city || '', // String vazia para campos de texto
+    state: farm.state || '',
+    zipCode: farm.zipCode || '',
+    farmPhoto: farm.farmPhoto || '',
+    totalArea: farm.totalArea || 0, // 🎯 Zero para números
+    agriculturalArea: farm.agriculturalArea || 0,
+    vegetationArea: farm.vegetationArea || 0,
+    productivity: farm.productivity || 0,
+    sustainability: farm.sustainability || 0,
+    technology: farm.technology || 0,
   });
 
   // 🎯 VALIDAR ÁREAS
@@ -398,8 +398,11 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 <Input
                   label="Área Total (hectares) *"
                   type="number"
-                  value={farm.totalArea?.toString() || ''}
-                  onChange={(value) => onUpdateFarm(farm.tempId, { totalArea: Number(value) || 0 })}
+                  value={farm.totalArea ? farm.totalArea.toString() : ''} // 🎯 CORREÇÃO: só mostra se > 0
+                  onChange={(value) => {
+                    const numValue = Number(value);
+                    onUpdateFarm(farm.tempId, { totalArea: numValue > 0 ? numValue : undefined }); // 🎯 undefined se <= 0
+                  }}
                   isDark={isDark}
                   valid={farm.totalArea ? validateTotalArea(farm.totalArea) : undefined}
                   validationMessage={
@@ -412,7 +415,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                   validationType={
                     farm.totalArea && validateTotalArea(farm.totalArea) ? 'success' : 'error'
                   }
-                  placeholder="0.00"
+                  placeholder="Ex: 150.00"
                 />
 
                 <Input
@@ -502,39 +505,33 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 <RangeSlider
                   label="Produtividade"
                   icon="🚜"
-                  value={farm.productivity || 50}
-                  onChange={(value) =>
-                    onUpdateFarm(farm.tempId, { productivity: Math.max(30, value) })
-                  }
+                  value={farm.productivity || 0} // 🎯 Inicia em 0
+                  onChange={(value) => onUpdateFarm(farm.tempId, { productivity: value })} // 🎯 Remove Math.max
                   color="#37cb83"
                   isDark={isDark}
-                  min={30} // Mínimo 30%
+                  min={0} // 🎯 Mínimo 0%
                   max={100}
                 />
 
                 <RangeSlider
                   label="Sustentabilidade"
                   icon="🌱"
-                  value={farm.sustainability || 50}
-                  onChange={(value) =>
-                    onUpdateFarm(farm.tempId, { sustainability: Math.max(30, value) })
-                  }
+                  value={farm.sustainability || 0} // 🎯 Inicia em 0
+                  onChange={(value) => onUpdateFarm(farm.tempId, { sustainability: value })} // 🎯 Remove Math.max
                   color="#27ae60"
                   isDark={isDark}
-                  min={30} // Mínimo 30%
+                  min={0} // 🎯 Mínimo 0%
                   max={100}
                 />
 
                 <RangeSlider
                   label="Tecnologia"
                   icon="🔬"
-                  value={farm.technology || 50}
-                  onChange={(value) =>
-                    onUpdateFarm(farm.tempId, { technology: Math.max(30, value) })
-                  }
+                  value={farm.technology || 0} // 🎯 Inicia em 0
+                  onChange={(value) => onUpdateFarm(farm.tempId, { technology: value })} // 🎯 Remove Math.max
                   color="#3498db"
                   isDark={isDark}
-                  min={30} // Mínimo 30%
+                  min={0} // 🎯 Mínimo 0%
                   max={100}
                 />
               </div>
