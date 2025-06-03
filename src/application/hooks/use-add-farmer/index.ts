@@ -328,6 +328,7 @@ export const useAddFarmer = () => {
 
         return true;
       }
+
       return false;
     } catch (error) {
       console.error('❌ Error auto-loading draft:', error);

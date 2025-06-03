@@ -56,7 +56,10 @@ export const AddFarmer: React.FC = () => {
 
   // 🔥 AUTO-CARREGAR RASCUNHO AO ENTRAR NA PÁGINA (SEM TOAST)
   useEffect(() => {
-    autoLoadDraft();
+    const autoLoad = autoLoadDraft();
+
+    if (!autoLoad) return;
+
     setShowDraftBadge((prev) => ({
       ...prev,
       message: 'Rascunho carregado automaticamente',

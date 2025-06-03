@@ -151,7 +151,7 @@ export const BadgeWrapper = styled.div<{
   $isDark: boolean;
   $isVisible: boolean;
 }>`
-  margin-top: 40px;
+  margin-top: 60px;
   /* margin-right: 10px; */
   display: flex;
   align-items: center;

@@ -33,7 +33,7 @@ export const DraftBadge: React.FC<DraftBadgeProps> = ({
           setShow(false);
           setTimeout(() => {
             onHide?.();
-          }, 300); // Aguarda animação de saída
+          }, duration); // Aguarda animação de saída
         }, duration);
 
         return () => clearTimeout(timer);
