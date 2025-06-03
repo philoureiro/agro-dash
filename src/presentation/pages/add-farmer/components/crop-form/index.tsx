@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { BsFillClipboard2PlusFill } from 'react-icons/bs';
 import { FaPlus } from 'react-icons/fa6';
 import { MdDeleteOutline } from 'react-icons/md';
 import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
@@ -16,20 +15,17 @@ import {
 import { Crop, Farm } from '@entities';
 import { useAutoFill } from '@hooks';
 
-import { RemoveButton } from '../farm-form/styles';
 import { FormCard, FormGrid } from '../producer-form/styles';
 import {
   CropCard,
   CropFormContainer,
   CropFormHeader,
   CropHeader,
-  CropStatusBadge,
   CropTypeIcon,
   CropValidation,
   DeleteCropButton,
   FarmSelector,
   HeaderBox,
-  ProductivityMeter,
 } from './styles';
 
 interface CropFormProps {
@@ -56,21 +52,15 @@ export const CropForm: React.FC<CropFormProps> = ({
   onUpdateCrop,
   isDark,
 }) => {
-  const navigate = useNavigate();
-
   // 🎯 ESTADOS SUPREMOS
   const [expandedFarms, setExpandedFarms] = useState<Record<string, boolean>>({});
   const [expandedCrops, setExpandedCrops] = useState<Record<string, boolean>>({});
-  const [loadingFills, setLoadingFills] = useState<Record<string, boolean>>({});
   const [confirmModal, setConfirmModal] = useState<{
     isVisible: boolean;
     farmId: string;
     cropId: string;
     cropName: string;
   } | null>(null);
-
-  // 🔥 AUTO-FILL SUPREMO
-  const { autoFill } = useAutoFill();
 
   // 🌱 TIPOS DE CULTURAS SUPREMOS
   const cropTypes = [

@@ -146,11 +146,6 @@ export const AddFarmer: React.FC = () => {
           position: 'top-right',
           duration: 2000,
         });
-
-        // 🎯 NAVEGAR APÓS SUCESSO COM DELAY PARA UX
-        setTimeout(() => {
-          navigate('/pesquisar');
-        }, 2500);
       } catch (error) {
         console.error('Erro ao finalizar cadastro:', error);
 
