@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { BsFillClipboard2PlusFill } from 'react-icons/bs';
+import { FaPlus } from 'react-icons/fa6';
+import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
 
-import { Button, Input } from '@components';
+import { Button, Input, ProgressBar } from '@components';
 import { Crop, Farm } from '@entities';
 import { useAutoFill } from '@hooks';
+import { AlertTriangle, Check, ChevronDown, ChevronUp, Wand2, X } from 'lucide-react';
 
 import { RemoveButton } from '../farm-form/styles';
 import { FormCard, FormGrid } from '../producer-form/styles';
@@ -357,15 +360,10 @@ export const CropForm: React.FC<CropFormProps> = ({
               >
                 <div style={{ flex: 1 }}>
                   <div className="farm-title">
-                    🏭 {farm.name || `Fazenda ${farmIndex + 1}`}
+                    {farm.name || `Fazenda ${farmIndex + 1}`}
                     <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>
                       ({farmCrops.length} cultura{farmCrops.length !== 1 ? 's' : ''})
                     </span>
-                    {isExpanded ? (
-                      <BsFillClipboard2PlusFill size={20} />
-                    ) : (
-                      <BsFillClipboard2PlusFill size={20} />
-                    )}
                   </div>
 
                   <div className="farm-stats">
@@ -387,8 +385,14 @@ export const CropForm: React.FC<CropFormProps> = ({
                     </div>
                   </div>
 
-                  {/* 📊 BARRA DE UTILIZAÇÃO */}
-                  <AreaUtilizationBar isDark={isDark} percentage={utilizationPercent} />
+                  <ProgressBar
+                    progress={utilizationPercent}
+                    isDark={isDark}
+                    label={'progressLabel'}
+                    showPercentage={false}
+                    style={{ maxWidth: '40%', marginTop: 10 }}
+                    emptyColor="#e0e0e0"
+                  />
                 </div>
 
                 <Button
@@ -414,14 +418,14 @@ export const CropForm: React.FC<CropFormProps> = ({
                     justifyContent: 'center',
                   }}
                 >
-                  <BsFillClipboard2PlusFill size={16} /> Adicionar Cultura
+                  <FaPlus size={16} /> Adicionar Cultura
                 </Button>
               </div>
 
               {/* ⚠️ ALERTA DE ÁREA EXCEDIDA */}
               {availableArea < 0 && (
                 <CropValidation isDark={isDark} type="error" style={{ marginTop: '1rem' }}>
-                  ⚠️ Área plantada excede área agricultável em{' '}
+                  Área plantada excede área agricultável em{' '}
                   {Math.abs(availableArea).toLocaleString()} ha
                 </CropValidation>
               )}

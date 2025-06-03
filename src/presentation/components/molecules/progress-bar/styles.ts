@@ -1,65 +1,10 @@
+// src/components/ui/ProgressBar/styles.ts
 import styled, { keyframes } from 'styled-components';
 
-export const shimmerGlow = keyframes`
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-`;
-
-export const floatUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-export const ProgressFillBar = styled.div<{
-  $progress: number;
-  $isDark: boolean;
-  $color?: string;
-}>`
-  height: 100%;
-  border-radius: 6px;
-  width: ${({ $progress }) => $progress}%;
-  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-
-  /* 🔥 COR PERSONALIZADA OU CORES INVERTIDAS PADRÃO */
-  background: ${({ $color, $isDark }) => {
-    if ($color) return $color;
-    // ESCURO NO LIGHT THEME, CLARO NO DARK THEME
-    return $isDark
-      ? 'linear-gradient(90deg, #4ade80, #22c55e)' // VERDE CLARO DARK
-      : 'linear-gradient(90deg, #166534, #15803d)'; // VERDE ESCURO LIGHT
-  }};
-
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: shimmer 2s infinite;
-  }
-`;
-
-export const ProgressBarContainer = styled.div<{ $isDark: boolean }>`
-  width: 100%;
-  height: 12px;
-  border-radius: 6px;
-  overflow: hidden;
-
-  /* 🔥 FUNDO TAMBÉM COM CORES INVERTIDAS */
-  background: ${({ $isDark }) => ($isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
+// Animação shimmer (efeito brilho na parte preenchida)
+const shimmerGlow = keyframes`
+  0% { transform: translateX(-100%);}
+  100% { transform: translateX(100%);}
 `;
 
 export const ProgressContainer = styled.div<{ $isDark: boolean }>`
@@ -69,37 +14,70 @@ export const ProgressContainer = styled.div<{ $isDark: boolean }>`
   gap: 0.5rem;
 `;
 
-export const ProgressLabel = styled.div<{ $isDark: boolean; $hasBackground?: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+export const ProgressBarContainer = styled.div<{ $isDark: boolean }>`
+  width: 100%;
+  height: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: ${({ $isDark }) => ($isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.09)')};
+`;
 
-  /* 🔥 CORES INVERTIDAS: ESCURO NO LIGHT, CLARO NO DARK */
-  color: ${({ $hasBackground, $isDark }) => {
-    if ($hasBackground) return '#f8fafc'; // BRANCO SUAVE COM IMAGEM
-    return $isDark ? '#e2e8f0' : '#1e293b'; // CLARO NO DARK, ESCURO NO LIGHT
-  }};
+// Barra Preenchida (PROGRESSO)
+export const ProgressFillBar = styled.div<{
+  $progress: number;
+  $isDark: boolean;
+  $color?: string;
+}>`
+  height: 100%;
+  border-radius: 8px 0 0 8px;
+  width: ${({ $progress }) => $progress}%;
+  transition: width 0.85s cubic-bezier(0.6, 0.1, 0.3, 1);
+  background: ${({ $color, $isDark }) =>
+    $color
+      ? $color
+      : $isDark
+        ? 'linear-gradient(90deg, #4ade80, #22c55e)'
+        : 'linear-gradient(90deg, #166534, #15803d)'};
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
 
-  text-shadow: ${({ $hasBackground }) =>
-    $hasBackground ? '2px 2px 4px rgba(0, 0, 0, 0.8)' : 'none'};
-
-  .percentage {
-    font-weight: 800;
-    font-size: 1.1rem;
-
-    /* 🔥 PORCENTAGEM COM CORES INVERTIDAS */
-    color: ${({ $hasBackground, $isDark }) => {
-      if ($hasBackground) return '#f1f5f9'; // BRANCO SUAVE COM IMAGEM
-      return $isDark ? '#f1f5f9' : '#0f172a'; // CLARO NO DARK, ESCURO NO LIGHT
-    }};
+  // Efeito shimmer
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.23), transparent);
+    animation: ${shimmerGlow} 2.3s infinite linear;
+    opacity: 0.65;
+    pointer-events: none;
   }
 `;
 
-// src/components/ui/ProgressBar/styles.ts
+// Barra FALTANTE (Vazia)
+export const ProgressEmptyBar = styled.div<{
+  $progress: number; // quanto falta
+  $isDark: boolean;
+  $emptyColor?: string;
+}>`
+  height: 100%;
+  border-radius: 0 8px 8px 0;
+  width: ${({ $progress }) => $progress}%;
+  transition: width 0.85s cubic-bezier(0.6, 0.1, 0.3, 1);
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  background: ${({ $emptyColor, $isDark }) =>
+    $emptyColor ? $emptyColor : $isDark ? 'rgba(255,255,255,0.12)' : 'rgba(16,44,16,0.16)'};
+`;
 
+// Texto do progresso
 export const ProgressText = styled.div<{
   $isDark: boolean;
   $textColor?: string;
@@ -107,22 +85,17 @@ export const ProgressText = styled.div<{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.98rem;
   font-weight: 600;
-  margin-top: 0.5rem;
+  margin-top: 0.45rem;
+  letter-spacing: 0.01em;
 
-  /* 🔥 USAR COR PERSONALIZADA OU CORES PADRÃO */
-  color: ${({ $textColor, $isDark }) => {
-    if ($textColor) return $textColor;
-    return $isDark ? '#e2e8f0' : '#1e293b';
-  }};
+  color: ${({ $textColor, $isDark }) =>
+    $textColor ? $textColor : $isDark ? '#e2e8f0' : '#1e293b'};
 
   span:last-child {
     font-weight: 700;
-    /* 🔥 PORCENTAGEM COM COR PERSONALIZADA */
-    color: ${({ $textColor, $isDark }) => {
-      if ($textColor) return $textColor;
-      return $isDark ? '#f1f5f9' : '#0f172a';
-    }};
+    color: ${({ $textColor, $isDark }) =>
+      $textColor ? $textColor : $isDark ? '#f1f5f9' : '#15803d'};
   }
 `;
