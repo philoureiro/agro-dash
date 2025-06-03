@@ -33,7 +33,7 @@ interface CurrentFormData {
 }
 
 export const useAutoFill = () => {
-  // 🎲 GERADORES SUPREMOS - CORRIGIDOS
+  // 🎲 GERADORES SUPREMOS - COM VALIDAÇÃO DE ÁREAS
   const generators = useMemo(
     () => ({
       // 👤 DADOS PESSOAIS
@@ -117,16 +117,33 @@ export const useAutoFill = () => {
         return `${firstPart}${secondPart}`;
       },
 
-      // 🚜 FAZENDA - CORRIGIDO
+      // 🚜 FAZENDA
       farmName: () => getRandomItem(brazilianData.farmNames),
 
       // 🌾 AGRICULTURA
       cropType: () => getRandomItem(brazilianData.cropTypes),
 
-      // 📊 NÚMEROS - CORRIGIDOS
+      // 📊 NÚMEROS - COM VALIDAÇÃO INTELIGENTE
       number: (min = 1, max = 1000) => getRandomNumber(min, max),
       percentage: (min = 30, max = 100) => getRandomNumber(min, max),
       year: () => getRandomNumber(2024, 2028),
+
+      // 🎯 NOVO: GERADOR INTELIGENTE DE ÁREAS PROPORCIONAIS
+      smartAreas: (totalArea: number) => {
+        // 🎯 Gera áreas que SEMPRE respeitam o total
+        const agriculturePercent = getRandomNumber(40, 70) / 100; // 40-70% da área total
+        const vegetationPercent = getRandomNumber(15, 25) / 100; // 15-25% da área total
+
+        // Garante que a soma nunca exceda 95% da área total (margem de segurança)
+        const maxTotal = 0.95;
+        const actualAgriPercent = Math.min(agriculturePercent, maxTotal - vegetationPercent);
+        const actualVegePercent = Math.min(vegetationPercent, maxTotal - actualAgriPercent);
+
+        return {
+          agricultural: Math.round(totalArea * actualAgriPercent),
+          vegetation: Math.round(totalArea * actualVegePercent),
+        };
+      },
 
       // 📅 DATAS
       date: () => {
@@ -135,10 +152,8 @@ export const useAutoFill = () => {
         return futureDate.toISOString().split('T')[0];
       },
 
-      // 🖼️ URLS - USANDO SUAS IMAGENS REAIS DO MOCK
+      // 🖼️ URLS
       url: () => getRandomItem(brazilianData.producerImages),
-
-      // 🎯 GERADORES ESPECÍFICOS PARA CADA TIPO DE IMAGEM
       producerImage: () => getRandomItem(brazilianData.producerImages),
       farmImage: () => getRandomItem(brazilianData.farmImages),
       cropImage: (cropType?: string) => {
@@ -175,15 +190,15 @@ export const useAutoFill = () => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  // 🔍 VERIFICA SE CAMPO ESTÁ VAZIO - CORRIGIDO
+  // 🔍 VERIFICA SE CAMPO ESTÁ VAZIO
   const isFieldEmpty = useCallback((value: string | number | undefined | null): boolean => {
     if (value === undefined || value === null) return true;
     if (typeof value === 'string') return value.trim() === '';
-    if (typeof value === 'number') return value === 0; // 🎯 CORREÇÃO: 0 também é considerado vazio
+    if (typeof value === 'number') return value === 0;
     return true;
   }, []);
 
-  // 🚀 FUNÇÃO PRINCIPAL DE AUTO-FILL - CORRIGIDA
+  // 🚀 FUNÇÃO PRINCIPAL DE AUTO-FILL - COM VALIDAÇÃO DE ÁREAS
   const autoFill = useCallback(
     (
       schema: FormSchema,
@@ -212,10 +227,52 @@ export const useAutoFill = () => {
       console.log('🎯 AutoFill iniciado com dados atuais:', currentData);
       console.log('🖼️ Contexto de imagem:', imageContext, cropType ? `- Tipo: ${cropType}` : '');
 
+      // 🎯 NOVA LÓGICA: PREENCHE ÁREA TOTAL PRIMEIRO, DEPOIS AS OUTRAS PROPORCIONALMENTE
+      let totalAreaValue: number | null = null;
+
+      // Primeiro, identifica se há área total no schema e a gera
+      if ('totalArea' in schema && isFieldEmpty(currentData['totalArea'])) {
+        const totalAreaConfig = schema['totalArea'];
+        totalAreaValue = generators.number(totalAreaConfig.min, totalAreaConfig.max);
+        updateFunction('totalArea', totalAreaValue);
+        filledCount++;
+        console.log(`✨ Área total gerada: ${totalAreaValue} ha`);
+      } else if (currentData['totalArea'] && typeof currentData['totalArea'] === 'number') {
+        totalAreaValue = currentData['totalArea'];
+      }
+
+      // Depois, gera as áreas proporcionais se a área total existir
+      if (totalAreaValue && totalAreaValue > 0) {
+        const smartAreas = generators.smartAreas(totalAreaValue);
+
+        // Preenche área agrícola se vazia
+        if ('agriculturalArea' in schema && isFieldEmpty(currentData['agriculturalArea'])) {
+          updateFunction('agriculturalArea', smartAreas.agricultural);
+          filledCount++;
+          console.log(
+            `✨ Área agrícola gerada: ${smartAreas.agricultural} ha (${Math.round((smartAreas.agricultural / totalAreaValue) * 100)}%)`,
+          );
+        }
+
+        // Preenche área de vegetação se vazia
+        if ('vegetationArea' in schema && isFieldEmpty(currentData['vegetationArea'])) {
+          updateFunction('vegetationArea', smartAreas.vegetation);
+          filledCount++;
+          console.log(
+            `✨ Área de vegetação gerada: ${smartAreas.vegetation} ha (${Math.round((smartAreas.vegetation / totalAreaValue) * 100)}%)`,
+          );
+        }
+      }
+
+      // Processa os demais campos normalmente
       Object.entries(schema).forEach(([fieldPath, config]) => {
-        // ❌ Pular campos excluídos
-        if (excludeFields.includes(fieldPath)) {
-          skippedCount++;
+        // ❌ Pular campos excluídos e áreas (já processadas acima)
+        if (
+          excludeFields.includes(fieldPath) ||
+          fieldPath === 'totalArea' ||
+          fieldPath === 'agriculturalArea' ||
+          fieldPath === 'vegetationArea'
+        ) {
           return;
         }
 
@@ -233,18 +290,13 @@ export const useAutoFill = () => {
         if (customData[fieldPath] !== undefined) {
           value = customData[fieldPath];
         }
-        // 🎯 REMOVE a verificação de custom que estava retornando string vazia
-        // else if (config.custom) {
-        //   value = config.custom();
-        // }
-        // 🎯 Usar geradores padrão SEMPRE
+        // 🎯 Usar geradores padrão
         else {
           switch (config.type) {
             case 'select':
               value = config.options ? generators.select(config.options) : '';
               break;
             case 'text':
-              // 🎯 CORREÇÃO: Usar gerador específico para nomes de fazenda
               if (
                 fieldPath.toLowerCase().includes('name') ||
                 fieldPath.toLowerCase().includes('nome')
@@ -269,7 +321,6 @@ export const useAutoFill = () => {
               value = generators.year();
               break;
             case 'url':
-              // 🎯 INTELIGÊNCIA PARA ESCOLHER TIPO DE IMAGEM
               if (
                 fieldPath.toLowerCase().includes('farm') ||
                 fieldPath.toLowerCase().includes('fazenda')
@@ -286,7 +337,6 @@ export const useAutoFill = () => {
               ) {
                 value = generators.producerImage();
               } else {
-                // Baseado no contexto geral
                 switch (imageContext) {
                   case 'farm':
                     value = generators.farmImage();
@@ -314,6 +364,8 @@ export const useAutoFill = () => {
           console.log(`✨ Campo '${fieldPath}' preenchido com: '${value}'`);
         }
       });
+
+      // 🎉 FEEDBACK
     },
     [generators, isFieldEmpty],
   );
