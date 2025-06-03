@@ -158,6 +158,10 @@ export const FarmSummary = styled.div<{ isDark: boolean }>`
   span:first-child {
     font-weight: 600;
   }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const StatusIndicator = styled.div<{ isValid: boolean }>`

@@ -281,7 +281,7 @@ export const AddFarmer: React.FC = () => {
                   alignItems: 'center',
                 }}
               >
-                <IoArrowBackOutline /> Voltar
+                <IoArrowBackOutline size={20} /> Voltar
               </Button>
             )}
 
@@ -314,7 +314,7 @@ export const AddFarmer: React.FC = () => {
                 alignItems: 'center',
               }}
             >
-              <TbTrashXFilled size={16} /> Limpar Rascunho
+              <TbTrashXFilled size={20} /> Limpar Rascunho
             </Button>
           </ActionsBox>
 
@@ -344,8 +344,8 @@ export const AddFarmer: React.FC = () => {
               }}
             >
               {progress === 100
-                ? <IoIosCheckmarkCircle size={25} color={'#27ae60'} /> + ' Finalizar Cadastro'
-                : <FcOpenedFolder size={25} /> + ` Complete o formulário (${progress}%)`}
+                ? <IoIosCheckmarkCircle size={20} color={'#27ae60'} /> + ' Finalizar Cadastro'
+                : <FcOpenedFolder size={20} /> + ` Complete o formulário (${progress}%)`}
             </Button>
           ) : (
             <Button
@@ -374,7 +374,7 @@ export const AddFarmer: React.FC = () => {
               {form.currentStep === 'producer' && 'Próximo: Fazendas'}
               {form.currentStep === 'farms' && 'Próximo: Culturas'}
               {form.currentStep === 'crops' && 'Finalizar'}
-              <IoArrowForwardOutline />
+              <IoArrowForwardOutline size={20} />
             </Button>
           )}
         </FormActions>
