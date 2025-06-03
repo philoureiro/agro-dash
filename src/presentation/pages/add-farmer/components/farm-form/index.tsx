@@ -43,25 +43,25 @@ export const FarmForm: React.FC<FarmFormProps> = ({
   onUpdateFarm,
   isDark,
 }) => {
-  // 🎯 SCHEMA PARA AUTO-FILL DA FAZENDA
-  const createFarmAutoFillSchema = (farm: Farm) => ({
-    name: { type: 'text' as const, custom: () => farm.name || '' },
-    city: { type: 'text' as const, custom: () => farm.city || '' },
+  // 🎯 SCHEMA PARA AUTO-FILL DA FAZENDA - CORRIGIDO
+  const createFarmAutoFillSchema = () => ({
+    name: { type: 'text' as const, custom: () => '' }, // Remove valor atual para forçar geração
+    city: { type: 'text' as const, custom: () => '' },
     state: {
       type: 'select' as const,
       options: estados.map((e) => e.value).filter((v) => v !== ''),
     },
     zipCode: { type: 'cep' as const },
     farmPhoto: { type: 'url' as const },
-    totalArea: { type: 'number' as const, min: 10, max: 5000 },
-    agriculturalArea: { type: 'number' as const, min: 1, max: 4000 },
-    vegetationArea: { type: 'number' as const, min: 1, max: 1000 },
-    productivity: { type: 'percentage' as const },
-    sustainability: { type: 'percentage' as const },
-    technology: { type: 'percentage' as const },
+    totalArea: { type: 'number' as const, min: 50, max: 1000 }, // Área realista
+    agriculturalArea: { type: 'number' as const, min: 20, max: 800 },
+    vegetationArea: { type: 'number' as const, min: 10, max: 300 },
+    productivity: { type: 'percentage' as const, min: 30, max: 100 }, // Mínimo 30%
+    sustainability: { type: 'percentage' as const, min: 30, max: 100 },
+    technology: { type: 'percentage' as const, min: 30, max: 100 },
   });
 
-  // 🎯 FUNÇÃO PARA ATUALIZAR CAMPOS VIA AUTO-FILL
+  // 🎯 FUNÇÃO PARA ATUALIZAR CAMPOS VIA AUTO-FILL - MELHORADA
   const handleAutoFillUpdate = (tempId: string) => (path: string, value: string | number) => {
     console.log(`🎯 AutoFill atualizando fazenda ${tempId} - ${path} com valor:`, value);
 
@@ -82,15 +82,23 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
     const farmField = fieldMap[path];
     if (farmField) {
-      const updates: Partial<Farm> = { [farmField]: value };
+      let processedValue = value;
 
-      // 🎯 VALIDAÇÕES ESPECÍFICAS
+      // 🎯 PROCESSAMENTO ESPECÍFICO POR CAMPO
       if (path === 'zipCode' && typeof value === 'string') {
         // Formata CEP automaticamente
-        const formatted = value.replace(/(\d{5})(\d)/, '$1-$2');
-        updates.zipCode = formatted;
+        processedValue = value.replace(/(\d{5})(\d)/, '$1-$2');
+      } else if (path === 'agriculturalArea' || path === 'vegetationArea') {
+        // 🎯 GARANTIR QUE ÁREAS SEJAM PROPORCIONAIS
+        const farm = farms.find((f) => f.tempId === tempId);
+        if (farm && farm.totalArea) {
+          const currentTotal = farm.totalArea;
+          const maxAllowed = currentTotal * 0.8; // Máximo 80% da área total
+          processedValue = Math.min(Number(value), maxAllowed);
+        }
       }
 
+      const updates: Partial<Farm> = { [farmField]: processedValue };
       onUpdateFarm(tempId, updates);
     }
   };
@@ -112,7 +120,10 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
   // 🎯 VALIDAR ÁREAS
   const validateAreas = (farm: Farm): boolean => {
-    return farm.totalArea > 0 && farm.agriculturalArea + farm.vegetationArea <= farm.totalArea;
+    return (
+      farm.totalArea > 0 &&
+      (farm.agriculturalArea || 0) + (farm.vegetationArea || 0) <= farm.totalArea
+    );
   };
 
   // 🎯 VALIDAR CEP
@@ -123,6 +134,31 @@ export const FarmForm: React.FC<FarmFormProps> = ({
   // 🎯 VALIDAR URL DE IMAGEM
   const isValidImageUrl = (url: string): boolean => {
     return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(url);
+  };
+
+  // 🎯 VALIDAÇÕES COMPLETAS PARA CADA CAMPO
+  const validateFarmName = (name: string): boolean => {
+    return name && name.trim().length >= 3;
+  };
+
+  const validateCity = (city: string): boolean => {
+    return city && city.trim().length >= 2;
+  };
+
+  const validateState = (state: string): boolean => {
+    return state && state !== '';
+  };
+
+  const validateTotalArea = (area: number): boolean => {
+    return area && area > 0;
+  };
+
+  const validateAgricultureArea = (area: number): boolean => {
+    return area !== undefined && area >= 0;
+  };
+
+  const validateVegetationArea = (area: number): boolean => {
+    return area !== undefined && area >= 0;
   };
 
   return (
@@ -171,7 +207,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
       {farms.map((farm, index) => {
         const farmValidation = validation.farms[farm.tempId] || {};
-        const autoFillSchema = createFarmAutoFillSchema(farm);
+        const autoFillSchema = createFarmAutoFillSchema();
         const currentFarmData = getCurrentFarmData(farm);
 
         return (
@@ -179,7 +215,11 @@ export const FarmForm: React.FC<FarmFormProps> = ({
             key={farm.tempId}
             isDark={isDark}
             isValid={
-              farmValidation.nameValid && farmValidation.locationValid && farmValidation.areasValid
+              validateFarmName(farm.name || '') &&
+              validateCity(farm.city || '') &&
+              validateState(farm.state || '') &&
+              validateTotalArea(farm.totalArea || 0) &&
+              validateAreas(farm)
             }
             style={{ marginBottom: '2rem', position: 'relative' }}
           >
@@ -195,23 +235,24 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 }}
               >
                 🏭 Fazenda #{index + 1}
-                {farmValidation.nameValid &&
-                  farmValidation.locationValid &&
-                  farmValidation.areasValid && <span style={{ fontSize: '1rem' }}>✅</span>}
+                {validateFarmName(farm.name || '') &&
+                  validateCity(farm.city || '') &&
+                  validateState(farm.state || '') &&
+                  validateTotalArea(farm.totalArea || 0) &&
+                  validateAreas(farm) && <span style={{ fontSize: '1rem' }}>✅</span>}
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', gap: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 {/* 🚀 BOTÃO AUTO-FILL PARA CADA FAZENDA */}
                 <AutoFillButton
                   schema={autoFillSchema}
                   onUpdate={handleAutoFillUpdate(farm.tempId)}
                   currentData={currentFarmData}
                   isDark={isDark}
-                  position="top-right"
                   tooltipPosition="left"
                   size="small"
                   fillOnlyEmpty={true}
-                  imageContext="farm" // 🎯 Contexto específico para fazendas
+                  imageContext="farm"
                 />
 
                 {farms.length > 1 && (
@@ -241,7 +282,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               </PreviewInfo>
             </PreviewContainer>
 
-            {/* 📝 FORMULÁRIO COM COMPONENTE INPUT PADRÃO */}
+            {/* 📝 FORMULÁRIO COM VALIDAÇÕES COMPLETAS */}
             <FormGrid>
               <Input
                 maxLength={50}
@@ -249,15 +290,15 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 value={farm.name || ''}
                 onChange={(value) => onUpdateFarm(farm.tempId, { name: value })}
                 isDark={isDark}
-                valid={farm.name ? farm.name.trim().length >= 3 : undefined}
+                valid={farm.name ? validateFarmName(farm.name) : undefined}
                 validationMessage={
                   farm.name
-                    ? farm.name.trim().length >= 3
+                    ? validateFarmName(farm.name)
                       ? 'Nome válido!'
                       : 'Nome deve ter pelo menos 3 caracteres'
-                    : undefined
+                    : 'Nome é obrigatório'
                 }
-                validationType={farm.name && farm.name.trim().length >= 3 ? 'success' : 'error'}
+                validationType={farm.name && validateFarmName(farm.name) ? 'success' : 'error'}
                 placeholder="Ex: Fazenda São João"
               />
 
@@ -266,15 +307,15 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 value={farm.city || ''}
                 onChange={(value) => onUpdateFarm(farm.tempId, { city: value })}
                 isDark={isDark}
-                valid={farm.city ? farm.city.trim().length >= 2 : undefined}
+                valid={farm.city ? validateCity(farm.city) : undefined}
                 validationMessage={
                   farm.city
-                    ? farm.city.trim().length >= 2
+                    ? validateCity(farm.city)
                       ? 'Cidade válida!'
                       : 'Nome da cidade muito curto'
-                    : undefined
+                    : 'Cidade é obrigatória'
                 }
-                validationType={farm.city && farm.city.trim().length >= 2 ? 'success' : 'error'}
+                validationType={farm.city && validateCity(farm.city) ? 'success' : 'error'}
                 placeholder="Ex: São Paulo"
               />
 
@@ -283,9 +324,9 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 value={farm.state || ''}
                 onChange={(value) => onUpdateFarm(farm.tempId, { state: value as States })}
                 isDark={isDark}
-                valid={!!farm.state}
-                validationMessage={farm.state ? 'Estado selecionado!' : undefined}
-                validationType={farm.state ? 'success' : 'error'}
+                valid={farm.state ? validateState(farm.state) : undefined}
+                validationMessage={farm.state ? 'Estado selecionado!' : 'Estado é obrigatório'}
+                validationType={farm.state && validateState(farm.state) ? 'success' : 'error'}
                 options={[
                   { value: '', label: 'Selecione o estado' },
                   ...estados.map((estado) => ({ value: estado.value, label: estado.label })),
@@ -293,7 +334,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               />
 
               <Input
-                label="CEP"
+                label="CEP *"
                 value={farm.zipCode || ''}
                 onChange={(value) => {
                   const zipCode = value.replace(/\D/g, '').slice(0, 8);
@@ -307,7 +348,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                     ? isValidZipCode(farm.zipCode)
                       ? 'CEP válido!'
                       : 'CEP deve ter 8 dígitos (12345-678)'
-                    : undefined
+                    : 'CEP é obrigatório'
                 }
                 validationType={farm.zipCode && isValidZipCode(farm.zipCode) ? 'success' : 'error'}
                 placeholder="12345-678"
@@ -315,7 +356,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
               <div style={{ gridColumn: '1 / -1' }}>
                 <Input
-                  label="URL da Foto da Fazenda"
+                  label="URL da Foto da Fazenda *"
                   value={farm.farmPhoto || ''}
                   onChange={(value) => onUpdateFarm(farm.tempId, { farmPhoto: value })}
                   isDark={isDark}
@@ -325,21 +366,21 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                       ? isValidImageUrl(farm.farmPhoto)
                         ? 'URL de imagem válida!'
                         : 'URL deve ser uma imagem válida (.jpg, .png, .gif, .webp)'
-                      : 'Cole uma URL de imagem para ver o preview'
+                      : 'URL da foto é obrigatória'
                   }
                   validationType={
                     farm.farmPhoto
                       ? isValidImageUrl(farm.farmPhoto)
                         ? 'success'
                         : 'error'
-                      : 'info'
+                      : 'error'
                   }
                   placeholder="https://exemplo.com/fazenda.jpg"
                 />
               </div>
             </FormGrid>
 
-            {/* 📏 SEÇÃO DE ÁREAS */}
+            {/* 📏 SEÇÃO DE ÁREAS COM VALIDAÇÕES COMPLETAS */}
             <div style={{ marginTop: '2rem' }}>
               <h3
                 style={{
@@ -360,15 +401,17 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                   value={farm.totalArea?.toString() || ''}
                   onChange={(value) => onUpdateFarm(farm.tempId, { totalArea: Number(value) || 0 })}
                   isDark={isDark}
-                  valid={farm.totalArea ? farm.totalArea > 0 : undefined}
+                  valid={farm.totalArea ? validateTotalArea(farm.totalArea) : undefined}
                   validationMessage={
                     farm.totalArea
-                      ? farm.totalArea > 0
+                      ? validateTotalArea(farm.totalArea)
                         ? 'Área válida!'
                         : 'Área deve ser maior que 0'
-                      : undefined
+                      : 'Área total é obrigatória'
                   }
-                  validationType={farm.totalArea && farm.totalArea > 0 ? 'success' : 'error'}
+                  validationType={
+                    farm.totalArea && validateTotalArea(farm.totalArea) ? 'success' : 'error'
+                  }
                   placeholder="0.00"
                 />
 
@@ -381,17 +424,20 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                   }
                   isDark={isDark}
                   valid={
-                    farm.agriculturalArea !== undefined ? farm.agriculturalArea >= 0 : undefined
+                    farm.agriculturalArea !== undefined
+                      ? validateAgricultureArea(farm.agriculturalArea)
+                      : undefined
                   }
                   validationMessage={
                     farm.agriculturalArea !== undefined
-                      ? farm.agriculturalArea >= 0
+                      ? validateAgricultureArea(farm.agriculturalArea)
                         ? 'Área válida!'
                         : 'Área não pode ser negativa'
-                      : undefined
+                      : 'Área agricultável é obrigatória'
                   }
                   validationType={
-                    farm.agriculturalArea !== undefined && farm.agriculturalArea >= 0
+                    farm.agriculturalArea !== undefined &&
+                    validateAgricultureArea(farm.agriculturalArea)
                       ? 'success'
                       : 'error'
                   }
@@ -406,16 +452,20 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                     onUpdateFarm(farm.tempId, { vegetationArea: Number(value) || 0 })
                   }
                   isDark={isDark}
-                  valid={farm.vegetationArea !== undefined ? farm.vegetationArea >= 0 : undefined}
-                  validationMessage={
+                  valid={
                     farm.vegetationArea !== undefined
-                      ? farm.vegetationArea >= 0
-                        ? 'Área válida!'
-                        : 'Área não pode ser negativa'
+                      ? validateVegetationArea(farm.vegetationArea)
                       : undefined
                   }
+                  validationMessage={
+                    farm.vegetationArea !== undefined
+                      ? validateVegetationArea(farm.vegetationArea)
+                        ? 'Área válida!'
+                        : 'Área não pode ser negativa'
+                      : 'Área de vegetação é obrigatória'
+                  }
                   validationType={
-                    farm.vegetationArea !== undefined && farm.vegetationArea >= 0
+                    farm.vegetationArea !== undefined && validateVegetationArea(farm.vegetationArea)
                       ? 'success'
                       : 'error'
                   }
@@ -433,7 +483,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
               )}
             </div>
 
-            {/* 📊 SCORES DE PERFORMANCE COM NOVO SLIDER */}
+            {/* 📊 SCORES DE PERFORMANCE COM VALORES MÍNIMOS */}
             <div style={{ marginTop: '2rem' }}>
               <h3
                 style={{
@@ -453,27 +503,39 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                   label="Produtividade"
                   icon="🚜"
                   value={farm.productivity || 50}
-                  onChange={(value) => onUpdateFarm(farm.tempId, { productivity: value })}
+                  onChange={(value) =>
+                    onUpdateFarm(farm.tempId, { productivity: Math.max(30, value) })
+                  }
                   color="#37cb83"
                   isDark={isDark}
+                  min={30} // Mínimo 30%
+                  max={100}
                 />
 
                 <RangeSlider
                   label="Sustentabilidade"
                   icon="🌱"
                   value={farm.sustainability || 50}
-                  onChange={(value) => onUpdateFarm(farm.tempId, { sustainability: value })}
+                  onChange={(value) =>
+                    onUpdateFarm(farm.tempId, { sustainability: Math.max(30, value) })
+                  }
                   color="#27ae60"
                   isDark={isDark}
+                  min={30} // Mínimo 30%
+                  max={100}
                 />
 
                 <RangeSlider
                   label="Tecnologia"
                   icon="🔬"
                   value={farm.technology || 50}
-                  onChange={(value) => onUpdateFarm(farm.tempId, { technology: value })}
+                  onChange={(value) =>
+                    onUpdateFarm(farm.tempId, { technology: Math.max(30, value) })
+                  }
                   color="#3498db"
                   isDark={isDark}
+                  min={30} // Mínimo 30%
+                  max={100}
                 />
               </div>
             </div>

@@ -37,7 +37,7 @@ interface CurrentFormData {
 export const useAutoFill = () => {
   const { toast } = useToast();
 
-  // 🎲 GERADORES SUPREMOS - USANDO SEU MOCK COMPLETO
+  // 🎲 GERADORES SUPREMOS - CORRIGIDOS
   const generators = useMemo(
     () => ({
       // 👤 DADOS PESSOAIS
@@ -63,7 +63,6 @@ export const useAutoFill = () => {
 
       // 📄 DOCUMENTOS - GERADORES VÁLIDOS
       cpf: () => {
-        // 🎯 GERA CPF VÁLIDO COM DÍGITOS VERIFICADORES CORRETOS
         const generateValidCPF = (): string => {
           const nums = Array.from({ length: 9 }, () => getRandomNumber(0, 9));
 
@@ -91,7 +90,6 @@ export const useAutoFill = () => {
       },
 
       cnpj: () => {
-        // 🎯 GERA CNPJ VÁLIDO COM DÍGITOS VERIFICADORES CORRETOS
         const generateValidCNPJ = (): string => {
           const nums = Array.from({ length: 12 }, () => getRandomNumber(0, 9));
 
@@ -123,15 +121,15 @@ export const useAutoFill = () => {
         return `${firstPart}${secondPart}`;
       },
 
-      // 🚜 FAZENDA
+      // 🚜 FAZENDA - CORRIGIDO
       farmName: () => getRandomItem(brazilianData.farmNames),
 
       // 🌾 AGRICULTURA
       cropType: () => getRandomItem(brazilianData.cropTypes),
 
-      // 📊 NÚMEROS
+      // 📊 NÚMEROS - CORRIGIDOS
       number: (min = 1, max = 1000) => getRandomNumber(min, max),
-      percentage: () => getRandomNumber(1, 100),
+      percentage: (min = 30, max = 100) => getRandomNumber(min, max), // 🎯 Mínimo 30%
       year: () => getRandomNumber(2024, 2028),
 
       // 📅 DATAS
@@ -142,18 +140,12 @@ export const useAutoFill = () => {
       },
 
       // 🖼️ URLS - USANDO SUAS IMAGENS REAIS DO MOCK
-      url: () => {
-        // 🎯 Por padrão usa imagens de produtor, mas pode ser customizado
-        return getRandomItem(brazilianData.producerImages);
-      },
+      url: () => getRandomItem(brazilianData.producerImages),
 
       // 🎯 GERADORES ESPECÍFICOS PARA CADA TIPO DE IMAGEM
       producerImage: () => getRandomItem(brazilianData.producerImages),
-
       farmImage: () => getRandomItem(brazilianData.farmImages),
-
       cropImage: (cropType?: string) => {
-        // Se o tipo de cultura for especificado, usa imagens específicas
         if (
           cropType &&
           brazilianData.cropImages[cropType as keyof typeof brazilianData.cropImages]
@@ -162,17 +154,14 @@ export const useAutoFill = () => {
             brazilianData.cropImages[cropType as keyof typeof brazilianData.cropImages],
           );
         }
-        // Senão, usa uma cultura aleatória
         const randomCropType = getRandomItem(Object.keys(brazilianData.cropImages));
         return getRandomItem(
           brazilianData.cropImages[randomCropType as keyof typeof brazilianData.cropImages],
         );
       },
 
-      // 📝 TEXTOS - USANDO SUAS OBSERVAÇÕES REAIS
+      // 📝 TEXTOS
       textarea: () => getRandomItem(brazilianData.observations),
-
-      // 🏢 EMPRESAS
       company: () => getRandomItem(brazilianData.companies),
 
       // 🔧 SELEÇÃO
@@ -190,15 +179,15 @@ export const useAutoFill = () => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  // 🔍 VERIFICA SE CAMPO ESTÁ VAZIO - VERSÃO SUPREMA
+  // 🔍 VERIFICA SE CAMPO ESTÁ VAZIO
   const isFieldEmpty = useCallback((value: string | number | undefined | null): boolean => {
     if (value === undefined || value === null) return true;
     if (typeof value === 'string') return value.trim() === '';
-    if (typeof value === 'number') return false; // Números sempre considerados preenchidos
+    if (typeof value === 'number') return false;
     return true;
   }, []);
 
-  // 🚀 FUNÇÃO PRINCIPAL DE AUTO-FILL - VERSÃO SUPREMA
+  // 🚀 FUNÇÃO PRINCIPAL DE AUTO-FILL - CORRIGIDA
   const autoFill = useCallback(
     (
       schema: FormSchema,
@@ -208,9 +197,8 @@ export const useAutoFill = () => {
         customData?: Record<string, string | number>;
         currentData?: CurrentFormData;
         fillOnlyEmpty?: boolean;
-        // 🎯 NOVO: contexto para saber que tipo de imagem usar
         imageContext?: 'producer' | 'farm' | 'crop';
-        cropType?: string; // Para imagens específicas de cultura
+        cropType?: string;
       },
     ) => {
       const {
@@ -259,10 +247,30 @@ export const useAutoFill = () => {
             case 'select':
               value = config.options ? generators.select(config.options) : '';
               break;
+            case 'text':
+              // 🎯 CORREÇÃO: Usar gerador específico para nomes de fazenda
+              if (
+                fieldPath.toLowerCase().includes('name') ||
+                fieldPath.toLowerCase().includes('nome')
+              ) {
+                value = generators.farmName();
+              } else if (
+                fieldPath.toLowerCase().includes('city') ||
+                fieldPath.toLowerCase().includes('cidade')
+              ) {
+                value = generators.city();
+              } else {
+                value = generators.text();
+              }
+              break;
             case 'number':
-            case 'percentage':
-            case 'year':
               value = generators.number(config.min, config.max);
+              break;
+            case 'percentage':
+              value = generators.percentage(config.min || 30, config.max || 100);
+              break;
+            case 'year':
+              value = generators.year();
               break;
             case 'url':
               // 🎯 INTELIGÊNCIA PARA ESCOLHER TIPO DE IMAGEM
@@ -310,8 +318,20 @@ export const useAutoFill = () => {
           console.log(`✨ Campo '${fieldPath}' preenchido com: '${value}'`);
         }
       });
+
+      // 🎉 FEEDBACK
+      if (filledCount > 0) {
+        toast.success(
+          '✨ Sucesso!',
+          `${filledCount} campo(s) preenchido(s)${skippedCount > 0 ? ` • ${skippedCount} mantido(s)` : ''}!`,
+        );
+      } else if (skippedCount > 0) {
+        toast.info('🔒 Nenhum campo preenchido', 'Todos os campos já possuem valores!');
+      } else {
+        toast.warning('⚠️ Atenção', 'Nenhum campo foi processado');
+      }
     },
-    [generators, isFieldEmpty],
+    [toast, generators, isFieldEmpty],
   );
 
   return { autoFill };
