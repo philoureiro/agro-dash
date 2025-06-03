@@ -212,16 +212,18 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 {/* Botão de remover */}
-                <AutoFillButton
-                  schema={autoFillSchema}
-                  onUpdate={handleAutoFillUpdate(farm.tempId, onUpdateFarm)}
-                  currentData={currentFarmData}
-                  isDark={isDark}
-                  tooltipPosition="left"
-                  size="small"
-                  fillOnlyEmpty={true}
-                  imageContext="farm"
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                  <AutoFillButton
+                    schema={autoFillSchema}
+                    onUpdate={handleAutoFillUpdate(farm.tempId, onUpdateFarm)}
+                    currentData={currentFarmData}
+                    isDark={isDark}
+                    tooltipPosition="left"
+                    size="small"
+                    fillOnlyEmpty={true}
+                    imageContext="farm"
+                  />
+                </div>
                 {farms.length > 1 && (
                   <RemoveButton
                     isDark={isDark}
