@@ -1,13 +1,13 @@
 // src/components/AddFarmer/components/producer-form/ProducerForm.tsx
 import React from 'react';
 
-import { Input } from '@components';
+import { AutoFillButton, Input } from '@components';
 import { Producer } from '@entities';
 import { DocumentType } from '@enums';
 import { formatDocument } from '@validations';
 import { formatPhone, validatePhone } from '@validations';
 
-import { FormCard, FormGrid } from './styles';
+import { FormCard, FormGrid, HeaderContainer } from './styles';
 
 interface ProducerFormProps {
   producer: Producer;
@@ -28,6 +28,58 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
   onUpdate,
   isDark,
 }) => {
+  // 🎯 SCHEMA PARA AUTO-FILL DO PRODUTOR
+  const autoFillSchema = {
+    name: { type: 'text' as const },
+    documentType: {
+      type: 'select' as const,
+      options: [DocumentType.CPF, DocumentType.CNPJ],
+    },
+    document: {
+      type: producer.documentType === DocumentType.CPF ? 'cpf' : 'cnpj',
+    },
+    email: { type: 'email' as const },
+    phone: { type: 'phone' as const },
+    profilePhoto: { type: 'url' as const },
+  };
+
+  // 🎯 DADOS ATUAIS DO FORMULÁRIO
+  const currentFormData = {
+    name: producer.name,
+    documentType: producer.documentType,
+    document: producer.document,
+    email: producer.email,
+    phone: producer.phone,
+    profilePhoto: producer.profilePhoto,
+  };
+
+  // 🎯 FUNÇÃO PARA ATUALIZAR CAMPOS VIA AUTO-FILL
+  const handleAutoFillUpdate = (path: string, value: string | number) => {
+    console.log(`🎯 AutoFill atualizando ${path} com valor:`, value);
+
+    // Mapeia os caminhos do schema para as propriedades do Producer
+    const fieldMap: Record<string, keyof Producer> = {
+      name: 'name',
+      documentType: 'documentType',
+      document: 'document',
+      email: 'email',
+      phone: 'phone',
+      profilePhoto: 'profilePhoto',
+    };
+
+    const producerField = fieldMap[path];
+    if (producerField) {
+      const updates: Partial<Producer> = { [producerField]: value };
+
+      // Se estiver mudando o tipo de documento, limpa o documento atual
+      if (path === 'documentType') {
+        updates.document = '';
+      }
+
+      onUpdate(updates);
+    }
+  };
+
   // 🎯 VALIDAÇÃO EM TEMPO REAL DO DOCUMENTO
   const handleDocumentChange = (value: string) => {
     const numbers = value.replace(/\D/g, '');
@@ -48,7 +100,22 @@ export const ProducerForm: React.FC<ProducerFormProps> = ({
 
   return (
     <FormCard isDark={isDark}>
-      <h2>👨‍🌾 Dados do Produtor</h2>
+      {/* 🎯 HEADER COM TÍTULO E BOTÃO AUTO-FILL */}
+      <HeaderContainer>
+        <h2>👨‍🌾 Dados do Produtor</h2>
+
+        <AutoFillButton
+          schema={autoFillSchema}
+          onUpdate={handleAutoFillUpdate}
+          currentData={currentFormData} // 🎯 CRUCIAL: passa os dados atuais
+          isDark={isDark}
+          position="top-right"
+          tooltipPosition="left" // 🎯 NOVO: controla posição do tooltip
+          size="medium"
+          fillOnlyEmpty={true} // 🎯 CRUCIAL: só preenche campos vazios
+          excludeFields={[]} // Pode excluir campos específicos se necessário
+        />
+      </HeaderContainer>
 
       <FormGrid>
         {/* Nome */}
