@@ -585,3 +585,90 @@ export const FarmSelector = styled.div<{ isDark: boolean }>`
     }
   }
 `;
+
+export const CropToggleButton = styled.button<{ isDark: boolean; isExpanded: boolean }>`
+  background: transparent;
+  border: none;
+  color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)')};
+    transform: scale(1.1);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+    transform: rotate(${({ isExpanded }) => (isExpanded ? '180deg' : '0deg')});
+  }
+`;
+
+export const AutoFillButton = styled.button<{ isDark: boolean; isLoading: boolean }>`
+  background: ${({ isLoading, isDark }) =>
+    isLoading ? 'rgba(52, 152, 219, 0.3)' : 'linear-gradient(135deg, #3498db, #2980b9)'};
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: ${({ isLoading }) => (isLoading ? 'not-allowed' : 'pointer')};
+  opacity: ${({ isLoading }) => (isLoading ? 0.7 : 1)};
+  transition: all 0.3s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
+
+  .icon {
+    animation: ${({ isLoading }) => (isLoading ? 'spin 1s linear infinite' : 'none')};
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+export const CropPreview = styled.div<{ isDark: boolean }>`
+  margin-top: 1rem;
+  text-align: center;
+  background: ${({ isDark }) => (isDark ? 'rgba(45, 52, 64, 0.3)' : 'rgba(248, 250, 252, 0.5)')};
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)')};
+
+  img {
+    max-width: 200px;
+    max-height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)')};
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  p {
+    font-size: 0.8rem;
+    color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)')};
+    margin: 0.5rem 0 0 0;
+  }
+`;

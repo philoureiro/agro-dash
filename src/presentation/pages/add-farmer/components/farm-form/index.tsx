@@ -131,7 +131,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            maxWidth: '180px',
+            maxWidth: '160px',
             transition: 'all 0.3s ease',
           }}
         >
