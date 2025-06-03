@@ -69,20 +69,165 @@ export const FarmCard = styled.div<{ isDark: boolean; isValid?: boolean }>`
   }
 `;
 
+// Adicione estes novos componentes ao arquivo de styles
+
+export const FarmAccordion = styled.div<{
+  isDark: boolean;
+  isOpen: boolean;
+  isValid: boolean;
+}>`
+  border-radius: 16px;
+  backdrop-filter: blur(15px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  // 🎯 BORDA BASEADA NA VALIDAÇÃO
+  border: 1px solid
+    ${({ isDark, isValid }) => {
+      if (isValid) {
+        return isDark ? 'rgba(55, 203, 131, 0.4)' : 'rgba(55, 203, 131, 0.3)';
+      } else {
+        return isDark ? 'rgba(239, 68, 68, 0.4)' : 'rgba(239, 68, 68, 0.3)';
+      }
+    }};
+
+  background: ${({ isDark, isValid }) => {
+    if (isValid) {
+      return isDark ? 'rgba(55, 203, 131, 0.05)' : 'rgba(55, 203, 131, 0.02)';
+    } else {
+      return isDark ? 'rgba(239, 68, 68, 0.05)' : 'rgba(239, 68, 68, 0.02)';
+    }
+  }};
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ isDark, isValid }) => {
+      if (isValid) {
+        return isDark
+          ? '0 8px 25px rgba(55, 203, 131, 0.2)'
+          : '0 8px 25px rgba(55, 203, 131, 0.15)';
+      } else {
+        return isDark ? '0 8px 25px rgba(239, 68, 68, 0.2)' : '0 8px 25px rgba(239, 68, 68, 0.15)';
+      }
+    }};
+  }
+`;
+
 export const FarmHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
-  padding: 8px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
 `;
 
+export const FarmContent = styled.div<{ isOpen: boolean }>`
+  max-height: ${({ isOpen }) => (isOpen ? '2000px' : '0')};
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: ${({ isOpen }) => (isOpen ? 'translateY(0)' : 'translateY(-20px)')};
+`;
+
+export const ToggleButton = styled.div<{ isDark: boolean; isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)')};
+  transition: all 0.3s ease;
+  font-size: 0.8rem;
+
+  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+
+  &:hover {
+    background: ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)')};
+    transform: ${({ isOpen }) =>
+      isOpen ? 'rotate(180deg) scale(1.1)' : 'rotate(0deg) scale(1.1)'};
+  }
+`;
+
+export const FarmSummary = styled.div<{ isDark: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: ${({ isDark }) => (isDark ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)')};
+  font-weight: 500;
+
+  span:first-child {
+    font-weight: 600;
+    color: ${({ isDark }) => (isDark ? '#37cb83' : '#27ae60')};
+  }
+`;
+
+export const StatusIndicator = styled.div<{ isValid: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  background: ${({ isValid }) => (isValid ? 'rgba(55, 203, 131, 0.2)' : 'rgba(239, 68, 68, 0.2)')};
+
+  animation: ${({ isValid }) => (!isValid ? 'pulse 2s infinite' : 'none')};
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+`;
+
+// Continuação do RemoveButton
+export const RemoveButton = styled.button<{ isDark: boolean }>`
+  background: linear-gradient(135deg, #ff6b6b, #e63946);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  // 🎯 IMPEDE QUE O CLICK PROPAGUE PARA O HEADER
+  &:focus {
+    outline: none;
+  }
+`;
+
+// Mantenha os outros componentes existentes...
 export const PreviewImage = styled.img`
   width: 100%;
-  max-height: 300px;
+  max-height: 200px; // 🎯 Reduzido para accordion
   object-fit: cover;
   border-radius: 8px;
   flex: 1 1 0;
@@ -102,20 +247,16 @@ export const PreviewImage = styled.img`
 export const PreviewContainer = styled.div<{ isDark: boolean }>`
   display: flex;
   width: 100%;
-
   justify-content: space-between;
   align-items: center;
-
-  gap: 10px;
+  gap: 1rem;
   margin-bottom: 2rem;
-
   border-radius: 12px;
-
   transition: all 0.3s ease;
 
-  @media (max-width: 736px) {
-    padding: 0.5rem;
+  @media (max-width: 768px) {
     flex-direction: column;
+    padding: 0.5rem;
   }
 `;
 
@@ -130,7 +271,7 @@ export const PreviewInfo = styled.div`
 
   h4 {
     margin: 0 0 0.5rem 0;
-    font-size: 30px;
+    font-size: 1.5rem; // 🎯 Reduzido para accordion
     font-weight: bold;
     word-break: break-word;
     overflow-wrap: break-word;
@@ -138,41 +279,17 @@ export const PreviewInfo = styled.div`
 
   p {
     margin: 0.2rem 0;
-    font-size: 20px;
+    font-size: 0.9rem; // 🎯 Reduzido para accordion
     opacity: 0.8;
     word-break: break-word;
     overflow-wrap: break-word;
   }
 `;
 
-export const RemoveButton = styled.button<{ isDark: boolean }>`
-  background: linear-gradient(135deg, #ff6b6b, #e63946);
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-`;
-
 export const AreaValidation = styled.div<{ isDark: boolean }>`
   background: ${({ isDark }) =>
     isDark ? 'rgba(255, 107, 107, 0.1)' : 'rgba(255, 107, 107, 0.05)'};
-  border: 2px solid rgba(255, 107, 107, 0.3);
+  border: 1px solid rgba(255, 107, 107, 0.3); // 🎯 Reduzido para 1px
   border-radius: 8px;
   padding: 1rem;
   color: ${({ isDark }) => (isDark ? '#ff6b6b' : '#e63946')};
