@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { FcOpenedFolder } from 'react-icons/fc';
+import { IoIosCheckmarkCircle } from 'react-icons/io';
+import { IoArrowBackOutline, IoArrowForwardOutline } from 'react-icons/io5';
+import { TbTrashXFilled } from 'react-icons/tb';
 
 import { Button, DraftBadge, LoadingOverlay, StatsHeader } from '@components';
 import { Text } from '@components';
@@ -272,9 +276,12 @@ export const AddFarmer: React.FC = () => {
                   width: '150px',
                   height: '50px',
                   boxShadow: 'none',
+                  justifyContent: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
-                ← Voltar
+                <IoArrowBackOutline /> Voltar
               </Button>
             )}
 
@@ -297,14 +304,17 @@ export const AddFarmer: React.FC = () => {
                 color: isDark ? 'white' : '#5d5d5d',
                 padding: '12px 24px',
                 borderRadius: '8px',
-                width: '150px',
+                width: '210px',
                 height: '50px',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 boxShadow: 'none',
+                justifyContent: 'center',
+                display: 'flex',
+                alignItems: 'center',
               }}
             >
-              🗑️ Limpar Rascunho
+              <TbTrashXFilled size={16} /> Limpar Rascunho
             </Button>
           </ActionsBox>
 
@@ -325,14 +335,17 @@ export const AddFarmer: React.FC = () => {
                 padding: '18px 48px',
                 minWidth: '250px',
                 borderRadius: '8px',
+                justifyContent: 'center',
+                display: 'flex',
+                alignItems: 'center',
                 opacity: progress === 100 ? 1 : 0.7,
                 cursor: progress === 100 ? 'pointer' : 'not-allowed',
                 transition: 'all 0.3s ease',
               }}
             >
               {progress === 100
-                ? '✅ Finalizar Cadastro'
-                : `📋 Complete o formulário (${progress}%)`}
+                ? <IoIosCheckmarkCircle size={25} color={'#27ae60'} /> + ' Finalizar Cadastro'
+                : <FcOpenedFolder size={25} /> + ` Complete o formulário (${progress}%)`}
             </Button>
           ) : (
             <Button
@@ -350,14 +363,18 @@ export const AddFarmer: React.FC = () => {
                 minWidth: '200px',
                 maxWidth: '350px',
                 borderRadius: '8px',
+                justifyContent: 'center',
+                display: 'flex',
+                alignItems: 'center',
                 opacity: canProceedToNext() ? 1 : 0.7,
                 cursor: canProceedToNext() ? 'pointer' : 'not-allowed',
                 transition: 'all 0.3s ease',
               }}
             >
-              {form.currentStep === 'producer' && 'Próximo: Fazendas →'}
-              {form.currentStep === 'farms' && 'Próximo: Culturas →'}
-              {form.currentStep === 'crops' && 'Finalizar →'}
+              {form.currentStep === 'producer' && 'Próximo: Fazendas'}
+              {form.currentStep === 'farms' && 'Próximo: Culturas'}
+              {form.currentStep === 'crops' && 'Finalizar'}
+              <IoArrowForwardOutline />
             </Button>
           )}
         </FormActions>

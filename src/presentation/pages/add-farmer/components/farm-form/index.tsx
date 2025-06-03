@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { IoIosCheckmarkCircle, IoIosCloseCircle } from 'react-icons/io';
+import { TbTrashXFilled } from 'react-icons/tb';
 
 import { AutoFillButton, Button, Input, RangeSlider } from '@components';
 import { Farm } from '@entities';
@@ -9,7 +11,6 @@ import { estados, farmImages } from './images';
 import {
   AreaValidation,
   FarmAccordion,
-  FarmCard,
   FarmContent,
   FarmHeader,
   FarmSummary,
@@ -18,7 +19,6 @@ import {
   PreviewInfo,
   RemoveButton,
   StatusIndicator,
-  ToggleButton,
 } from './styles';
 
 interface FarmFormProps {
@@ -211,7 +211,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
     <FormCard isDark={isDark}>
       {/* 🎯 HEADER COM TÍTULO E BOTÃO ADICIONAR */}
       <HeaderContainer>
-        <h2>🏭 Fazendas ({farms.length})</h2>
+        <h2>🌾 Fazendas ({farms.length})</h2>
         <Button
           isDark={isDark}
           onClick={handleAddFarm}
@@ -270,12 +270,17 @@ export const FarmForm: React.FC<FarmFormProps> = ({
             <FarmHeader onClick={() => toggleFarm(farm.tempId)}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
                 {/* Status Visual */}
-                <StatusIndicator isValid={isValid}>{isValid ? '✅' : '⚠️'}</StatusIndicator>
+                <StatusIndicator isValid={isValid}>
+                  {isValid ? (
+                    <IoIosCheckmarkCircle size={25} color="#27ae60" />
+                  ) : (
+                    <IoIosCloseCircle size={25} color="#e92d2d" />
+                  )}
+                </StatusIndicator>
 
                 {/* Título */}
                 <div
                   style={{
-                    color: isDark ? '#37cb83' : '#27ae60',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                     display: 'flex',
@@ -300,43 +305,38 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                 )}
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 {/* Botão de remover */}
                 {farms.length > 1 && (
-                  <RemoveButton
-                    isDark={isDark}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRemoveFarm(farm.tempId);
-                    }}
-                  >
-                    🗑️
-                  </RemoveButton>
+                  <>
+                    <AutoFillButton
+                      schema={autoFillSchema}
+                      onUpdate={handleAutoFillUpdate(farm.tempId)}
+                      currentData={currentFarmData}
+                      isDark={isDark}
+                      tooltipPosition="left"
+                      size="small"
+                      fillOnlyEmpty={true}
+                      imageContext="farm"
+                    />
+                    <RemoveButton
+                      isDark={isDark}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemoveFarm(farm.tempId);
+                      }}
+                    >
+                      <TbTrashXFilled size={24} color="#e92d2d" />
+                    </RemoveButton>
+                  </>
                 )}
-
-                {/* Botão de toggle */}
-                <ToggleButton isDark={isDark} isOpen={isOpen}>
-                  {isOpen ? '🔼' : '🔽'}
-                </ToggleButton>
               </div>
             </FarmHeader>
 
             {/* 🎯 CONTEÚDO EXPANSÍVEL */}
             <FarmContent isOpen={isOpen}>
-              <div style={{ padding: '0 1rem 1rem 1rem' }}>
+              <div style={{ padding: '0 1rem 1rem 1rem', marginTop: '1rem' }}>
                 {/* AutoFill Button */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-                  <AutoFillButton
-                    schema={autoFillSchema}
-                    onUpdate={handleAutoFillUpdate(farm.tempId)}
-                    currentData={currentFarmData}
-                    isDark={isDark}
-                    tooltipPosition="left"
-                    size="medium"
-                    fillOnlyEmpty={true}
-                    imageContext="farm"
-                  />
-                </div>
 
                 {/* 🖼️ PREVIEW DA FAZENDA */}
                 <PreviewContainer isDark={isDark}>

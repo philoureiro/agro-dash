@@ -92,14 +92,6 @@ export const FarmAccordion = styled.div<{
       }
     }};
 
-  background: ${({ isDark, isValid }) => {
-    if (isValid) {
-      return isDark ? 'rgba(55, 203, 131, 0.05)' : 'rgba(55, 203, 131, 0.02)';
-    } else {
-      return isDark ? 'rgba(239, 68, 68, 0.05)' : 'rgba(239, 68, 68, 0.02)';
-    }
-  }};
-
   &:hover {
     transform: translateY(-2px);
     box-shadow: ${({ isDark, isValid }) => {
@@ -165,7 +157,6 @@ export const FarmSummary = styled.div<{ isDark: boolean }>`
 
   span:first-child {
     font-weight: 600;
-    color: ${({ isDark }) => (isDark ? '#37cb83' : '#27ae60')};
   }
 `;
 
@@ -177,7 +168,6 @@ export const StatusIndicator = styled.div<{ isValid: boolean }>`
   height: 28px;
   border-radius: 50%;
   font-size: 0.8rem;
-  background: ${({ isValid }) => (isValid ? 'rgba(55, 203, 131, 0.2)' : 'rgba(239, 68, 68, 0.2)')};
 
   animation: ${({ isValid }) => (!isValid ? 'pulse 2s infinite' : 'none')};
 
@@ -194,10 +184,10 @@ export const StatusIndicator = styled.div<{ isValid: boolean }>`
 
 // Continuação do RemoveButton
 export const RemoveButton = styled.button<{ isDark: boolean }>`
-  background: linear-gradient(135deg, #ff6b6b, #e63946);
   border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
+
+  padding: 6px;
+  border-radius: 50%;
   color: white;
   font-weight: bold;
   cursor: pointer;
@@ -205,7 +195,7 @@ export const RemoveButton = styled.button<{ isDark: boolean }>`
   font-size: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+
   opacity: 0.8;
 
   &:hover {
