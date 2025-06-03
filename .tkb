@@ -110,6 +110,41 @@
       "id": "eRRe5DpO7lCEAzyIzpY1E",
       "description": "pegar traducao do grafico e colocar no search",
       "columnId": "column-todo"
+    },
+    "MJ9iQmD7L0MgH4PKoXAuO": {
+      "id": "MJ9iQmD7L0MgH4PKoXAuO",
+      "description": "deixar overlay mais escuro",
+      "columnId": "column-done"
+    },
+    "s7fEJSXlYiw-CZvn9g0SA": {
+      "id": "s7fEJSXlYiw-CZvn9g0SA",
+      "description": "overlay na tela de docs",
+      "columnId": "column-done"
+    },
+    "C6KAab38KUoQgY6KPawAw": {
+      "id": "C6KAab38KUoQgY6KPawAw",
+      "description": "aviso de rascunho mais pra baixo no mobile",
+      "columnId": "column-todo"
+    },
+    "RC64o7bzjoUh1Mx57fn5z": {
+      "id": "RC64o7bzjoUh1Mx57fn5z",
+      "description": "dps de salvar ir pra pesquisar",
+      "columnId": "column-todo"
+    },
+    "k6ZBpk4Ms09nhCBPeqpKv": {
+      "id": "k6ZBpk4Ms09nhCBPeqpKv",
+      "description": "modal de confirm castasr",
+      "columnId": "column-todo"
+    },
+    "NpsLr6_jdn22AcxxDzOCj": {
+      "id": "NpsLr6_jdn22AcxxDzOCj",
+      "description": "nao abrir automaticamente nenhum card fechado fazendas",
+      "columnId": "column-todo"
+    },
+    "bkDNwtSJ3xqmoeKmKpZJr": {
+      "id": "bkDNwtSJ3xqmoeKmKpZJr",
+      "description": "colocar have drasft parar tirar falad de artuomatico quando n tiver",
+      "columnId": "column-todo"
     }
   },
   "columns": [
@@ -127,7 +162,12 @@
         "NiE1YQclkwlUaNwSGUKdE",
         "GO6JA1dNpMZH7oouAn8-d",
         "eRRe5DpO7lCEAzyIzpY1E",
-        "0srfiX6eKkurgUK60saY0"
+        "0srfiX6eKkurgUK60saY0",
+        "C6KAab38KUoQgY6KPawAw",
+        "RC64o7bzjoUh1Mx57fn5z",
+        "k6ZBpk4Ms09nhCBPeqpKv",
+        "NpsLr6_jdn22AcxxDzOCj",
+        "bkDNwtSJ3xqmoeKmKpZJr"
       ]
     },
     {
@@ -149,6 +189,8 @@
         "EBRdnHDiiAHed8_jYlsmh",
         "2WX72G-2JW-sd-TgBG5cP",
         "i2mFRMSFaolBESaYqZi-j",
+        "MJ9iQmD7L0MgH4PKoXAuO",
+        "s7fEJSXlYiw-CZvn9g0SA",
         "mXXDmapCHtlPlnibkNysI"
       ]
     }

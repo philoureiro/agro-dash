@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FaPlus } from 'react-icons/fa6';
 import { IoIosCheckmarkCircle, IoIosCloseCircle } from 'react-icons/io';
-import { PiPlusBold } from 'react-icons/pi';
 import { TbTrashXFilled } from 'react-icons/tb';
 
 import { AutoFillButton, Button, Input, RangeSlider } from '@components';
@@ -81,36 +80,9 @@ export const FarmForm: React.FC<FarmFormProps> = ({
     });
   };
 
-  // 🎯 ADICIONAR NOVA FAZENDA E MANTER APENAS ELA ABERTA
   const handleAddFarm = () => {
-    // Primeiro, fecha todas as fazendas existentes
-    setOpenFarms(new Set());
-
-    // Adiciona a nova fazenda
     onAddFarm();
-
-    // Aguarda um frame para garantir que a fazenda foi adicionada
-    setTimeout(() => {
-      // Abre apenas a última fazenda (mais recente)
-      if (farms.length >= 0) {
-        setOpenFarms(new Set(['new-farm'])); // Temporário até ter o ID real
-      }
-    }, 100);
-
-    if (farms.length > 0) {
-      const lastFarm = farms[farms.length - 1];
-      setOpenFarms(new Set([lastFarm.tempId]));
-    }
   };
-
-  // 🎯 EFEITO PARA ABRIR AUTOMATICAMENTE A ÚLTIMA FAZENDA
-
-  React.useEffect(() => {
-    if (farms.length > 0) {
-      const lastFarm = farms[farms.length - 1];
-      setOpenFarms(new Set([lastFarm.tempId]));
-    }
-  }, [farms.length]);
 
   return (
     <FormCard isDark={isDark}>

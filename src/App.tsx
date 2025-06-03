@@ -28,12 +28,11 @@ function App() {
 
   return (
     <Fragment>
-      <PullToRefresh onRefresh={handleRefresh} resistance={2.5} distanceToRefresh={80}>
-        <Header themeMode={themeModeString} />
-        <InstallBanner />
-      </PullToRefresh>
-
       <BrowserRouter>
+        <PullToRefresh onRefresh={handleRefresh} resistance={2.5} distanceToRefresh={80}>
+          <Header themeMode={themeModeString} />
+          <InstallBanner />
+        </PullToRefresh>
         <AppRoutes />
         <BottomBar themeMode={themeModeString} />
       </BrowserRouter>

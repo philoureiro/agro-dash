@@ -6,6 +6,7 @@ import { vs, vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 import { useTheme } from '@mui/material/styles';
 
+import { LoadingOverlay } from '@components';
 import remarkGfm from 'remark-gfm';
 
 import {
@@ -230,9 +231,22 @@ export const Markdown: React.FC = () => {
 
   if (loading) {
     return (
-      <DocsContainer theme={theme}>
-        <LoadingSpinner theme={theme} />
-      </DocsContainer>
+      <LoadingOverlay
+        isVisible={loading}
+        isDark={theme.palette.mode === 'dark'}
+        type="generating"
+        variant="bounce"
+        title="📚 Carregando Documentação"
+        subtitle="Preparando informações úteis"
+        loadingText={'Carregando documentação...'}
+        stats={[
+          { label: 'Seções Encontradas', value: tocItems.length.toString() },
+          { label: 'Formato', value: 'Markdown (.md)' },
+          { label: 'Fonte', value: 'README.md' },
+        ]}
+        spinnerColor="#27ae60"
+        spinnerSize="large"
+      />
     );
   }
 
