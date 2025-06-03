@@ -7,6 +7,7 @@ export default defineConfig({
     globals: true, // Pode usar describe/it/expect direto
     coverage: {
       reporter: ['text', 'lcov'],
+      include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
       exclude: [
         'src/mocks',
         'src/**/*.d.ts',
