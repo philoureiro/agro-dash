@@ -184,6 +184,7 @@ export const AddFarmer: React.FC = () => {
           icon: '🚀',
           title: 'Finalizar Cadastro',
           subtitle: 'Confirmar dados e finalizar',
+          type: 'confirm',
           message: `Você está prestes a finalizar o cadastro do produtor "${form.producer.name}" com ${stats.totalFarms} fazenda(s) e ${stats.totalCrops} cultura(s). Todos os dados serão salvos permanentemente.`,
           confirmText: 'Sim, Finalizar Cadastro',
           cancelText: 'Cancelar',
@@ -194,6 +195,7 @@ export const AddFarmer: React.FC = () => {
           icon: '🗑️',
           title: 'Limpar Rascunho',
           subtitle: 'Remover dados salvos temporariamente',
+          type: 'danger',
           message:
             'Tem certeza que deseja limpar o rascunho? Todos os dados não salvos permanentemente serão perdidos.',
           confirmText: 'Sim, Limpar Rascunho',
@@ -515,7 +517,7 @@ export const AddFarmer: React.FC = () => {
       <ConfirmModal
         isVisible={!!confirmModal?.isVisible}
         isDark={isDark}
-        type="confirm"
+        type={modalContent.type}
         title={modalContent.icon ? `${modalContent.icon} ${modalContent.title}` : ''}
         subtitle={modalContent.subtitle || ''}
         message={modalContent.message || ''}
