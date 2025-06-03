@@ -16,8 +16,8 @@ interface ProgressBarProps {
   emptyColor?: string; // Cor da barra faltante
   showPercentage?: boolean; // Mostra texto de progresso
   label?: string;
-  textColor?: string; // Cor do texto (opcional)
   style?: React.CSSProperties;
+  textStyle?: React.CSSProperties; // Estilo adicional para o texto
 }
 
 export const ProgressBar: React.FC<ProgressBarProps> = ({
@@ -27,8 +27,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   emptyColor,
   showPercentage = true,
   label = 'Progresso',
-  textColor,
   style,
+  textStyle,
 }) => {
   const safeProgress = Math.min(Math.max(progress || 0, 0), 100);
   const missing = 100 - safeProgress;
@@ -43,7 +43,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       </ProgressBarContainer>
 
       {showPercentage && (
-        <ProgressText $isDark={isDark} $textColor={textColor}>
+        <ProgressText $isDark={isDark} style={textStyle}>
           <span>{label}</span>
           {showPercentage && <span>{Math.round(safeProgress)}% completo</span>}
         </ProgressText>

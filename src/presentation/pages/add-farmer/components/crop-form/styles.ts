@@ -532,22 +532,17 @@ export const AreaUtilizationBar = styled.div<{ isDark: boolean; percentage: numb
 
 // 🎯 FARM SELECTOR PARA CULTURAS
 export const FarmSelector = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(52, 152, 219, 0.1)' : 'rgba(52, 152, 219, 0.05)')};
-  border: 2px solid
-    ${({ isDark }) => (isDark ? 'rgba(52, 152, 219, 0.3)' : 'rgba(52, 152, 219, 0.2)')};
+  /* background: ${({ isDark }) =>
+    isDark ? 'rgba(52, 152, 219, 0.1)' : 'rgba(52, 152, 219, 0.05)'}; */
+  /* border: 2px solid
+    ${({ isDark }) => (isDark ? 'rgba(52, 152, 219, 0.3)' : 'rgba(52, 152, 219, 0.2)')}; */
   border-radius: 12px;
-  padding: 1.5rem;
+
   margin-bottom: 1.5rem;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
-  }
-
   .farm-title {
-    color: ${({ isDark }) => (isDark ? '#3498DB' : '#2980B9')};
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 1rem;
@@ -558,6 +553,11 @@ export const FarmSelector = styled.div<{ isDark: boolean }>`
     &:before {
       content: '🏭';
       font-size: 1.4rem;
+    }
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
     }
   }
 
@@ -670,5 +670,47 @@ export const CropPreview = styled.div<{ isDark: boolean }>`
     font-size: 0.8rem;
     color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)')};
     margin: 0.5rem 0 0 0;
+  }
+`;
+
+export const CropFormContainer = styled.div<{ isDark: boolean }>`
+  border: ${({ isDark }) => (isDark ? '1px solid rgba(111, 250, 47, 0.14)' : '1px solid #ecf0f1')};
+  border-radius: 12px;
+  padding: 20px;
+
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: ${({ isDark }) =>
+    isDark ? '0 8px 25px rgba(0, 0, 0, 0.37)' : '0 8px 25px rgba(0, 0, 0, 0.05)'};
+  transition: all 0.3s ease;
+
+  display: flex;
+
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+export const CropFormHeader = styled.div<{ isDark: boolean }>`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+`;
+
+export const HeaderBox = styled.div<{ isDark: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 20px;
   }
 `;

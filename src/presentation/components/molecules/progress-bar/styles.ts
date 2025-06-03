@@ -80,7 +80,6 @@ export const ProgressEmptyBar = styled.div<{
 // Texto do progresso
 export const ProgressText = styled.div<{
   $isDark: boolean;
-  $textColor?: string;
 }>`
   display: flex;
   justify-content: space-between;
@@ -90,12 +89,9 @@ export const ProgressText = styled.div<{
   margin-top: 0.45rem;
   letter-spacing: 0.01em;
 
-  color: ${({ $textColor, $isDark }) =>
-    $textColor ? $textColor : $isDark ? '#e2e8f0' : '#1e293b'};
+  color: ${({ $isDark }) => ($isDark ? '#e2e8f0' : '#1e293b')};
 
   span:last-child {
     font-weight: 700;
-    color: ${({ $textColor, $isDark }) =>
-      $textColor ? $textColor : $isDark ? '#f1f5f9' : '#15803d'};
   }
 `;

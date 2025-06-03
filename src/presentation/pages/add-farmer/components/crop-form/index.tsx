@@ -6,18 +6,19 @@ import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
 import { Button, Input, ProgressBar } from '@components';
 import { Crop, Farm } from '@entities';
 import { useAutoFill } from '@hooks';
-import { AlertTriangle, Check, ChevronDown, ChevronUp, Wand2, X } from 'lucide-react';
 
 import { RemoveButton } from '../farm-form/styles';
 import { FormCard, FormGrid } from '../producer-form/styles';
 import {
-  AreaUtilizationBar,
   CropCard,
+  CropFormContainer,
+  CropFormHeader,
   CropHeader,
   CropStatusBadge,
   CropTypeIcon,
   CropValidation,
   FarmSelector,
+  HeaderBox,
   ProductivityMeter,
 } from './styles';
 
@@ -261,17 +262,15 @@ export const CropForm: React.FC<CropFormProps> = ({
 
   return (
     <FormCard isDark={isDark}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: '2rem',
-          flexWrap: 'wrap',
-          gap: '1rem',
-        }}
-      >
-        <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <HeaderBox isDark={isDark}>
+        <h2
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            width: '100%',
+          }}
+        >
           🌱 Culturas Plantadas
           <span
             style={{
@@ -282,7 +281,7 @@ export const CropForm: React.FC<CropFormProps> = ({
               borderRadius: '12px',
               border: isDark
                 ? '1px solid rgba(55, 203, 131, 0.3)'
-                : '1px solid rgba(55, 203, 131, 0.2)',
+                : '1px solid rgba(55, 203, 131, 0.946)',
             }}
           >
             {Object.values(crops).flat().length} cultura
@@ -290,45 +289,46 @@ export const CropForm: React.FC<CropFormProps> = ({
           </span>
         </h2>
 
-        {/* 🎯 CONTROLES GLOBAIS */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <Button
-            isDark={isDark}
-            onClick={() => {
-              const allExpanded = Object.values(expandedFarms).every(Boolean);
-              const newState = farms.reduce(
-                (acc, farm) => {
-                  acc[farm.tempId] = !allExpanded;
-                  return acc;
-                },
-                {} as Record<string, boolean>,
-              );
-              setExpandedFarms(newState);
-            }}
-            style={{
-              background: 'transparent',
-              border: `1px solid ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'}`,
-              color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              fontSize: '0.8rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-            }}
-          >
-            {Object.values(expandedFarms).every(Boolean) ? (
-              <>
-                <BsFillClipboard2PlusFill size={14} /> Recolher Tudo
-              </>
-            ) : (
-              <>
-                <BsFillClipboard2PlusFill size={14} /> Expandir Tudo
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
+        <Button
+          isDark={isDark}
+          onClick={() => {
+            const allExpanded = Object.values(expandedFarms).every(Boolean);
+            const newState = farms.reduce(
+              (acc, farm) => {
+                acc[farm.tempId] = !allExpanded;
+                return acc;
+              },
+              {} as Record<string, boolean>,
+            );
+            setExpandedFarms(newState);
+          }}
+          style={{
+            background: 'transparent',
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'}`,
+            color: isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+            padding: '8px 12px',
+            borderRadius: '6px',
+            fontSize: '0.8rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.3rem',
+            boxShadow: 'none',
+            height: '40px',
+            width: 140,
+            justifyContent: 'center',
+          }}
+        >
+          {Object.values(expandedFarms).every(Boolean) ? (
+            <>
+              <TiArrowUpThick size={18} /> Recolher Tudo
+            </>
+          ) : (
+            <>
+              <TiArrowDownThick size={18} /> Expandir Tudo
+            </>
+          )}
+        </Button>
+      </HeaderBox>
 
       {/* 🏭 FAZENDAS COM CULTURAS */}
       {farms.map((farm, farmIndex) => {
@@ -349,16 +349,8 @@ export const CropForm: React.FC<CropFormProps> = ({
               }}
               onClick={() => toggleFarmExpansion(farm.tempId)}
             >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '1rem',
-                }}
-              >
-                <div style={{ flex: 1 }}>
+              <CropFormContainer isDark={isDark}>
+                <CropFormHeader isDark={isDark}>
                   <div className="farm-title">
                     {farm.name || `Fazenda ${farmIndex + 1}`}
                     <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>
@@ -378,7 +370,7 @@ export const CropForm: React.FC<CropFormProps> = ({
                       <span className="value">{totalPlantedArea.toLocaleString()} ha</span>
                     </div>
                     <div className="stat">
-                      <span style={{ color: availableArea < 0 ? '#E74C3C' : '#27AE60' }}>
+                      <span>
                         💚 Disponível:{' '}
                         <span className="value">{availableArea.toLocaleString()} ha</span>
                       </span>
@@ -388,12 +380,14 @@ export const CropForm: React.FC<CropFormProps> = ({
                   <ProgressBar
                     progress={utilizationPercent}
                     isDark={isDark}
-                    label={'progressLabel'}
-                    showPercentage={false}
-                    style={{ maxWidth: '40%', marginTop: 10 }}
+                    label={'Utilização da área'}
+                    showPercentage={true}
+                    style={{ marginTop: 10 }}
+                    textStyle={{ fontSize: '12px' }}
+                    color="#27ae60"
                     emptyColor="#e0e0e0"
                   />
-                </div>
+                </CropFormHeader>
 
                 <Button
                   isDark={isDark}
@@ -414,13 +408,15 @@ export const CropForm: React.FC<CropFormProps> = ({
                     alignItems: 'center',
                     gap: '0.5rem',
                     fontSize: '0.9rem',
-                    minWidth: '160px',
+                    minWidth: '200px',
+                    height: '60px',
                     justifyContent: 'center',
+                    boxShadow: 'none',
                   }}
                 >
                   <FaPlus size={16} /> Adicionar Cultura
                 </Button>
-              </div>
+              </CropFormContainer>
 
               {/* ⚠️ ALERTA DE ÁREA EXCEDIDA */}
               {availableArea < 0 && (

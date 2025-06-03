@@ -241,7 +241,7 @@ export const AddFarmer: React.FC = () => {
         <StatsHeader
           progress={progress}
           isDark={isDark}
-          // 🔥 USAR IMAGEM DO FORM OU PADRÃO
+          textStyle={{ color: 'white' }}
           backgroundImage={
             form.producer.profilePhoto &&
             /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i.test(form.producer.profilePhoto)

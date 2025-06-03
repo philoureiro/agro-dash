@@ -25,6 +25,8 @@ interface StatsHeaderProps {
   isDark: boolean;
   className?: string;
   progressLabel?: string;
+  textStyle?: React.CSSProperties;
+  style?: React.CSSProperties;
 }
 
 export const StatsHeader: React.FC<StatsHeaderProps> = ({
@@ -34,9 +36,11 @@ export const StatsHeader: React.FC<StatsHeaderProps> = ({
   isDark,
   className,
   progressLabel,
+  style,
+  textStyle,
 }) => {
   return (
-    <StatsHeaderContainer $isDark={isDark} className={className}>
+    <StatsHeaderContainer $isDark={isDark} className={className} style={style}>
       {/* 🖼️ IMAGEM DE FUNDO COM ZOOM NO HOVER */}
       {backgroundImage && (
         <BackgroundImageContainer>
@@ -61,7 +65,7 @@ export const StatsHeader: React.FC<StatsHeaderProps> = ({
             progress={progress}
             isDark={isDark}
             label={progressLabel}
-            textColor={backgroundImage ? '#ffffff' : undefined} // 🔥 BRANCO COM IMAGEM
+            textStyle={textStyle}
             color={
               backgroundImage
                 ? 'linear-gradient(90deg, #166534, #4ade80)'
