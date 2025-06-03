@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Button, Input, RangeSlider } from '@components';
+import { AutoFillButton, Button, Input, RangeSlider } from '@components';
 import { Farm } from '@entities';
 import { States } from '@enums';
 
-import { FormCard, FormGrid } from '../producer-form/styles';
+import { FormCard, FormGrid, HeaderContainer } from '../producer-form/styles';
 import { estados, farmImages } from './images';
 import {
   AreaValidation,
@@ -43,6 +43,73 @@ export const FarmForm: React.FC<FarmFormProps> = ({
   onUpdateFarm,
   isDark,
 }) => {
+  // 🎯 SCHEMA PARA AUTO-FILL DA FAZENDA
+  const createFarmAutoFillSchema = (farm: Farm) => ({
+    name: { type: 'text' as const, custom: () => farm.name || '' },
+    city: { type: 'text' as const, custom: () => farm.city || '' },
+    state: {
+      type: 'select' as const,
+      options: estados.map((e) => e.value).filter((v) => v !== ''),
+    },
+    zipCode: { type: 'cep' as const },
+    farmPhoto: { type: 'url' as const },
+    totalArea: { type: 'number' as const, min: 10, max: 5000 },
+    agriculturalArea: { type: 'number' as const, min: 1, max: 4000 },
+    vegetationArea: { type: 'number' as const, min: 1, max: 1000 },
+    productivity: { type: 'percentage' as const },
+    sustainability: { type: 'percentage' as const },
+    technology: { type: 'percentage' as const },
+  });
+
+  // 🎯 FUNÇÃO PARA ATUALIZAR CAMPOS VIA AUTO-FILL
+  const handleAutoFillUpdate = (tempId: string) => (path: string, value: string | number) => {
+    console.log(`🎯 AutoFill atualizando fazenda ${tempId} - ${path} com valor:`, value);
+
+    // Mapeia os caminhos do schema para as propriedades do Farm
+    const fieldMap: Record<string, keyof Farm> = {
+      name: 'name',
+      city: 'city',
+      state: 'state',
+      zipCode: 'zipCode',
+      farmPhoto: 'farmPhoto',
+      totalArea: 'totalArea',
+      agriculturalArea: 'agriculturalArea',
+      vegetationArea: 'vegetationArea',
+      productivity: 'productivity',
+      sustainability: 'sustainability',
+      technology: 'technology',
+    };
+
+    const farmField = fieldMap[path];
+    if (farmField) {
+      const updates: Partial<Farm> = { [farmField]: value };
+
+      // 🎯 VALIDAÇÕES ESPECÍFICAS
+      if (path === 'zipCode' && typeof value === 'string') {
+        // Formata CEP automaticamente
+        const formatted = value.replace(/(\d{5})(\d)/, '$1-$2');
+        updates.zipCode = formatted;
+      }
+
+      onUpdateFarm(tempId, updates);
+    }
+  };
+
+  // 🎯 DADOS ATUAIS DO FORMULÁRIO DE FAZENDA
+  const getCurrentFarmData = (farm: Farm) => ({
+    name: farm.name,
+    city: farm.city,
+    state: farm.state,
+    zipCode: farm.zipCode,
+    farmPhoto: farm.farmPhoto,
+    totalArea: farm.totalArea,
+    agriculturalArea: farm.agriculturalArea,
+    vegetationArea: farm.vegetationArea,
+    productivity: farm.productivity,
+    sustainability: farm.sustainability,
+    technology: farm.technology,
+  });
+
   // 🎯 VALIDAR ÁREAS
   const validateAreas = (farm: Farm): boolean => {
     return farm.totalArea > 0 && farm.agriculturalArea + farm.vegetationArea <= farm.totalArea;
@@ -60,14 +127,8 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
   return (
     <FormCard isDark={isDark}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '2rem',
-        }}
-      >
+      {/* 🎯 HEADER COM TÍTULO E BOTÃO ADICIONAR */}
+      <HeaderContainer>
         <h2>🏭 Fazendas ({farms.length})</h2>
         <Button
           isDark={isDark}
@@ -89,7 +150,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
         >
           ➕ Adicionar Fazenda
         </Button>
-      </div>
+      </HeaderContainer>
 
       {farms.length === 0 && (
         <div
@@ -110,6 +171,8 @@ export const FarmForm: React.FC<FarmFormProps> = ({
 
       {farms.map((farm, index) => {
         const farmValidation = validation.farms[farm.tempId] || {};
+        const autoFillSchema = createFarmAutoFillSchema(farm);
+        const currentFarmData = getCurrentFarmData(farm);
 
         return (
           <FarmCard
@@ -118,7 +181,7 @@ export const FarmForm: React.FC<FarmFormProps> = ({
             isValid={
               farmValidation.nameValid && farmValidation.locationValid && farmValidation.areasValid
             }
-            style={{ marginBottom: '2rem' }}
+            style={{ marginBottom: '2rem', position: 'relative' }}
           >
             <FarmHeader>
               <div
@@ -137,11 +200,26 @@ export const FarmForm: React.FC<FarmFormProps> = ({
                   farmValidation.areasValid && <span style={{ fontSize: '1rem' }}>✅</span>}
               </div>
 
-              {farms.length > 1 && (
-                <RemoveButton isDark={isDark} onClick={() => onRemoveFarm(farm.tempId)}>
-                  🗑️ Remover
-                </RemoveButton>
-              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', gap: 20 }}>
+                {/* 🚀 BOTÃO AUTO-FILL PARA CADA FAZENDA */}
+                <AutoFillButton
+                  schema={autoFillSchema}
+                  onUpdate={handleAutoFillUpdate(farm.tempId)}
+                  currentData={currentFarmData}
+                  isDark={isDark}
+                  position="top-right"
+                  tooltipPosition="left"
+                  size="small"
+                  fillOnlyEmpty={true}
+                  imageContext="farm" // 🎯 Contexto específico para fazendas
+                />
+
+                {farms.length > 1 && (
+                  <RemoveButton isDark={isDark} onClick={() => onRemoveFarm(farm.tempId)}>
+                    🗑️ Remover
+                  </RemoveButton>
+                )}
+              </div>
             </FarmHeader>
 
             {/* 🖼️ PREVIEW DA FAZENDA */}

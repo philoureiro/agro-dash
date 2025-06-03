@@ -7,33 +7,27 @@ const sparkle = keyframes`
   75% { transform: rotate(270deg) scale(1.1); }
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const pulse = keyframes`
   0%, 100% { box-shadow: 0 0 0 0 rgba(55, 203, 131, 0.4); }
   50% { box-shadow: 0 0 0 8px rgba(55, 203, 131, 0); }
 `;
 
-export const AutoFillContainer = styled.div<{
-  $position: 'top-right' | 'top-left';
-}>`
-  margin-top: -21px;
-  position: absolute;
-  z-index: 10;
-
-  ${({ $position }) =>
-    $position === 'top-right'
-      ? css`
-          top: 1rem;
-          right: 1rem;
-        `
-      : css`
-          top: 1rem;
-          left: 1rem;
-        `}
-
-  @media (max-width: 768px) {
-    right: ${({ $position }) => ($position === 'top-right' ? '0.5rem' : 'auto')};
-    left: ${({ $position }) => ($position === 'top-left' ? '0.5rem' : 'auto')};
-  }
+// 🎯 WRAPPER QUE RESPEITA O FLEXBOX PAI
+export const AutoFillWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 
+    🔥 REMOVE TODAS AS POSIÇÕES ABSOLUTAS
+    Agora o componente se comporta como um elemento normal do flexbox
+    Respeitando space-between, justify-content, align-items, etc.
+  */
 `;
 
 export const AutoFillButton = styled.button<{
@@ -111,18 +105,19 @@ export const AutoFillIcon = styled.span<{ $isAnimated: boolean }>`
   }
 `;
 
-// 🎯 TOOLTIP COM TODAS AS 4 POSIÇÕES POSSÍVEIS
+// 🎯 TOOLTIP INTELIGENTE COM DETECÇÃO AUTOMÁTICA DE POSIÇÃO
 export const AutoFillTooltip = styled.div<{
   $isDark: boolean;
-  $position: 'top' | 'bottom' | 'left' | 'right';
+  $position: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 }>`
   position: absolute;
-  z-index: 20;
+  z-index: 1000;
+  pointer-events: none; /* Não interfere no hover */
 
   background: ${({ $isDark }) =>
-    $isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
+    $isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgba(15, 23, 42, 0.95)'};
 
-  color: ${({ $isDark }) => ($isDark ? '#e2e8f0' : '#374151')};
+  color: ${({ $isDark }) => ($isDark ? '#374151' : '#e2e8f0')};
 
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
@@ -136,9 +131,14 @@ export const AutoFillTooltip = styled.div<{
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
-  // 🎯 POSICIONAMENTO BASEADO NA PROP $position
+  /* animation: ${fadeIn} 0.2s ease-out; */
+
+  // 🎯 POSICIONAMENTO INTELIGENTE - AUTO DETECTA O MELHOR LOCAL
   ${({ $position }) => {
-    switch ($position) {
+    // Se auto, usa bottom por padrão (mas pode ser expandido com JS para detectar espaço disponível)
+    const actualPosition = $position === 'auto' ? 'bottom' : $position;
+
+    switch (actualPosition) {
       case 'top':
         return css`
           bottom: calc(100% + 8px);
@@ -172,7 +172,7 @@ export const AutoFillTooltip = styled.div<{
     }
   }}
 
-  // 🎯 SETA DO TOOLTIP BASEADA NA POSIÇÃO
+  // 🎯 SETA DO TOOLTIP
   &:before {
     content: '';
     position: absolute;
@@ -180,12 +180,13 @@ export const AutoFillTooltip = styled.div<{
     height: 8px;
 
     background: ${({ $isDark }) =>
-      $isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)'};
+      $isDark ? 'rgba(255, 255, 255, 0.95)' : 'rgba(15, 23, 42, 0.95)'};
 
     ${({ $position, $isDark }) => {
       const borderColor = $isDark ? 'rgba(55, 203, 131, 0.3)' : 'rgba(39, 174, 96, 0.2)';
+      const actualPosition = $position === 'auto' ? 'bottom' : $position;
 
-      switch ($position) {
+      switch (actualPosition) {
         case 'top':
           return css`
             top: 100%;

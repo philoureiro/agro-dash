@@ -77,10 +77,7 @@ export const FarmHeader = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  padding: 8px;
 `;
 
 export const PreviewImage = styled.img`
@@ -93,7 +90,7 @@ export const PreviewImage = styled.img`
   display: block;
 
   &:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 
   @media (max-width: 768px) {
@@ -109,7 +106,7 @@ export const PreviewContainer = styled.div<{ isDark: boolean }>`
   justify-content: space-between;
   align-items: center;
 
-  gap: 1rem;
+  gap: 10px;
   margin-bottom: 2rem;
 
   border-radius: 12px;
@@ -129,6 +126,7 @@ export const PreviewInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-left: 1rem;
 
   h4 {
     margin: 0 0 0.5rem 0;

@@ -271,6 +271,7 @@ export const AddFarmer: React.FC = () => {
                   transition: 'all 0.3s ease',
                   width: '150px',
                   height: '50px',
+                  boxShadow: 'none',
                 }}
               >
                 ← Voltar
@@ -292,7 +293,7 @@ export const AddFarmer: React.FC = () => {
               }}
               style={{
                 background: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.05)',
-                border: `2px solid ${isDark ? '#ef4444' : '#dc2626'}`,
+                border: `1px solid ${isDark ? '#ef4444' : '#dc2626'}`,
                 color: isDark ? 'white' : '#5d5d5d',
                 padding: '12px 24px',
                 borderRadius: '8px',
