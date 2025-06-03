@@ -1,4 +1,4 @@
-import { bounce, fadeInUp, pulse, shimmer } from '@animations';
+import { bounce, fadeInUp, shimmer } from '@animations';
 import styled from 'styled-components';
 
 // 🌱 CROP COMPONENTS
@@ -14,7 +14,7 @@ export const CropCard = styled.div<{ isDark: boolean; isValid?: boolean }>`
   border-radius: 12px;
   padding: 1.5rem;
   border: ${({ isDark, isValid }) => {
-    if (isValid) return isDark ? '2px solid #27ae60' : '2px solid #27ae60';
+    if (isValid) return '1px solid #27ae60';
     return isDark ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(0, 0, 0, 0.03)';
   }};
   backdrop-filter: blur(10px);
@@ -29,26 +29,13 @@ export const CropCard = styled.div<{ isDark: boolean; isValid?: boolean }>`
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
+    height: 1px;
     background: ${({ isValid, isDark }) => {
       if (isValid) return 'linear-gradient(90deg, #27ae60, #229954)';
       return isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
     }};
     border-radius: 12px 12px 0 0;
   }
-
-  ${({ isValid }) =>
-    isValid &&
-    `
-    &:after {
-      content: '🌱✅';
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      font-size: 1rem;
-      z-index: 10;
-    }
-  `}
 
   &:hover {
     transform: translateY(-2px);
@@ -136,7 +123,7 @@ export const CropValidation = styled.div<{ isDark: boolean; type: 'error' | 'war
       return `
         background: ${isDark ? 'rgba(231, 76, 60, 0.15)' : 'rgba(231, 76, 60, 0.1)'};
         border: 1px solid rgba(231, 76, 60, 0.4);
-        color: ${isDark ? '#E74C3C' : '#C0392B'};
+      
         
         &:before {
           content: '❌';
@@ -147,7 +134,7 @@ export const CropValidation = styled.div<{ isDark: boolean; type: 'error' | 'war
       return `
         background: ${isDark ? 'rgba(255, 193, 7, 0.15)' : 'rgba(255, 193, 7, 0.1)'};
         border: 1px solid rgba(255, 193, 7, 0.4);
-        color: ${isDark ? '#F1C40F' : '#D68910'};
+     
         
         &:before {
           content: '⚠️';
@@ -158,7 +145,7 @@ export const CropValidation = styled.div<{ isDark: boolean; type: 'error' | 'war
       return `
         background: ${isDark ? 'rgba(52, 152, 219, 0.15)' : 'rgba(52, 152, 219, 0.1)'};
         border: 1px solid rgba(52, 152, 219, 0.4);
-        color: ${isDark ? '#3498DB' : '#2980B9'};
+        
         
         &:before {
           content: 'ℹ️';
@@ -278,151 +265,132 @@ export const ProductivityMeter = styled.div<{ isDark: boolean }>`
   }
 `;
 
-const getCalendarPickerSvg = (isDark: boolean) => {
-  const color = isDark ? 'ffffff' : '000000';
-  return `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23${color}' d='M6 2a2 2 0 00-2 2v2H2a2 2 0 00-2 2v8a2 2 0 002 2h16a2 2 0 002-2V8a2 2 0 00-2-2h-2V4a2 2 0 00-2-2h-1V1a1 1 0 00-2 0v1H7V1a1 1 0 00-2 0v1H4zm0 2h1v1a1 1 0 002 0V4h6v1a1 1 0 002 0V4h1v2H4V4h2z'/%3e%3c/svg%3e")`;
-};
-
-export const DatePickerContainer = styled.div<{ isDark: boolean }>`
-  position: relative;
-
-  input[type='date'] {
-    color-scheme: ${({ isDark }) => (isDark ? 'dark' : 'light')};
-
-    &::-webkit-calendar-picker-indicator {
-      background-image: ${({ isDark }) => getCalendarPickerSvg(isDark)};
-      cursor: pointer;
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
-      width: 20px;
-      height: 20px;
-      padding: 2px;
-
-      &:hover {
-        opacity: 1;
-        transform: scale(1.1);
-      }
-    }
-
-    &::-webkit-datetime-edit-text {
-      color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)')};
-    }
-
-    &::-webkit-datetime-edit-month-field,
-    &::-webkit-datetime-edit-day-field,
-    &::-webkit-datetime-edit-year-field {
-      color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
-    }
-  }
-`;
-
-export const HarvestCalendar = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(39, 174, 96, 0.1)' : 'rgba(39, 174, 96, 0.05)')};
-  border: 1px solid
-    ${({ isDark }) => (isDark ? 'rgba(39, 174, 96, 0.3)' : 'rgba(39, 174, 96, 0.2)')};
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
+// 🎯 FARM SELECTOR PARA CULTURAS
+export const FarmSelector = styled.div<{ isDark: boolean }>`
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.2);
-  }
-
-  h4 {
-    margin: 0 0 1rem 0;
-    color: ${({ isDark }) => (isDark ? '#27AE60' : '#229954')};
+  .farm-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.1rem;
-    font-weight: bold;
 
     &:before {
-      content: '📅';
-      font-size: 1.2rem;
-    }
-  }
-
-  .calendar-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid
-      ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)')};
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: ${({ isDark }) =>
-        isDark ? 'rgba(39, 174, 96, 0.05)' : 'rgba(39, 174, 96, 0.02)'};
-      padding-left: 0.5rem;
-      border-radius: 4px;
-    }
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .crop-info {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
-
-      .crop-type {
-        font-weight: bold;
-      }
-
-      .crop-area {
-        color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.6)')};
-        font-size: 0.8rem;
-      }
-    }
-
-    .harvest-date {
-      font-size: 0.8rem;
-      color: ${({ isDark }) => (isDark ? '#27AE60' : '#229954')};
-      font-weight: 600;
-      background: ${({ isDark }) =>
-        isDark ? 'rgba(39, 174, 96, 0.15)' : 'rgba(39, 174, 96, 0.1)'};
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      border: 1px solid
-        ${({ isDark }) => (isDark ? 'rgba(39, 174, 96, 0.3)' : 'rgba(39, 174, 96, 0.2)')};
+      content: '🏭';
+      font-size: 1.4rem;
     }
 
     @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
-
-      .harvest-date {
-        align-self: flex-end;
-      }
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
     }
   }
 
-  .empty-calendar {
-    text-align: center;
-    padding: 2rem;
-    color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)')};
-    font-style: italic;
+  .farm-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.7)')};
 
-    .empty-icon {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      display: block;
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+
+      .value {
+        font-weight: bold;
+        color: ${({ isDark }) => (isDark ? '#3498DB' : '#2980B9')};
+      }
+    }
+
+    @media (max-width: 768px) {
+      gap: 1rem;
+      font-size: 0.8rem;
     }
   }
 `;
 
-// 🌾 STATUS BADGES PARA CULTURAS
+export const CropFormContainer = styled.div<{ isDark: boolean }>`
+  border: ${({ isDark }) => (isDark ? '1px solid rgba(111, 250, 47, 0.14)' : '1px solid #ecf0f1')};
+  border-radius: 12px;
+  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: ${({ isDark }) =>
+    isDark ? '0 8px 25px rgba(0, 0, 0, 0.37)' : '0 8px 25px rgba(0, 0, 0, 0.05)'};
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+export const CropFormHeader = styled.div<{ isDark: boolean }>`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+`;
+
+export const HeaderBox = styled.div<{ isDark: boolean }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 20px;
+  }
+`;
+
+// 🗑️ BOTÃO DE DELETAR CULTURA - NOVO DESIGN
+export const DeleteCropButton = styled.button<{ isDark: boolean }>`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  color: #e74c3c;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    border-color: #e74c3c;
+    background: #ffffff;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    width: 28px;
+    height: 28px;
+  }
+`;
+
+// 🌾 STATUS BADGES PARA CULTURAS - REMOVIDO O PLANNED
 export const CropStatusBadge = styled.span<{
-  status: 'planned' | 'growing' | 'ready' | 'harvested';
+  status: 'growing' | 'ready' | 'harvested';
   isDark: boolean;
 }>`
   display: inline-flex;
@@ -438,16 +406,6 @@ export const CropStatusBadge = styled.span<{
 
   ${({ status, isDark }) => {
     switch (status) {
-      case 'planned':
-        return `
-          background: ${isDark ? 'rgba(149, 165, 166, 0.2)' : 'rgba(149, 165, 166, 0.1)'};
-          color: ${isDark ? '#BDC3C7' : '#7F8C8D'};
-          border: 1px solid ${isDark ? 'rgba(149, 165, 166, 0.4)' : 'rgba(149, 165, 166, 0.3)'};
-          
-          &:before {
-            content: '📋';
-          }
-        `;
       case 'growing':
         return `
           background: ${isDark ? 'rgba(39, 174, 96, 0.2)' : 'rgba(39, 174, 96, 0.1)'};
@@ -486,102 +444,5 @@ export const CropStatusBadge = styled.span<{
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-`;
-
-// 📊 ÁREA UTILIZADA INDICATOR
-export const AreaUtilizationBar = styled.div<{ isDark: boolean; percentage: number }>`
-  width: 100%;
-  height: 8px;
-  background: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)')};
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 0.5rem 0;
-  position: relative;
-
-  &:after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: ${({ percentage }) => Math.min(percentage, 100)}%;
-    background: ${({ percentage }) =>
-      percentage > 100
-        ? 'linear-gradient(90deg, #E74C3C, #C0392B)'
-        : percentage > 80
-          ? 'linear-gradient(90deg, #F39C12, #E67E22)'
-          : 'linear-gradient(90deg, #27AE60, #229954)'};
-    border-radius: 4px;
-    transition: all 0.5s ease;
-    animation: ${({ percentage }) => (percentage > 100 ? pulse : 'none')} 1s infinite;
-  }
-
-  &:before {
-    content: '${({ percentage }) => percentage.toFixed(1)}%';
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
-    z-index: 2;
-  }
-`;
-
-// 🎯 FARM SELECTOR PARA CULTURAS
-export const FarmSelector = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(52, 152, 219, 0.1)' : 'rgba(52, 152, 219, 0.05)')};
-  border: 2px solid
-    ${({ isDark }) => (isDark ? 'rgba(52, 152, 219, 0.3)' : 'rgba(52, 152, 219, 0.2)')};
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
-  }
-
-  .farm-title {
-    color: ${({ isDark }) => (isDark ? '#3498DB' : '#2980B9')};
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    &:before {
-      content: '🏭';
-      font-size: 1.4rem;
-    }
-  }
-
-  .farm-stats {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    font-size: 0.9rem;
-    color: ${({ isDark }) => (isDark ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.7)')};
-
-    .stat {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-
-      .value {
-        font-weight: bold;
-        color: ${({ isDark }) => (isDark ? '#3498DB' : '#2980B9')};
-      }
-    }
-
-    @media (max-width: 768px) {
-      gap: 1rem;
-      font-size: 0.8rem;
-    }
   }
 `;

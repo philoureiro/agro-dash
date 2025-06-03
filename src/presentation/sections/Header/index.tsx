@@ -1,3 +1,6 @@
+import { use } from 'react';
+import { useNavigate } from 'react-router';
+
 import GitHubIcon from '@mui/icons-material/GitHub';
 import DocsIcon from '@mui/icons-material/MenuBook';
 
@@ -25,13 +28,14 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
   const { themeMode } = useThemeMode();
   const currentTheme = propThemeMode || themeMode;
 
+  const navigate = useNavigate();
   return (
     <GlassHeader themeMode={currentTheme} data-pw={`theme-${currentTheme}`}>
       <HeaderContent>
         <LeftSection>
           <TitleButton
             onClick={() => {
-              window.location.href = '/';
+              navigate('/docs');
             }}
             themeMode={currentTheme}
           >
@@ -47,10 +51,11 @@ export default function Header({ themeMode: propThemeMode }: HeaderProps) {
           <Tooltip data-tooltip="Docs">
             <ActionButton
               as="a"
-              href="/docs"
               themeMode={currentTheme}
               data-pw="docs-button"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                navigate('/docs');
+              }}
             >
               <DocsIcon />
             </ActionButton>

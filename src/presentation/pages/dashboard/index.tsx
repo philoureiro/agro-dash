@@ -16,9 +16,9 @@ import {
   VictoryTooltip,
 } from 'victory';
 
-import { AnimatedCounter } from './components/AnimatedCounter';
-import { ChartCardComponent } from './components/chartCardComponent';
-import { ClientOnly } from './components/clientOnly';
+import { AnimatedCounter } from './components/animated-counter';
+import { ChartCardComponent } from './components/chart-card';
+import { ClientOnly } from './components/client-only';
 import { CHART_COLORS } from './config';
 import {
   ActionButton,
@@ -52,7 +52,7 @@ import {
   StatBadge,
 } from './styles';
 import { filterChartData, getFilterLabel, getFilterMultiplier, translateData } from './utils';
-import { exportToPDF } from './utils/exportToPDF';
+import { exportToPDF } from './utils/export-to-pdf';
 
 // 🔄 HOOK PARA TAMANHO RESPONSIVO DOS GRÁFICOS
 const useResponsiveChartSize = () => {

@@ -19,7 +19,7 @@
     "2WX72G-2JW-sd-TgBG5cP": {
       "id": "2WX72G-2JW-sd-TgBG5cP",
       "description": "criar: trocar componentes, conferir componente estranho que agarra quando pula em adicionar fazenda",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "MCUusjh74A5GME_se7w7z": {
       "id": "MCUusjh74A5GME_se7w7z",
@@ -29,12 +29,12 @@
     "i2mFRMSFaolBESaYqZi-j": {
       "id": "i2mFRMSFaolBESaYqZi-j",
       "description": "criar : mostrar foto do produtor ou da fazenda por link, conferir se existe a possibilidade do base64, ou  colocar imagem de não existe imagem",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "wau_DLufnQUi1gusKrnub": {
       "id": "wau_DLufnQUi1gusKrnub",
       "description": "criar: conferir se todos os dados que precisamos foram preenchidos corretamente",
-      "columnId": "column-todo"
+      "columnId": "column-done"
     },
     "Zw0rikidvAKP-Y11Ysu0l": {
       "id": "Zw0rikidvAKP-Y11Ysu0l",
@@ -110,6 +110,41 @@
       "id": "eRRe5DpO7lCEAzyIzpY1E",
       "description": "pegar traducao do grafico e colocar no search",
       "columnId": "column-todo"
+    },
+    "MJ9iQmD7L0MgH4PKoXAuO": {
+      "id": "MJ9iQmD7L0MgH4PKoXAuO",
+      "description": "deixar overlay mais escuro",
+      "columnId": "column-done"
+    },
+    "s7fEJSXlYiw-CZvn9g0SA": {
+      "id": "s7fEJSXlYiw-CZvn9g0SA",
+      "description": "overlay na tela de docs",
+      "columnId": "column-done"
+    },
+    "C6KAab38KUoQgY6KPawAw": {
+      "id": "C6KAab38KUoQgY6KPawAw",
+      "description": "aviso de rascunho mais pra baixo no mobile",
+      "columnId": "column-done"
+    },
+    "RC64o7bzjoUh1Mx57fn5z": {
+      "id": "RC64o7bzjoUh1Mx57fn5z",
+      "description": "dps de salvar ir pra pesquisar",
+      "columnId": "column-todo"
+    },
+    "k6ZBpk4Ms09nhCBPeqpKv": {
+      "id": "k6ZBpk4Ms09nhCBPeqpKv",
+      "description": "modal de confirm castasr",
+      "columnId": "column-todo"
+    },
+    "NpsLr6_jdn22AcxxDzOCj": {
+      "id": "NpsLr6_jdn22AcxxDzOCj",
+      "description": "nao abrir automaticamente nenhum card fechado fazendas",
+      "columnId": "column-todo"
+    },
+    "bkDNwtSJ3xqmoeKmKpZJr": {
+      "id": "bkDNwtSJ3xqmoeKmKpZJr",
+      "description": "colocar have drasft parar tirar falad de artuomatico quando n tiver",
+      "columnId": "column-done"
     }
   },
   "columns": [
@@ -118,9 +153,6 @@
       "title": "To do",
       "tasksIds": [
         "3DIyzzMtGr7p9svdF5akL",
-        "2WX72G-2JW-sd-TgBG5cP",
-        "i2mFRMSFaolBESaYqZi-j",
-        "wau_DLufnQUi1gusKrnub",
         "Zw0rikidvAKP-Y11Ysu0l",
         "5Oszczjh2VdfTMtZAMsm3",
         "fTO5wUNun7lNV8HZqMU-v",
@@ -130,7 +162,10 @@
         "NiE1YQclkwlUaNwSGUKdE",
         "GO6JA1dNpMZH7oouAn8-d",
         "eRRe5DpO7lCEAzyIzpY1E",
-        "0srfiX6eKkurgUK60saY0"
+        "0srfiX6eKkurgUK60saY0",
+        "RC64o7bzjoUh1Mx57fn5z",
+        "k6ZBpk4Ms09nhCBPeqpKv",
+        "NpsLr6_jdn22AcxxDzOCj"
       ]
     },
     {
@@ -146,9 +181,16 @@
         "MCUusjh74A5GME_se7w7z",
         "fTOauLq8-Vum6n1zCQKyM",
         "j985HFM-bxBbxXCQWMLyD",
+        "wau_DLufnQUi1gusKrnub",
         "i9ZNZTPHO-HBaeosyaZ0f",
         "1h0sRFYXHBqNFiz1DEVxJ",
         "EBRdnHDiiAHed8_jYlsmh",
+        "2WX72G-2JW-sd-TgBG5cP",
+        "C6KAab38KUoQgY6KPawAw",
+        "i2mFRMSFaolBESaYqZi-j",
+        "MJ9iQmD7L0MgH4PKoXAuO",
+        "s7fEJSXlYiw-CZvn9g0SA",
+        "bkDNwtSJ3xqmoeKmKpZJr",
         "mXXDmapCHtlPlnibkNysI"
       ]
     }

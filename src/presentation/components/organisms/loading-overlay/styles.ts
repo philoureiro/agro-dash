@@ -70,7 +70,7 @@ export const LoadingOverlayContainer = styled.div<{
   padding: 2rem;
   box-sizing: border-box;
 
-  background: ${({ $isDark }) => ($isDark ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.9)')};
+  background: ${({ $isDark }) => ($isDark ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)')};
 `;
 
 export const LoadingBackground = styled.div<{ $isDark: boolean }>`

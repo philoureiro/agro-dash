@@ -13,17 +13,6 @@ const fadeInUp = keyframes`
   }
 `;
 
-const slideInLeft = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-
 const glowPulse = keyframes`
   0%, 100% {
     box-shadow: 0 0 5px rgba(55, 203, 131, 0.5);
@@ -40,85 +29,6 @@ export const ProgressText = styled.span<{ isDark: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-// 📝 CARDS DE FORMULÁRIO
-export const FormCard = styled.div<{ isDark: boolean }>`
-  background: ${({ isDark }) => (isDark ? 'rgba(35, 39, 47, 0.95)' : 'rgba(255, 255, 255, 0.95)')};
-  backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  border: ${({ isDark }) =>
-    isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid rgba(0, 0, 0, 0.05)'};
-  box-shadow: ${({ isDark }) =>
-    isDark ? '0 20px 40px rgba(0, 0, 0, 0.4)' : '0 20px 40px rgba(0, 0, 0, 0.08)'};
-  animation: ${fadeInUp} 0.8s ease-out;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(55, 203, 131, 0.05), transparent);
-    transition: left 0.6s ease;
-  }
-
-  &:hover:before {
-    left: 100%;
-  }
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${({ isDark }) =>
-      isDark
-        ? '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(55, 203, 131, 0.2)'
-        : '0 25px 50px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(55, 203, 131, 0.1)'};
-  }
-
-  h2 {
-    color: ${({ isDark }) => (isDark ? '#fff' : '#2c3e50')};
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    animation: ${slideInLeft} 0.6s ease-out;
-
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(90deg, #37cb83, #27ae60);
-      border-radius: 2px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    padding: 1.5rem;
-    border-radius: 16px;
-  }
-`;
-
-// 📋 GRID RESPONSIVO
-export const FormGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
 `;
 
 // 🎯 GRUPOS DE INPUT
@@ -429,5 +339,40 @@ export const ProgressFill = styled.div<{ $progress: number; $isDark: boolean }>`
     bottom: 0;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     animation: shimmer 2s infinite;
+  }
+`;
+
+export const FormCard = styled.div<{ isDark: boolean }>`
+  background: ${({ isDark }) => (isDark ? '#1a1a1a' : '#ffffff')};
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid ${({ isDark }) => (isDark ? '#333' : '#e1e5e9')};
+  position: relative;
+`;
+
+// 🎯 NOVO: Container para o header com título e botão
+export const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: inherit;
+  }
+`;
+
+export const FormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
   }
 `;

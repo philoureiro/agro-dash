@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { ChartCard } from '../styles';
+import { ChartCard } from '../../styles';
 
 export function ChartCardComponent(props) {
   const ref = useRef<HTMLDivElement>(null);

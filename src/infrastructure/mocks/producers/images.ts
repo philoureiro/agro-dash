@@ -6,4 +6,16 @@ https://img.freepik.com/fotos-gratis/cena-fotorrealista-de-uma-fazenda-avicola-c
 https://img.freepik.com/fotos-gratis/agricultora-relaxando-ao-ar-livre_23-2149066196.jpg?semt=ais_hybrid&w=740
 https://s2-globorural.glbimg.com/vp1dHAuohL_HG916oGxr6bbeiAc=/0x183:1029x1318/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_afe5c125c3bb42f0b5ae633b58923923/internal_photos/bs/2023/m/P/e60ylJRC2AkyxQitzovA/snapinsta.app-1080-315235205-1127628794560731-3032724446634054494-n-1-.jpg
 https://s2-g1.glbimg.com/AIY-qg4yxGN334UQkZq7AUDhIu0=/0x0:6016x4016/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2022/r/H/vESiyFRPCcZpqdAcc4Rw/20220405-julienpereira-gm-tarcisio-franco-5982.jpgzzzzzzzz
+https://s2-g1.glbimg.com/o85rdY0x03l9jur-hU49-lzkbD0=/0x0:1973x1051/924x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2020/S/1/8XyLhZTWSMta5HIxlWZw/1480x788px3.jpg
+https://imagens.ne10.uol.com.br/veiculos/_midias/jpg/2020/02/04/806x444/1_agricultores-604884.jpg
+https://braziljournal.com/wp-content/uploads/2024/10/A-mente-do-agricultor-2024-1200x731.jpg?x22350
+https://wordpress-cms-gc-prod-assets.quero.space/uploads/2023/12/mulher-segurando-uma-cesta-cheia-de-legumes-com-espaco-de-copia-1-scaled.jpg
+https://conafer.org.br/wp-content/uploads/2022/07/WhatsApp-Image-2022-07-28-at-16.40.35.jpeg
+https://www.bigtires.com.br/media/magefan_blog/dia_do_agricultor_1_.jpg
+https://www.ada-microfinance.org/sites/default/files/inline-images/newslette%20dimension.png
+https://img.freepik.com/fotos-gratis/homem-africano-colhendo-legumes_23-2151441203.jpg
+https://img.freepik.com/foto-gratis/hombre-haciendo-agricultura-interior_52683-91940.jpg?semt=ais_hybrid&w=740
+https://img.freepik.com/fotos-gratis/mulher-fotorrealista-em-um-jardim-organico-sustentavel-colhendo-produtos_23-2151462990.jpg?semt=ais_hybrid&w=740
+https://img.freepik.com/fotos-gratis/vista-fotorrealista-de-uma-mulher-colhendo-em-um-jardim-organico-sustentavel_23-2151462979.jpg?semt=ais_hybrid&w=740
+https://img.freepik.com/fotos-gratis/mulher-fotorrealista-em-um-jardim-organico-sustentavel-colhendo-produtos_23-2151463010.jpg?semt=ais_hybrid&w=740
 */
