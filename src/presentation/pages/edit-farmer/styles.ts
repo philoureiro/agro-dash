@@ -50,18 +50,23 @@ const bounce = keyframes`
   }
 `;
 
+export const PrincipalContainer = styled.div<{ isDark: boolean }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 // 🏗️ CONTAINER PRINCIPAL COMPACTO
 export const EditContainer = styled.div<{ isDark: boolean }>`
   min-height: 100vh;
   padding: 20px;
-  background: ${({ isDark }) =>
-    isDark
-      ? 'linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%)'
-      : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f8fafc 100%)'};
+  width: 100%;
+  max-width: 1600px;
   position: relative;
 
   margin-top: 80px;
   margin-bottom: 80px;
+
   &:before {
     content: '';
     position: fixed;
@@ -69,10 +74,7 @@ export const EditContainer = styled.div<{ isDark: boolean }>`
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${({ isDark }) =>
-      isDark
-        ? 'radial-gradient(circle at 30% 40%, rgba(55, 203, 131, 0.08) 0%, transparent 50%)'
-        : 'radial-gradient(circle at 30% 40%, rgba(55, 203, 131, 0.03) 0%, transparent 50%)'};
+
     pointer-events: none;
     z-index: 0;
   }
@@ -81,8 +83,6 @@ export const EditContainer = styled.div<{ isDark: boolean }>`
     position: relative;
     z-index: 1;
   }
-
-  max-width: 1400px;
 `;
 
 // 📋 HEADER EDITÁVEL

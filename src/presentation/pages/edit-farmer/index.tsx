@@ -25,6 +25,7 @@ import {
   HeaderTitle,
   LastModified,
   LoadingOverlay,
+  PrincipalContainer,
   QuickActions,
   SectionDivider,
   SectionHeader,
@@ -488,7 +489,7 @@ export const EditFarmer = () => {
   }, [originalProdutor]);
 
   return (
-    <>
+    <PrincipalContainer isDark={isDark}>
       <meta name="title" content="Editar Produtor" />
 
       <EditContainer isDark={isDark} ref={formRef}>
@@ -850,6 +851,6 @@ export const EditFarmer = () => {
           )}
         </FloatingActions>
       </EditContainer>
-    </>
+    </PrincipalContainer>
   );
 };
