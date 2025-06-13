@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 export interface ButtonStyleProps {
   isDark?: boolean;
   disabled?: boolean;
-  gradient?: string;
+  gradient?: boolean | string;
   color?: string;
   size?: 'small' | 'normal' | 'large';
 }
@@ -27,15 +27,22 @@ const sizeMap = {
 };
 
 export const StyledButton = styled.button<ButtonStyleProps>`
-  background: ${({ isDark, disabled, gradient }) =>
-    disabled
-      ? isDark
-        ? '#2a3d32'
-        : '#e0e0e0'
-      : gradient ||
-        (isDark
-          ? 'linear-gradient(135deg, #37cb83 0%, #2f9469 100%)'
-          : 'linear-gradient(135deg, #37cb83 0%, #5ad0ff 100%)')};
+  background: ${({ isDark, disabled, gradient }) => {
+    if (disabled) {
+      return isDark ? '#2a3d32' : '#e0e0e0';
+    }
+    if (gradient === true) {
+      return isDark
+        ? 'linear-gradient(135deg, #37cb83 0%, #2f9469 100%)'
+        : 'linear-gradient(135deg, #37cb83 0%, #5ad0ff 100%)';
+    }
+    if (typeof gradient === 'string') {
+      return gradient;
+    }
+    return isDark
+      ? 'linear-gradient(135deg, #37cb83 0%, #2f9469 100%)'
+      : 'linear-gradient(135deg, #37cb83 0%, #5ad0ff 100%)';
+  }};
   color: ${({ isDark, disabled, color }) =>
     disabled ? (isDark ? '#6b7280' : '#9ca3af') : color || '#fff'};
   border: none;

@@ -30,9 +30,17 @@ export const Button: React.FC<ExportButtonProps> = ({
       size={size}
       {...rest}
     >
-      {startIcon && <span style={{ display: 'flex', alignItems: 'center' }}>{startIcon}</span>}
+      {startIcon && (
+        <span data-testid="start-icon" style={{ display: 'flex', alignItems: 'center' }}>
+          {startIcon}
+        </span>
+      )}
       {children}
-      {endIcon && <span style={{ display: 'flex', alignItems: 'center' }}>{endIcon}</span>}
+      {endIcon && (
+        <span data-testid="end-icon" style={{ display: 'flex', alignItems: 'center' }}>
+          {endIcon}
+        </span>
+      )}
     </StyledButton>
   );
 };

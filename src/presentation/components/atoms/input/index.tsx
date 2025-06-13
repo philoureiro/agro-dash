@@ -56,6 +56,7 @@ export const Input: React.FC<InputProps> = ({
   required = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const inputId = `input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   // 🎯 DETERMINAR STATUS VISUAL
   const getValidationStatus = () => {
@@ -87,6 +88,7 @@ export const Input: React.FC<InputProps> = ({
       placeholder: placeholder || '',
       disabled,
       maxLength,
+      id: inputId,
     };
 
     if (options) {
@@ -117,6 +119,7 @@ export const Input: React.FC<InputProps> = ({
         $isFocused={isFocused}
         $isRequired={required}
         $validationStatus={validationStatus}
+        htmlFor={inputId}
       >
         {icon && <span className="label-icon">{icon}</span>}
         {label}
@@ -128,7 +131,11 @@ export const Input: React.FC<InputProps> = ({
 
         {/* 🎯 ÍCONE DE VALIDAÇÃO COM ESPAÇAMENTO */}
         {valid !== undefined && (
-          <InputIcon $validationStatus={validationStatus} $hasIcon={true}>
+          <InputIcon
+            $validationStatus={validationStatus}
+            $hasIcon={true}
+            data-testid="validation-icon"
+          >
             <div style={{ marginTop: '5px' }}>
               {valid === true ? (
                 <IoIosCheckmarkCircle color="#2ecc71" size={20} />
