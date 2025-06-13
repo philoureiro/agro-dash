@@ -9,14 +9,19 @@ export default defineConfig({
     globals: true, // Pode usar describe/it/expect direto
     setupFiles: ['./src/test/setup.ts'],
     coverage: {
-      reporter: ['text', 'lcov'],
-      include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
+      include: ['src/**/*.{js,jsx,ts,tsx}'],
       exclude: [
         'src/mocks',
         'src/**/*.d.ts',
         'src/**/*.stories.*',
         'src/**/__tests__/*',
         'src/**/mocks/*',
+        'src/test',
+        'src/**/*.test.{ts,tsx,js,jsx}',
+        'src/**/*.spec.{ts,tsx,js,jsx}',
       ],
     },
     alias: {

@@ -11,7 +11,8 @@
     "prettier:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:check": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\"",
     "ts:check": "tsc --noEmit",
-    "test": "vitest run --reporter=verbose"
+    "test": "vitest run --reporter=verbose",
+    "test:coverage": "vitest run --coverage --reporter=verbose"
   },
   "dependencies": {
     "@faker-js/faker": "^9.8.0",
